@@ -219,4 +219,23 @@ class ImageControllerTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_catalog_image_thumb(): void
+    {
+        Storage::fake('catalog');
+        $imagePath = 'catalog/2026.08.21/cocktails/example/image.jpg';
+        Storage::disk('catalog')->put($imagePath, $this->getFakeImageContent('jpg'));
+        $cocktailImage = Image::factory()->for(Cocktail::factory(), 'imageable')->create([
+            'file_path' => $imagePath,
+            'file_extension' => 'jpg',
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+            'created_user_id' => auth('sanctum')->user()->id,
+        ]);
+
+        $response = $this->get('/api/images/' . $cocktailImage->id . '/thumb');
+
+        $response->assertOk();
+        Storage::disk('catalog')->assertExists($imagePath);
+    }
 }

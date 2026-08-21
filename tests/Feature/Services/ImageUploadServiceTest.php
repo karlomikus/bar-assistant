@@ -199,4 +199,28 @@ class ImageUploadServiceTest extends TestCase
         $this->assertNotNull($result);
         $this->assertTrue(str_contains($result->path, 'cocktails/'));
     }
+
+    public function test_change_image_keeps_catalog_object(): void
+    {
+        Storage::fake('uploads');
+        Storage::fake('catalog');
+        $filesystem = Storage::disk('uploads');
+        $catalogPath = 'catalog/2026.08.21/cocktails/example/image.webp';
+        Storage::disk('catalog')->put($catalogPath, 'catalog image content');
+        $cocktail = Cocktail::factory()->create();
+        $image = Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $catalogPath,
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+        ]);
+        $filesystem->put('temp/new-image.webp', 'new image content');
+
+        $result = (new ImageUploadService($filesystem, new NullLogger()))->changeImage(
+            $image->id,
+            new ImageUploadResult(path: 'temp/new-image.webp', extension: 'webp', placeholderHash: 'new-hash'),
+        );
+
+        Storage::disk('catalog')->assertExists($catalogPath);
+        $filesystem->assertExists($result->path);
+    }
 }

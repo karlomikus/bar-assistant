@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\External\Import\DataPackMediaMode;
+use Kami\Cocktail\Services\Image\StarterMediaCatalogService;
 
 class FromDataPackTest extends TestCase
 {
@@ -56,6 +58,8 @@ class FromDataPackTest extends TestCase
         $this->assertNotNull($glass1Image);
         $this->assertStringStartsWith('glasses/' . $membership->bar->id . '/', $glass1Image->file_path);
         $this->assertTrue(Storage::disk('uploads')->exists($glass1Image->file_path));
+        $this->assertSame('uploads', $glass1Image->disk);
+        $this->assertSame('owned', $glass1Image->storage_origin);
         $this->assertDatabaseMissing('images', ['imageable_type' => Glass::class, 'imageable_id' => $glass2->id]);
 
         $this->assertDatabaseHas('cocktail_methods', ['name' => 'method 1', 'dilution_percentage' => 15]);
@@ -126,5 +130,103 @@ class FromDataPackTest extends TestCase
         $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description', 'bar_id' => $membership->bar->id]);
         $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null, 'bar_id' => $membership->bar->id]);
         $this->assertDatabaseMissing('images', ['imageable_type' => Glass::class]);
+    }
+
+    public function test_catalog_import_creates_independent_attachments_that_share_catalog_objects(): void
+    {
+        Storage::fake('catalog');
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $catalogService = resolve(StarterMediaCatalogService::class);
+        $version = $catalogService->releaseVersion();
+        $objects = $catalogService->sourceObjects($datapackFolder);
+
+        foreach ($objects as $sourcePath => $object) {
+            $stream = $datapackFolder->readStream($sourcePath);
+            $this->assertIsResource($stream);
+            Storage::disk('catalog')->writeStream('catalog/' . $version . '/' . $object['key'], $stream);
+            fclose($stream);
+        }
+        Storage::disk('catalog')->put(
+            $catalogService->completionManifestPath($version),
+            json_encode(['version' => $version, 'objects' => $objects], JSON_THROW_ON_ERROR),
+        );
+
+        $firstMembership = $this->setupBarMembership();
+        $secondMembership = $this->setupBarMembership();
+        $importer = resolve(FromDataPack::class);
+
+        $importer->process($datapackFolder, $firstMembership->bar_id, $firstMembership->user_id, BarOptionsEnum::Cocktails, DataPackMediaMode::StarterCatalog);
+        $importer->process($datapackFolder, $secondMembership->bar_id, $secondMembership->user_id, BarOptionsEnum::Cocktails, DataPackMediaMode::StarterCatalog);
+
+        $firstImage = DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $firstMembership->bar_id)->first();
+        $secondImage = DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $secondMembership->bar_id)->first();
+
+        $this->assertNotNull($firstImage);
+        $this->assertNotNull($secondImage);
+        $this->assertNotSame($firstImage->id, $secondImage->id);
+        $this->assertSame($firstImage->file_path, $secondImage->file_path);
+        $this->assertSame('catalog', $firstImage->disk);
+        $this->assertSame('catalog', $firstImage->storage_origin);
+
+        $importer->process($datapackFolder, $firstMembership->bar_id, $firstMembership->user_id, BarOptionsEnum::Cocktails, DataPackMediaMode::StarterCatalog);
+
+        $this->assertSame(1, DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $firstMembership->bar_id)->count());
+    }
+
+    public function test_catalog_import_rejects_an_incomplete_release_before_creating_rows(): void
+    {
+        Storage::fake('catalog');
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $catalogService = resolve(StarterMediaCatalogService::class);
+        $version = $catalogService->releaseVersion();
+        $objects = $catalogService->sourceObjects($datapackFolder);
+        Storage::disk('catalog')->put(
+            $catalogService->completionManifestPath($version),
+            json_encode(['version' => $version, 'objects' => $objects], JSON_THROW_ON_ERROR),
+        );
+        $membership = $this->setupBarMembership();
+
+        try {
+            resolve(FromDataPack::class)->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails, DataPackMediaMode::StarterCatalog);
+            $this->fail('Expected incomplete catalog release to be rejected');
+        } catch (\RuntimeException) {
+        }
+
+        $this->assertDatabaseEmpty('images');
+    }
+
+    public function test_completed_catalog_release_rejects_changed_source_media(): void
+    {
+        Storage::fake('catalog');
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $catalogService = resolve(StarterMediaCatalogService::class);
+        $version = $catalogService->releaseVersion();
+        $objects = $catalogService->sourceObjects($datapackFolder);
+
+        foreach ($objects as $sourcePath => $object) {
+            $stream = $datapackFolder->readStream($sourcePath);
+            $this->assertIsResource($stream);
+            Storage::disk('catalog')->writeStream('catalog/' . $version . '/' . $object['key'], $stream);
+            fclose($stream);
+        }
+        Storage::disk('catalog')->put(
+            $catalogService->completionManifestPath($version),
+            json_encode(['version' => $version, 'objects' => $objects], JSON_THROW_ON_ERROR),
+        );
+        $firstPath = array_key_first($objects);
+        $this->assertIsString($firstPath);
+        Storage::disk('catalog')->put('catalog/' . $version . '/' . $objects[$firstPath]['key'], 'changed media');
+
+        $this->expectException(\RuntimeException::class);
+        $catalogService->assertCompletedRelease(Storage::disk('catalog'), $version, $objects);
     }
 }

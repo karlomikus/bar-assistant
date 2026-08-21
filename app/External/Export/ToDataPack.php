@@ -17,6 +17,7 @@ use Kami\RecipeUtils\UnitConverter\Units;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\External\Model\Glass as GlassExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
@@ -31,9 +32,13 @@ use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
  */
 class ToDataPack
 {
+    /** @var string[] */
+    private array $temporaryImagePaths = [];
+
     public function __construct(
         #[Storage('exports')]
         private readonly Cloud $file,
+        private readonly ?ImageStorageService $imageStorage = null,
     ) {
     }
 
@@ -78,6 +83,10 @@ class ToDataPack
             }
         } finally {
             $zip->close();
+            foreach ($this->temporaryImagePaths as $path) {
+                $this->storage()->deleteTemporaryFile($path);
+            }
+            $this->temporaryImagePaths = [];
         }
 
         $fullPath = $barId . '/' . $filename;
@@ -121,7 +130,7 @@ class ToDataPack
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($cocktail->images as $img) {
                 try {
-                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getExternalId());
+                    $this->addImage($zip, $img, 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getExternalId());
                 } catch (ImageFileNotFoundException $e) {
                     Log::warning($e->getMessage());
                 }
@@ -143,7 +152,7 @@ class ToDataPack
 
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($ingredient->images as $img) {
-                $zip->addFile($img->getPath(), 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getExternalId());
+                $this->addImage($zip, $img, 'ingredients/' . $ingredient->getExternalId() . '/' . $img->getExternalId());
             }
 
             $ingredientExportData = $this->prepareDataOutput($data->toDataPackArray());
@@ -163,7 +172,7 @@ class ToDataPack
             /** @var \Kami\Cocktail\Models\Image $img */
             foreach ($glass->images as $img) {
                 try {
-                    $zip->addFile($img->getPath(), 'glasses/' . $glass->getExternalId() . '/' . $img->getExternalId());
+                    $this->addImage($zip, $img, 'glasses/' . $glass->getExternalId() . '/' . $img->getExternalId());
                 } catch (ImageFileNotFoundException $e) {
                     Log::warning($e->getMessage());
                 }
@@ -214,5 +223,17 @@ class ToDataPack
         }
 
         return '';
+    }
+
+    private function addImage(ZipArchive $zip, \Kami\Cocktail\Models\Image $image, string $archivePath): void
+    {
+        $temporaryPath = $this->storage()->materialize($image);
+        $this->temporaryImagePaths[] = $temporaryPath;
+        $zip->addFile($this->storage()->temporaryPath($temporaryPath), $archivePath);
+    }
+
+    private function storage(): ImageStorageService
+    {
+        return $this->imageStorage ?? app(ImageStorageService::class);
     }
 }

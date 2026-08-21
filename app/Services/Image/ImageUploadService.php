@@ -8,6 +8,7 @@ use Throwable;
 use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\Models\Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Attributes\Storage;
@@ -59,13 +60,10 @@ final readonly class ImageUploadService
     {
         $imageModel = Image::findOrFail($imageId);
 
-        // Delete old image file
-        if ($this->filesystem->exists($imageModel->file_path)) {
-            $this->filesystem->delete($imageModel->file_path);
-        }
-
         // For temporary images we can just use the new image that is also temporary
         if ($imageModel->isTemporaryImage()) {
+            app(ImageStorageService::class)->delete($imageModel);
+
             return $newImage;
         }
 
@@ -76,6 +74,8 @@ final readonly class ImageUploadService
         if ($this->filesystem->exists($newImage->path)) {
             $this->filesystem->move($newImage->path, $newImagePath);
         }
+
+        app(ImageStorageService::class)->delete($imageModel);
 
         return new ImageUploadResult(
             path: $newImagePath,
@@ -89,9 +89,12 @@ final readonly class ImageUploadService
         $bar = Bar::findOrFail($barId);
         $cocktailIds = $bar->cocktails()->pluck('id');
         $ingredientIds = $bar->ingredients()->pluck('id');
-        $barLogoPath = $bar->images->first()?->file_path;
+        $glassIds = Glass::query()->where('bar_id', $barId)->pluck('id');
+        $ownedImages = (new Image())->getAllBarImages($barId)
+            ->merge($bar->images)
+            ->filter(fn (Image $image): bool => $image->storage_origin === 'owned');
 
-        DB::transaction(function () use ($cocktailIds, $ingredientIds, $bar) {
+        DB::transaction(function () use ($cocktailIds, $ingredientIds, $glassIds, $bar) {
             DB::table('images')
                 ->where('imageable_type', \Kami\Cocktail\Models\Cocktail::class)
                 ->whereIn('imageable_id', $cocktailIds)
@@ -103,6 +106,11 @@ final readonly class ImageUploadService
                 ->delete();
 
             DB::table('images')
+                ->where('imageable_type', \Kami\Cocktail\Models\Glass::class)
+                ->whereIn('imageable_id', $glassIds)
+                ->delete();
+
+            DB::table('images')
                 ->where('imageable_type', \Kami\Cocktail\Models\Bar::class)
                 ->where('imageable_id', $bar->id)
                 ->delete();
@@ -110,8 +118,8 @@ final readonly class ImageUploadService
 
         $this->filesystem->deleteDirectory('cocktails/' . $bar->id . '/');
         $this->filesystem->deleteDirectory('ingredients/' . $bar->id . '/');
-        if ($barLogoPath) {
-            $this->filesystem->delete($barLogoPath);
+        foreach ($ownedImages as $image) {
+            app(ImageStorageService::class)->delete($image);
         }
     }
 }

@@ -58,6 +58,15 @@ class ToDataPackTest extends TestCase
             'file_path' => $ingredientCocktailFile->storeAs('', 'i-1-img.png', 'uploads'),
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
+        Storage::fake('catalog');
+        $catalogImagePath = 'catalog/2026.08.21/cocktails/gin-and-tonic/catalog-img.jpg';
+        Storage::disk('catalog')->put($catalogImagePath, $this->getFakeImageContent('jpg'));
+        Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $catalogImagePath,
+            'file_extension' => 'jpg',
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+        ]);
         Image::factory()->for($glassWithImage, 'imageable')->create([
             'file_path' => $glassImageFile->storeAs('glasses/' . $membership->bar->id, 'g-1-img.jpg', 'uploads'),
             'file_extension' => 'jpg',
@@ -93,6 +102,7 @@ class ToDataPackTest extends TestCase
 
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/c-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/catalog-img.jpg'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/i-1-img.png'));
 

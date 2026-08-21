@@ -3127,12 +3127,6 @@ parameters:
 			path: app/Models/Glass.php
 
 		-
-			message: '#^Cannot access property \$bar_id on Kami\\Cocktail\\Models\\Cocktail\|Kami\\Cocktail\\Models\\Glass\|Kami\\Cocktail\\Models\\Ingredient\|null\.$#'
-			identifier: property.nonObject
-			count: 3
-			path: app/Models/Image.php
-
-		-
 			message: '#^Cannot access property \$shelfIngredients on Kami\\Cocktail\\Models\\Bar\|null\.$#'
 			identifier: property.nonObject
 			count: 3

@@ -12,6 +12,7 @@ use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Import\FromDataPack;
+use Kami\Cocktail\External\Import\DataPackMediaMode;
 
 class SetupBar implements ShouldQueue
 {
@@ -34,6 +35,6 @@ class SetupBar implements ShouldQueue
     {
         $dataDisk = Storage::disk('data-files');
 
-        $import->process($dataDisk, $this->barId, $this->userId, $this->barOptions);
+        $import->process($dataDisk, $this->barId, $this->userId, $this->barOptions, DataPackMediaMode::StarterCatalog);
     }
 }

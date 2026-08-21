@@ -36,6 +36,8 @@ final class EloquentImageRepository implements ImageRepository
         $model = Model::findOrNew($image->getId()?->value);
 
         $model->file_path = $image->getFile()->path;
+        $model->disk = $image->getFile()->disk;
+        $model->storage_origin = $image->getFile()->storageOrigin === 'catalog' ? 'catalog' : 'owned';
         $model->placeholder_hash = $image->getFile()->placeholderHash;
         $model->copyright = $image->getCopyright();
         $model->file_extension = $image->getFile()->extension;
@@ -54,7 +56,13 @@ final class EloquentImageRepository implements ImageRepository
     private static function map(Model $model): Image
     {
         return Image::create(
-            file: File::from($model->file_path, $model->file_extension, $model->placeholder_hash),
+            file: File::from(
+                path: $model->file_path,
+                extension: $model->file_extension,
+                placeholderHash: $model->placeholder_hash,
+                disk: $model->disk,
+                storageOrigin: $model->storage_origin,
+            ),
             authors: Authors::createdBy(new UserId($model->created_user_id))->updatedBy($model->updated_user_id ? new UserId($model->updated_user_id) : null),
             recordTimestamps: RecordTimestamps::createdAt($model->created_at->toDateTimeImmutable())->updatedAt($model->updated_at?->toDateTimeImmutable()),
             copyright: $model->copyright,
