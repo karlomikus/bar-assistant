@@ -6,7 +6,9 @@ namespace Kami\Cocktail\Services\Image;
 
 use RuntimeException;
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Image;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
@@ -45,6 +47,30 @@ final class ImageStorageService
         if ($disk->exists($image->file_path)) {
             $disk->delete($image->file_path);
         }
+    }
+
+    /**
+     * Removes all owned media rows and underlying files belonging to a bar.
+     *
+     * The deletion order is deliberate: every image is removed through the
+     * model lifecycle so the ownership check in delete() is applied exactly
+     * once, and the whole loop is wrapped in a transaction. If removing one
+     * image fails, the database rows are rolled back while the already
+     * deleted files are skipped on a retry, so a partial failure never
+     * strands files with no row from which to recover them.
+     */
+    public function deleteBarOwnedImages(Bar $bar): void
+    {
+        $barImages = (new Image())->getAllBarImages($bar->id)->merge($bar->images);
+
+        DB::transaction(function () use ($barImages): void {
+            foreach ($barImages as $image) {
+                $image->delete();
+            }
+        });
+
+        $this->disk('uploads')->deleteDirectory('cocktails/' . $bar->id . '/');
+        $this->disk('uploads')->deleteDirectory('ingredients/' . $bar->id . '/');
     }
 
     /**
