@@ -33,6 +33,8 @@ php artisan migrate --force
 php artisan storage:link
 # Clear config cache so new ENV settings get picked up
 php artisan config:clear
+# Publish the image's starter-media release before starter provisioning can run.
+php artisan starter-media:publish
 # Setup Meilisearch ENV variables
 php artisan bar:setup-meilisearch
 php artisan scout:sync-index-settings
