@@ -39,10 +39,19 @@ final class PublishStarterMediaCatalog extends Command
                 }
 
                 $stream = $source->readStream($sourcePath);
-                if (!is_resource($stream) || !$catalog->writeStream($catalogPath, $stream)) {
-                    throw new \RuntimeException('Unable to publish starter image: ' . $sourcePath);
+
+                try {
+                    if (!is_resource($stream) || !$catalog->writeStream($catalogPath, $stream)) {
+                        if (is_resource($stream)) {
+                            $catalog->delete($catalogPath);
+                        }
+                        throw new \RuntimeException('Unable to publish starter image: ' . $sourcePath);
+                    }
+                } finally {
+                    if (is_resource($stream)) {
+                        fclose($stream);
+                    }
                 }
-                fclose($stream);
             }
 
             $catalogService->assertObjectsMatch($catalog, $version, $objects);
