@@ -21,7 +21,7 @@ enum OauthProvider: string
     case Keycloak = 'keycloak';
     case PocketId = 'pocketid';
     case Zitadel = 'zitadel';
-    case OpenIDConnect = 'OpenIDConnect';
+    case OpenIDConnect = 'oidc';
 
     public function getPrettyName(): string
     {
