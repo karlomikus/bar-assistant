@@ -49,8 +49,8 @@ class BarExportRecipes extends Command
     public function handle(): int
     {
         $barId = (int) $this->argument('barId');
-        $type = ExportTypeEnum::tryFrom($this->option('type') ?? 'datapack');
-        $units = ForceUnitConvertEnum::tryFrom($this->option('units') ?? 'none');
+        $type = ExportTypeEnum::tryFrom($this->option('type') ?? 'datapack') ?? ExportTypeEnum::Datapack;
+        $units = ForceUnitConvertEnum::tryFrom($this->option('units') ?? 'none') ?? ForceUnitConvertEnum::Original;
 
         $this->newLine();
         $this->line('Exporting data from a bar');

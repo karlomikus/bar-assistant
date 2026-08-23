@@ -21,6 +21,7 @@ use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Services\IngredientService;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Kami\Cocktail\External\Model\Glass as GlassExternal;
+use Kami\Cocktail\Services\Image\StarterMediaCatalogService;
 use Kami\Cocktail\External\Model\Cocktail as CocktailExternal;
 use Kami\Cocktail\External\Model\Calculator as CalculatorExternal;
 use Kami\Cocktail\External\Model\Ingredient as IngredientExternal;
@@ -41,15 +42,27 @@ class FromDataPack
     /** @var array<string, int> */
     private array $ingredientCalculators = [];
 
-    public function __construct(private readonly IngredientService $ingredientRepository)
-    {
+    public function __construct(
+        private readonly IngredientService $ingredientRepository,
+        private readonly StarterMediaCatalogService $catalogService,
+    ) {
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null): bool
+    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null, DataPackMediaMode $mediaMode = DataPackMediaMode::OwnedUpload): bool
     {
         $bar = Bar::findOrFail($barId);
         $user = User::findOrFail($userId);
+
+        $catalogVersion = null;
+        if ($mediaMode === DataPackMediaMode::StarterCatalog) {
+            $catalogVersion = $this->catalogService->releaseVersion($dataDisk);
+            $this->catalogService->assertCompletedRelease(
+                catalog: Storage::disk('catalog'),
+                version: $catalogVersion,
+                objects: $this->catalogService->sourceObjects($dataDisk),
+            );
+        }
 
         Log::debug(sprintf('Starting datapack import for "%s"', $bar->name));
 
@@ -69,7 +82,7 @@ class FromDataPack
         }
 
         if ($dataDisk->exists('glasses')) {
-            $this->importGlasses($dataDisk, $bar, $user);
+            $this->importGlasses($dataDisk, $bar, $user, $mediaMode, $catalogVersion);
         } elseif ($dataDisk->exists('base_glasses.json')) {
             $this->importBaseData('glasses', $dataDisk->path('base_glasses.json'), $bar->id);
         }
@@ -83,11 +96,11 @@ class FromDataPack
         }
 
         if ($flag === BarOptionsEnum::Ingredients || $flag === BarOptionsEnum::Cocktails) {
-            $this->importIngredients($dataDisk, $bar, $user);
+            $this->importIngredients($dataDisk, $bar, $user, $mediaMode, $catalogVersion);
         }
 
         if ($flag === BarOptionsEnum::Cocktails) {
-            $this->importBaseCocktails($dataDisk, $bar, $user);
+            $this->importBaseCocktails($dataDisk, $bar, $user, $mediaMode, $catalogVersion);
         }
 
         $bar->setStatus(BarStatusEnum::Active)->save();
@@ -187,7 +200,7 @@ class FromDataPack
         DB::commit();
     }
 
-    private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user): void
+    private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void
     {
         $timerStart = microtime(true);
 
@@ -245,15 +258,18 @@ class FromDataPack
             $imagesTimerStart = microtime(true);
             foreach ($externalIngredient->images as $image) {
                 $baseSrcImagePath = $filePath . $image->getLocalFilePath();
-                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
-                $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
-
-                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                $fileExtension = pathinfo($baseSrcImagePath, PATHINFO_EXTENSION);
+                $targetImagePath = $this->targetImagePath($baseSrcImagePath, $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension, $mediaMode, $catalogVersion);
+                if ($mediaMode === DataPackMediaMode::OwnedUpload) {
+                    $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                }
 
                 $imagesToInsert[$slug] = [
                     'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
+                    'disk' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'uploads',
+                    'storage_origin' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'owned',
                     'created_user_id' => $user->id,
                     'sort' => $image->sort,
                     'placeholder_hash' => $image->placeholderHash,
@@ -329,7 +345,7 @@ class FromDataPack
         Log::debug(sprintf('Ingredients import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
-    private function importGlasses(Filesystem $dataDisk, Bar $bar, User $user): void
+    private function importGlasses(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void
     {
         $timerStart = microtime(true);
 
@@ -369,16 +385,19 @@ class FromDataPack
             $imagesTimerStart = microtime(true);
             foreach ($externalGlass->images as $image) {
                 $baseSrcImagePath = $filePath . $image->getLocalFilePath();
-                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
-                $targetImagePath = $barImagesDir . $slugKey . '_' . Str::random(6) . '.' . $fileExtension;
-
-                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                $fileExtension = pathinfo($baseSrcImagePath, PATHINFO_EXTENSION);
+                $targetImagePath = $this->targetImagePath($baseSrcImagePath, $barImagesDir . $slugKey . '_' . Str::random(6) . '.' . $fileExtension, $mediaMode, $catalogVersion);
+                if ($mediaMode === DataPackMediaMode::OwnedUpload) {
+                    $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                }
 
                 $glassImages[$slugKey][] = [
                     'imageable_type' => Glass::class,
                     'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
+                    'disk' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'uploads',
+                    'storage_origin' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'owned',
                     'created_user_id' => $user->id,
                     'sort' => $image->sort,
                     'placeholder_hash' => $image->placeholderHash,
@@ -424,7 +443,7 @@ class FromDataPack
         Log::debug(sprintf('Glasses import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
-    private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user): void
+    private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void
     {
         $timerStart = microtime(true);
 
@@ -528,16 +547,19 @@ class FromDataPack
             $imagesTimerStart = microtime(true);
             foreach ($externalCocktail->images as $image) {
                 $baseSrcImagePath = $filePath . $image->getLocalFilePath();
-                $fileExtension = File::extension($dataDisk->path($baseSrcImagePath));
-                $targetImagePath = $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension;
-
-                $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                $fileExtension = pathinfo($baseSrcImagePath, PATHINFO_EXTENSION);
+                $targetImagePath = $this->targetImagePath($baseSrcImagePath, $barImagesDir . $slug . '_' . Str::random(6) . '.' . $fileExtension, $mediaMode, $catalogVersion);
+                if ($mediaMode === DataPackMediaMode::OwnedUpload) {
+                    $this->copyResourceImage($dataDisk, $baseSrcImagePath, $targetImagePath);
+                }
 
                 $cocktailImages[$slug][] = [
                     'imageable_type' => Cocktail::class,
                     'copyright' => $image->copyright,
                     'file_path' => $targetImagePath,
                     'file_extension' => $fileExtension,
+                    'disk' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'uploads',
+                    'storage_origin' => $mediaMode === DataPackMediaMode::StarterCatalog ? 'catalog' : 'owned',
                     'created_user_id' => $user->id,
                     'sort' => $image->sort,
                     'placeholder_hash' => $image->placeholderHash,
@@ -657,10 +679,24 @@ class FromDataPack
             return;
         }
 
-        copy(
-            $dataDisk->path($baseSrcImagePath),
-            $this->uploadsDisk->path($targetImagePath)
-        );
+        $stream = $dataDisk->readStream($baseSrcImagePath);
+        if (is_resource($stream)) {
+            $this->uploadsDisk->writeStream($targetImagePath, $stream);
+            fclose($stream);
+        }
+    }
+
+    private function targetImagePath(string $sourcePath, string $ownedPath, DataPackMediaMode $mediaMode, ?string $catalogVersion): string
+    {
+        if ($mediaMode === DataPackMediaMode::OwnedUpload) {
+            return $ownedPath;
+        }
+
+        if ($catalogVersion === null) {
+            throw new \LogicException('Catalog import requires a release version');
+        }
+
+        return 'catalog/' . $catalogVersion . '/' . $sourcePath;
     }
 
     private function getDataFromDir(string $dir, Filesystem $dataDisk): Generator

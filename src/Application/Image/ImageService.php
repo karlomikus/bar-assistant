@@ -28,7 +28,13 @@ final readonly class ImageService
     public function createImage(CreateImage $imageRequest): ImageResult
     {
         $image = Image::create(
-            file: File::from($imageRequest->imageFilePath, $imageRequest->imageFileExtension, $imageRequest->placeholderHash),
+            file: File::from(
+                path: $imageRequest->imageFilePath,
+                extension: $imageRequest->imageFileExtension,
+                placeholderHash: $imageRequest->placeholderHash,
+                disk: $imageRequest->disk,
+                storageOrigin: $imageRequest->storageOrigin,
+            ),
             authors: Authors::createdBy(new UserId($imageRequest->userId)),
             recordTimestamps: RecordTimestamps::createdNow(),
             sort: $imageRequest->sort,
@@ -48,7 +54,13 @@ final readonly class ImageService
         }
 
         if ($imageRequest->imageFilePath !== null && $imageRequest->imageFileExtension) {
-            $image->changeFile(File::from($imageRequest->imageFilePath, $imageRequest->imageFileExtension, $imageRequest->placeholderHash));
+            $image->changeFile(File::from(
+                path: $imageRequest->imageFilePath,
+                extension: $imageRequest->imageFileExtension,
+                placeholderHash: $imageRequest->placeholderHash,
+                disk: $imageRequest->disk ?? $image->getFile()->disk,
+                storageOrigin: $imageRequest->storageOrigin ?? $image->getFile()->storageOrigin,
+            ));
         }
 
         $image->updateDetails(

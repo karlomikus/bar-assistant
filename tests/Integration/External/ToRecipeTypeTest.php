@@ -17,6 +17,7 @@ use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 
 class ToRecipeTypeTest extends TestCase
 {
@@ -26,7 +27,7 @@ class ToRecipeTypeTest extends TestCase
     {
         $membership = $this->setupBarMembership();
 
-        $exporter = new ToRecipeType($this->getFileMock());
+        $exporter = new ToRecipeType($this->getFileMock(), new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
 
         $this->assertSame($filename, '1/recipes.zip');
@@ -56,7 +57,7 @@ class ToRecipeTypeTest extends TestCase
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
 
-        $exporter = new ToRecipeType($exportMock);
+        $exporter = new ToRecipeType($exportMock, new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'recipes.zip');
         $filename = $exportMock->path($filename);
 

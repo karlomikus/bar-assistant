@@ -7,6 +7,8 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Jobs\SetupBar;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -34,6 +36,8 @@ class BarControllerTest extends TestCase
         $user1->joinBarAs($bar1);
         $user2->joinBarAs($bar2);
         $currentUser->joinBarAs($userBar, UserRoleEnum::Admin);
+
+        Queue::fake();
     }
 
     public function test_show_user_bars(): void
@@ -66,6 +70,7 @@ class BarControllerTest extends TestCase
 
         $response->assertCreated();
         $response->assertHeader('Location');
+        Queue::assertPushed(SetupBar::class);
     }
 
     public function test_create_bar_with_slug(): void
@@ -77,6 +82,7 @@ class BarControllerTest extends TestCase
 
         $response->assertCreated();
         $response->assertHeader('Location');
+        Queue::assertPushed(SetupBar::class);
     }
 
     public function test_transfer_my_bar_ownership(): void
@@ -157,6 +163,8 @@ class BarControllerTest extends TestCase
         ]);
 
         $response->assertForbidden();
+
+        Queue::assertPushed(SetupBar::class, 1);
     }
 
     public function test_not_found_resources(): void

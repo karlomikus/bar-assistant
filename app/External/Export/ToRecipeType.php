@@ -13,15 +13,20 @@ use Illuminate\Contracts\Filesystem\Cloud;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Container\Attributes\Storage;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 use Kami\Cocktail\External\Model\Schema as SchemaExternal;
 use Kami\Cocktail\Exceptions\ExportFileNotCreatedException;
 
 class ToRecipeType
 {
+    /** @var string[] */
+    private array $temporaryImagePaths = [];
+
     public function __construct(
         #[Storage('exports')]
         private readonly Cloud $file,
+        private readonly ImageStorageService $imageStorage,
     ) {
     }
 
@@ -65,6 +70,10 @@ class ToRecipeType
             }
         } finally {
             $zip->close();
+            foreach ($this->temporaryImagePaths as $path) {
+                $this->imageStorage->deleteTemporaryFile($path);
+            }
+            $this->temporaryImagePaths = [];
         }
 
         $fullPath = $barId . '/' . $filename;
@@ -105,7 +114,9 @@ class ToRecipeType
         foreach ($cocktails as $cocktail) {
             foreach ($cocktail->images as $img) {
                 try {
-                    $zip->addFile($img->getPath(), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
+                    $temporaryPath = $this->imageStorage->materialize($img);
+                    $this->temporaryImagePaths[] = $temporaryPath;
+                    $zip->addFile($this->imageStorage->temporaryPath($temporaryPath), 'cocktails/' . $cocktail->getExternalId() . '/' . $img->getFileName());
                 } catch (ImageFileNotFoundException $e) {
                     Log::warning($e->getMessage());
                 }

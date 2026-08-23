@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
+use Kami\Cocktail\External\Import\DataPackMediaMode;
 
 class BarImportRecipes extends Command
 {
@@ -107,7 +108,7 @@ class BarImportRecipes extends Command
         Cache::flush();
 
         try {
-            $this->importer->process($tempUnzipDisk, $bar->id, $user->id, BarOptionsEnum::Cocktails);
+            $this->importer->process($tempUnzipDisk, $bar->id, $user->id, BarOptionsEnum::Cocktails, DataPackMediaMode::OwnedUpload);
         } catch (Throwable $e) {
             // TODO: Reset "stuck" bar status
             // $bar->status = null;

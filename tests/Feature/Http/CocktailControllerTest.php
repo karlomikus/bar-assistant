@@ -652,6 +652,32 @@ class CocktailControllerTest extends TestCase
         $response->assertHeader('Location');
     }
 
+    public function test_cocktail_copy_creates_owned_image_from_catalog_media(): void
+    {
+        Storage::fake('catalog');
+        Storage::fake('uploads');
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+        $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Catalog cocktail']);
+        $catalogPath = 'catalog/2026.08.21/cocktails/catalog-cocktail/image.jpg';
+        Storage::disk('catalog')->put($catalogPath, $this->getFakeImageContent('jpg'));
+        Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $catalogPath,
+            'file_extension' => 'jpg',
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+        ]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $this->postJson('/api/cocktails/' . $cocktail->id . '/copy')->assertCreated();
+
+        $copiedImage = Image::query()->where('imageable_type', Cocktail::class)->where('imageable_id', '!=', $cocktail->id)->firstOrFail();
+        $this->assertSame('uploads', $copiedImage->disk);
+        $this->assertSame('owned', $copiedImage->storage_origin);
+        Storage::disk('uploads')->assertExists($copiedImage->file_path);
+        Storage::disk('catalog')->assertExists($catalogPath);
+    }
+
     public function test_toggle_favorite(): void
     {
         $membership = $this->setupBarMembership();

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Exceptions\ImageFileNotFoundException;
 
@@ -17,13 +18,9 @@ class Image extends BaseModel implements IsExternalized
     use HasFactory;
 
     #[\Override]
-    public function delete(string $disk = 'uploads'): ?bool
+    public function delete(): ?bool
     {
-        $disk = Storage::disk($disk);
-
-        if ($disk->exists($this->file_path)) {
-            $disk->delete($this->file_path);
-        }
+        app(ImageStorageService::class)->delete($this);
 
         return parent::delete();
     }
@@ -34,7 +31,7 @@ class Image extends BaseModel implements IsExternalized
             return null;
         }
 
-        $disk = Storage::disk('uploads');
+        $disk = Storage::disk($this->disk);
 
         return $disk->url($this->file_path);
     }
@@ -68,12 +65,7 @@ class Image extends BaseModel implements IsExternalized
             return null;
         }
 
-        return match ($this->imageable_type) {
-            Cocktail::class => str_replace('cocktails/' . $this->imageable->bar_id . '/', '', $this->file_path),
-            Ingredient::class => str_replace('ingredients/' . $this->imageable->bar_id . '/', '', $this->file_path),
-            Glass::class => str_replace('glasses/' . $this->imageable->bar_id . '/', '', $this->file_path),
-            default => null,
-        };
+        return basename($this->file_path);
     }
 
     /**
@@ -87,7 +79,7 @@ class Image extends BaseModel implements IsExternalized
 
     public function getPath(): string
     {
-        $disk = Storage::disk('uploads');
+        $disk = Storage::disk($this->disk);
 
         if ($disk->exists($this->file_path)) {
             return $disk->path($this->file_path);

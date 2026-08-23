@@ -17,6 +17,7 @@ use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 
 class ToDataPackTest extends TestCase
 {
@@ -26,7 +27,7 @@ class ToDataPackTest extends TestCase
     {
         $membership = $this->setupBarMembership();
 
-        $exporter = new ToDataPack($this->getFileMock());
+        $exporter = new ToDataPack($this->getFileMock(), new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
 
         $this->assertSame($filename, '1/datapack-test.zip');
@@ -58,6 +59,15 @@ class ToDataPackTest extends TestCase
             'file_path' => $ingredientCocktailFile->storeAs('', 'i-1-img.png', 'uploads'),
             'file_extension' => $ingredientCocktailFile->extension(),
         ]);
+        Storage::fake('catalog');
+        $catalogImagePath = 'catalog/2026.08.21/cocktails/gin-and-tonic/catalog-img.jpg';
+        Storage::disk('catalog')->put($catalogImagePath, $this->getFakeImageContent('jpg'));
+        Image::factory()->for($cocktail, 'imageable')->create([
+            'file_path' => $catalogImagePath,
+            'file_extension' => 'jpg',
+            'disk' => 'catalog',
+            'storage_origin' => 'catalog',
+        ]);
         Image::factory()->for($glassWithImage, 'imageable')->create([
             'file_path' => $glassImageFile->storeAs('glasses/' . $membership->bar->id, 'g-1-img.jpg', 'uploads'),
             'file_extension' => 'jpg',
@@ -65,7 +75,7 @@ class ToDataPackTest extends TestCase
             'sort' => 1,
         ]);
 
-        $exporter = new ToDataPack($exportMock);
+        $exporter = new ToDataPack($exportMock, new ImageStorageService());
         $filename = $exporter->process($membership->bar->id, 'datapack-test.zip');
         $filename = $exportMock->path($filename);
 
@@ -93,6 +103,7 @@ class ToDataPackTest extends TestCase
 
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/c-1-img.jpg'));
+        $this->assertFileExists($unzippedFilesDisk->path('cocktails/gin-and-tonic_1/catalog-img.jpg'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/data.json'));
         $this->assertFileExists($unzippedFilesDisk->path('ingredients/jack-daniels_1/i-1-img.png'));
 

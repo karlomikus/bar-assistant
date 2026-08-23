@@ -17,6 +17,7 @@ use BarAssistant\Application\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use BarAssistant\Application\Image\DTO\CreateImage;
 use Kami\Cocktail\Services\Image\ImageUploadService;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Kami\Cocktail\Services\Image\ImageThumbnailService;
 use BarAssistant\Application\Image\DTO\UpdateImageRequest;
 
@@ -95,6 +96,8 @@ class ImageController extends Controller
                     sort: (int) ($requestImage['sort'] ?? 0),
                     copyright: $requestImage['copyright'] ?? null,
                     placeholderHash: $uploadedImage?->placeholderHash,
+                    disk: $uploadedImage ? 'uploads' : null,
+                    storageOrigin: $uploadedImage ? 'owned' : null,
                 ));
             } else {
                 if ($uploadedImage === null) {
@@ -143,12 +146,13 @@ class ImageController extends Controller
         new OAT\MediaType(mediaType: 'image/jpg', schema: new OAT\Schema(type: 'string', format: 'binary')),
     ])]
     #[BAO\NotFoundResponse]
-    public function thumb(int $id): Response
+    public function thumb(int $id, ImageStorageService $imageStorage): Response
     {
-        [$responseContent, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id) {
+        [$responseContent, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id, $imageStorage) {
             $dbImage = Image::findOrFail($id);
 
-            $responseContent = ImageThumbnailService::generateThumbnail($dbImage->getPath());
+            $responseContent = ImageThumbnailService::generateThumbnail(stream_get_contents($imageStorage->readStream($dbImage)));
+            ;
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {

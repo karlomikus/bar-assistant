@@ -50,6 +50,14 @@ return [
             'throw' => false,
         ],
 
+        'catalog' => [
+            'driver' => 'local',
+            'root' => storage_path('bar-assistant/catalog'),
+            'url' => env('APP_URL') . '/catalog',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         'exports' => [
             'driver' => 'local',
             'root' => storage_path('bar-assistant/exports'),
@@ -102,6 +110,7 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
         public_path('uploads') => storage_path('bar-assistant/uploads'),
+        public_path('catalog') => storage_path('bar-assistant/catalog'),
     ],
 
 ];
