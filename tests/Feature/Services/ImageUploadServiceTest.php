@@ -11,6 +11,7 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Services\Image\ImageUploadService;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 use Kami\Cocktail\Services\Image\DTO\ImageUploadResult;
 
 class ImageUploadServiceTest extends TestCase
@@ -23,7 +24,7 @@ class ImageUploadServiceTest extends TestCase
         $filesystem = Storage::disk('uploads');
         $logger = new NullLogger();
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $fakeImageContent = $this->getFakeImageContent('jpg');
 
         $result = $imageService->uploadImage($fakeImageContent);
@@ -48,7 +49,7 @@ class ImageUploadServiceTest extends TestCase
             'imageable_type' => null,
         ]);
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $newImagePath = 'temp/new-image.webp';
         $newImageResult = new ImageUploadResult(
             path: $newImagePath,
@@ -80,7 +81,7 @@ class ImageUploadServiceTest extends TestCase
         // Create temp file for old image
         $filesystem->put($image->file_path, 'old image content');
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $newImagePath = 'temp/new-image.webp';
         $filesystem->put($newImagePath, 'new image content');
 
@@ -119,7 +120,7 @@ class ImageUploadServiceTest extends TestCase
         $filesystem->put($oldFilePath, 'old image content');
         $this->assertTrue($filesystem->exists($oldFilePath));
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $newImagePath = 'temp/new-image.webp';
         $filesystem->put($newImagePath, 'new image content');
 
@@ -152,7 +153,7 @@ class ImageUploadServiceTest extends TestCase
 
         $filesystem->put($oldFilePath, 'old image content');
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $newImagePath = 'temp/nonexistent-image.webp';
 
         $newImageResult = new ImageUploadResult(
@@ -183,7 +184,7 @@ class ImageUploadServiceTest extends TestCase
             'imageable_type' => Cocktail::class,
         ]);
 
-        $imageService = new ImageUploadService($filesystem, $logger);
+        $imageService = new ImageUploadService($filesystem, $logger, new ImageStorageService());
         $newImagePath = 'temp/new-image.webp';
         $filesystem->put($newImagePath, 'new image content');
 
@@ -215,7 +216,7 @@ class ImageUploadServiceTest extends TestCase
         ]);
         $filesystem->put('temp/new-image.webp', 'new image content');
 
-        $result = (new ImageUploadService($filesystem, new NullLogger()))->changeImage(
+        $result = (new ImageUploadService($filesystem, new NullLogger(), new ImageStorageService()))->changeImage(
             $image->id,
             new ImageUploadResult(path: 'temp/new-image.webp', extension: 'webp', placeholderHash: 'new-hash'),
         );
