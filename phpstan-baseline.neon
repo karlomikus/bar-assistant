@@ -1,37 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cannot access property \$value on Kami\\Cocktail\\External\\ExportTypeEnum\|null\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Console/Commands/BarExportRecipes.php
-
-		-
-			message: '#^Cannot call method getFilenameContext\(\) on Kami\\Cocktail\\External\\ExportTypeEnum\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Console/Commands/BarExportRecipes.php
-
-		-
 			message: '#^Parameter \#2 \$options of function Laravel\\Prompts\\search expects Closure\(string\)\: array\<int\|string, string\>, Closure\(string\)\: array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Console/Commands/BarExportRecipes.php
-
-		-
-			message: '#^Parameter \#3 \$type of method Kami\\Cocktail\\External\\Export\\ToRecipeType\:\:process\(\) expects Kami\\Cocktail\\External\\ExportTypeEnum, Kami\\Cocktail\\External\\ExportTypeEnum\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Console/Commands/BarExportRecipes.php
-
-		-
-			message: '#^Parameter \#3 \$units of method Kami\\Cocktail\\External\\Export\\ToDataPack\:\:process\(\) expects Kami\\Cocktail\\External\\ForceUnitConvertEnum, Kami\\Cocktail\\External\\ForceUnitConvertEnum\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Console/Commands/BarExportRecipes.php
-
-		-
-			message: '#^Parameter \#4 \$units of method Kami\\Cocktail\\External\\Export\\ToRecipeType\:\:process\(\) expects Kami\\Cocktail\\External\\ForceUnitConvertEnum, Kami\\Cocktail\\External\\ForceUnitConvertEnum\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/Console/Commands/BarExportRecipes.php
