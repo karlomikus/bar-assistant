@@ -1905,7 +1905,7 @@ parameters:
 		-
 			message: '#^Cannot call method where\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 14
+			count: 16
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -1941,7 +1941,7 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
-			count: 8
+			count: 10
 			path: app/Http/Filters/CocktailQueryFilter.php
 
 		-
@@ -2483,12 +2483,6 @@ parameters:
 			identifier: method.nonObject
 			count: 1
 			path: app/Http/Resources/Public/CocktailResource.php
-
-		-
-			message: '#^Cannot call method cancelNow\(\) on Laravel\\Paddle\\Subscription\|null\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Infrastructure/DomainEventSubscriber/CleanupUserAnonymizedSubscriber.php
 
 		-
 			message: '#^Parameter \$inStockIngredientIds of static method Kami\\Cocktail\\Infrastructure\\EloquentBarInventoryRepository\:\:map\(\) expects array\<int\>, array\<mixed\> given\.$#'

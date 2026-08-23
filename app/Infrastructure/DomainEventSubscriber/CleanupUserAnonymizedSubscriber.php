@@ -21,7 +21,7 @@ final class CleanupUserAnonymizedSubscriber implements EventSubscriber
 
         $user = User::find($event->userId);
         if ($user !== null) {
-            $user->subscription()->cancelNow();
+            $user->subscription()?->cancelNow();
             $user->memberships()->delete();
             $user->oauthCredentials()->delete();
             $user->deactivateBars();

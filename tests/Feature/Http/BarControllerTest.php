@@ -182,6 +182,29 @@ class BarControllerTest extends TestCase
         $this->putJson('/api/bars/' . $bar->id, ['name' => ''])->assertUnprocessable();
     }
 
+    public function test_create_bar_with_invalid_currency_rejected(): void
+    {
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'default_currency' => '£',
+        ]);
+
+        $response->assertUnprocessable();
+        Queue::assertNotPushed(SetupBar::class);
+    }
+
+    public function test_create_bar_with_valid_currency(): void
+    {
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'default_currency' => 'USD',
+        ]);
+
+        $response->assertCreated();
+        $response->assertHeader('Location');
+        Queue::assertPushed(SetupBar::class);
+    }
+
     public function test_list_bar_members_minimal_returns_only_id_and_name(): void
     {
         $owner = User::factory()->create(['name' => 'Zeta Owner']);

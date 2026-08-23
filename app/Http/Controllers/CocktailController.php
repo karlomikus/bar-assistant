@@ -71,6 +71,8 @@ class CocktailController extends Controller
             new OAT\Property(property: 'average_rating_max', type: 'number', description: 'Filter by less than or equal average rating'),
             new OAT\Property(property: 'abv_min', type: 'number', description: 'Filter by greater than or equal ABV'),
             new OAT\Property(property: 'abv_max', type: 'number', description: 'Filter by less than or equal ABV'),
+            new OAT\Property(property: 'year_min', type: 'number', description: 'Filter by greater than or equal recipe year'),
+            new OAT\Property(property: 'year_max', type: 'number', description: 'Filter by less than or equal recipe year'),
             new OAT\Property(property: 'main_ingredient_id', type: 'string', description: 'Show only cocktails whose main ingredient is in the given list. Comma separated list of ingredient IDs'),
             new OAT\Property(property: 'ingredient_id', type: 'string', description: 'Show only cocktails that contain this ingredient. Comma separated list of ingredient IDs'),
             new OAT\Property(property: 'ingredient_substitute_id', type: 'string', description: 'Show only cocktails that contain this substitute. Comma separated list of ingredient IDs'),

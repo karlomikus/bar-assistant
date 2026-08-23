@@ -1683,6 +1683,12 @@ paths:
               abv_max:
                 description: 'Filter by less than or equal ABV'
                 type: number
+              year_min:
+                description: 'Filter by greater than or equal recipe year'
+                type: number
+              year_max:
+                description: 'Filter by less than or equal recipe year'
+                type: number
               main_ingredient_id:
                 description: 'Show only cocktails whose main ingredient is in the given list. Comma separated list of ingredient IDs'
                 type: string
@@ -11967,7 +11973,7 @@ components:
         - keycloak
         - pocketid
         - zitadel
-        - OpenIDConnect
+        - oidc
   securitySchemes:
     user_token:
       type: http
