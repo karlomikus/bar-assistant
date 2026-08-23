@@ -18,8 +18,8 @@ final readonly class Slug implements Stringable, JsonSerializable
             throw new DomainException('Slug cannot be empty');
         }
 
-        if (!preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $value)) {
-            throw new DomainException('Slug must contain only lowercase alphanumeric characters and hyphens');
+        if (!preg_match('/^[a-zA-Z0-9]+(?:[-_][a-zA-Z0-9]+)*$/', $value)) {
+            throw new DomainException('Slug must contain only alphanumeric characters, hyphens and underscores');
         }
 
         $this->value = $value;

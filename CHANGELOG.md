@@ -1,3 +1,10 @@
+# v6.4.0
+## New
+- Added cocktail year filtering
+
+## Fixes
+- Relaxed slug regex to allow for legacy slugs
+
 # v6.3.0
 ## New
 - Added immutable starter media catalog
