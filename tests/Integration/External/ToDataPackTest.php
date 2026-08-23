@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\External;
 
-use Kami\Cocktail\Services\Image\ImageStorageService;
 use ZipArchive;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Glass;
@@ -18,6 +17,7 @@ use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Services\Image\ImageStorageService;
 
 class ToDataPackTest extends TestCase
 {

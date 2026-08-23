@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Services\Auth;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Str;
 use Override;
+use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
 use SocialiteProviders\OIDC\Provider;
 
 class GenericOIDCProvider extends Provider

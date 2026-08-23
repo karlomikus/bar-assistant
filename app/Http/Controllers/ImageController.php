@@ -151,7 +151,8 @@ class ImageController extends Controller
         [$responseContent, $etag] = Cache::remember('image_thumb_' . $id, 1 * 24 * 60 * 60, function () use ($id, $imageStorage) {
             $dbImage = Image::findOrFail($id);
 
-            $responseContent = ImageThumbnailService::generateThumbnail(stream_get_contents($imageStorage->readStream($dbImage)));;
+            $responseContent = ImageThumbnailService::generateThumbnail(stream_get_contents($imageStorage->readStream($dbImage)));
+            ;
             if ($dbImage->updated_at) {
                 $etag = md5($dbImage->id . '-' . $dbImage->updated_at->format('Y-m-d H:i:s'));
             } else {

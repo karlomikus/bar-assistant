@@ -1,3 +1,10 @@
+# v6.3.0
+## New
+- Added immutable starter media catalog
+
+## Fixes
+- Fixed OIDC session store exception
+
 # v6.2.0
 ## New
 - Added support for half-star ratings
