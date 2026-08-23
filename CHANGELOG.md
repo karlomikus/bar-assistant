@@ -4,6 +4,7 @@
 
 ## Fixes
 - Relaxed slug regex to allow for legacy slugs
+- Fixed missing currency validation when creating bar
 
 # v6.3.0
 ## New

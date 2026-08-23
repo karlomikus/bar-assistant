@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Kami\Cocktail\Rules\ValidCurrency;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
@@ -36,6 +37,7 @@ class BarRequest extends FormRequest
                 'nullable',
             ],
             'default_units' => 'string',
+            'default_currency' => ['nullable', 'size:3', new ValidCurrency()],
             'default_lang' => 'string',
             'status' => [
                 Rule::enum(BarStatusEnum::class),
