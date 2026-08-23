@@ -160,6 +160,43 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonCount(8, 'data');
     }
 
+    public function test_cocktails_response_with_year_range_filters(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        Cocktail::factory()->recycle($membership->bar)->createMany([
+            ['name' => 'No Year', 'year' => null],
+            ['name' => 'Early', 'year' => 1920],
+            ['name' => 'Lower Bound', 'year' => 1950],
+            ['name' => 'Middle', 'year' => 1960],
+            ['name' => 'Upper Bound', 'year' => 1970],
+            ['name' => 'Late', 'year' => 1980],
+        ]);
+        Cocktail::factory()->create(['name' => 'Other Bar', 'year' => 1960]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $this->getJson('/api/cocktails')
+            ->assertJsonCount(6, 'data');
+        $this->getJson('/api/cocktails?filter[year_min]=1950')
+            ->assertJsonCount(4, 'data')
+            ->assertJsonMissing(['name' => 'No Year']);
+        $this->getJson('/api/cocktails?filter[year_max]=1950')
+            ->assertJsonCount(2, 'data')
+            ->assertJsonMissing(['name' => 'No Year']);
+        $this->getJson('/api/cocktails?filter[year_min]=1950&filter[year_max]=1970')
+            ->assertJsonCount(3, 'data')
+            ->assertJsonFragment(['name' => 'Lower Bound'])
+            ->assertJsonFragment(['name' => 'Upper Bound'])
+            ->assertJsonMissing(['name' => 'Early'])
+            ->assertJsonMissing(['name' => 'Late'])
+            ->assertJsonMissing(['name' => 'No Year']);
+        $this->getJson('/api/cocktails?filter[year_min]=1950&filter[name]=middle')
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['name' => 'Middle']);
+    }
+
     public function test_cocktails_response_with_sorts(): void
     {
         $membership = $this->setupBarMembership();

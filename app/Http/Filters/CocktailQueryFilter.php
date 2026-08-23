@@ -150,6 +150,12 @@ final class CocktailQueryFilter extends QueryBuilder
                 AllowedFilter::callback('abv_max', function ($query, $value) {
                     $query->where('abv', '<=', $value);
                 }),
+                AllowedFilter::callback('year_min', function ($query, $value) {
+                    $query->where('cocktails.year', '>=', (int) $value);
+                }),
+                AllowedFilter::callback('year_max', function ($query, $value) {
+                    $query->where('cocktails.year', '<=', (int) $value);
+                }),
                 AllowedFilter::callback('main_ingredient_id', function ($query, $value) {
                     if (!is_array($value)) {
                         $value = [$value];
