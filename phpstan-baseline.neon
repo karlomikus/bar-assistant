@@ -1663,6 +1663,24 @@ parameters:
 			path: app/Http/Controllers/RecommenderController.php
 
 		-
+			message: '#^Cannot call method cannot\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/ReviewController.php
+
+		-
+			message: '#^Cannot call method getBarMembership\(\) on Kami\\Cocktail\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/ReviewController.php
+
+		-
+			message: '#^Parameter \$content of class BarAssistant\\Application\\Review\\DTO\\CreateReviewRequest constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ReviewController.php
+
+		-
 			message: '#^Cannot access property \$id on Kami\\Cocktail\\Models\\User\|null\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -2485,6 +2503,12 @@ parameters:
 			path: app/Http/Resources/Public/CocktailResource.php
 
 		-
+			message: '#^Cannot access property \$user on Kami\\Cocktail\\Models\\BarMembership\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Resources/ReviewResource.php
+
+		-
 			message: '#^Parameter \$inStockIngredientIds of static method Kami\\Cocktail\\Infrastructure\\EloquentBarInventoryRepository\:\:map\(\) expects array\<int\>, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
@@ -2873,6 +2897,24 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: app/Infrastructure/EloquentRecommendationRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\CocktailReview\:\:\$bar_membership_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentReviewRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\CocktailReview\:\:\$cocktail_id \(int\<0, max\>\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentReviewRepository.php
+
+		-
+			message: '#^Property Kami\\Cocktail\\Models\\CocktailReview\:\:\$created_at \(Carbon\\Carbon\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Infrastructure/EloquentReviewRepository.php
 
 		-
 			message: '#^Cannot access property \$value on BarAssistant\\Domain\\User\\UserId\|null\.$#'

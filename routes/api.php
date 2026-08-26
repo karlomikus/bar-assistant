@@ -17,6 +17,7 @@ use Kami\Cocktail\Http\Controllers\ExportController;
 use Kami\Cocktail\Http\Controllers\ImportController;
 use Kami\Cocktail\Http\Controllers\MemberController;
 use Kami\Cocktail\Http\Controllers\RatingController;
+use Kami\Cocktail\Http\Controllers\ReviewController;
 use Kami\Cocktail\Http\Controllers\ServerController;
 use Kami\Cocktail\Http\Controllers\ProfileController;
 use Kami\Cocktail\Http\Controllers\SSOAuthController;
@@ -129,6 +130,12 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::prefix('/{id}/ratings')->middleware(['ability:cocktails.write'])->group(function () {
             Route::post('/', [RatingController::class, 'rateCocktail'])->name('ratings.rate-cocktail');
             Route::delete('/', [RatingController::class, 'deleteCocktailRating'])->name('ratings.unrate-cocktail');
+        });
+
+        Route::prefix('/{id}/reviews')->middleware([EnsureRequestHasBarQuery::class])->group(function () {
+            Route::get('/', [ReviewController::class, 'index'])->name('reviews.index')->middleware(['ability:cocktails.read']);
+            Route::post('/', [ReviewController::class, 'store'])->name('reviews.store')->middleware(['ability:cocktails.write']);
+            Route::delete('/{reviewId}', [ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware(['ability:cocktails.write']);
         });
     });
 
