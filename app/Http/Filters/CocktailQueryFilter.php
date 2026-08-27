@@ -219,9 +219,11 @@ final class CocktailQueryFilter extends QueryBuilder
                 'average_rating',
                 'user_rating',
                 'abv',
+                'year',
                 'total_ingredients',
                 'missing_ingredients',
                 'missing_bar_ingredients',
+                'reviews_count',
                 AllowedSort::callback('favorited_at', function ($query, bool $descending) use ($barMembership) {
                     $direction = $descending ? 'DESC' : 'ASC';
 
@@ -251,6 +253,7 @@ final class CocktailQueryFilter extends QueryBuilder
                 '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) AS total_ingredients',
                 '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) - COUNT(ui.ingredient_id) AS missing_ingredients',
                 '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) - COUNT(bi.ingredient_id) AS missing_bar_ingredients',
+                '(SELECT COUNT(*) FROM cocktail_reviews WHERE cocktail_reviews.cocktail_id = cocktails.id) AS reviews_count',
             ]))
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')

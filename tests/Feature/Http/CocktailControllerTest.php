@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\CocktailReview;
 use Kami\Cocktail\Models\IngredientPrice;
 use Kami\Cocktail\Models\CocktailFavorite;
 use Kami\Cocktail\Models\CocktailIngredient;
@@ -219,6 +220,64 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonPath('data.0.name', 'C Cocktail');
         $response->assertJsonPath('data.1.name', 'B Cocktail');
         $response->assertJsonPath('data.2.name', 'A Cocktail');
+    }
+
+    public function test_cocktails_response_sorted_by_year(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        Cocktail::factory()->recycle($membership->bar)->createMany([
+            ['name' => 'Undated', 'year' => null],
+            ['name' => 'Early', 'year' => 1920],
+            ['name' => 'Middle', 'year' => 1970],
+            ['name' => 'Late', 'year' => 1990],
+        ]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/cocktails?sort=year');
+        $response->assertOk();
+        $response->assertJsonPath('data.0.name', 'Undated');
+        $response->assertJsonPath('data.1.name', 'Early');
+        $response->assertJsonPath('data.2.name', 'Middle');
+        $response->assertJsonPath('data.3.name', 'Late');
+
+        $response = $this->getJson('/api/cocktails?sort=-year');
+        $response->assertOk();
+        $response->assertJsonPath('data.0.name', 'Late');
+        $response->assertJsonPath('data.1.name', 'Middle');
+        $response->assertJsonPath('data.2.name', 'Early');
+        $response->assertJsonPath('data.3.name', 'Undated');
+    }
+
+    public function test_cocktails_response_sorted_by_reviews_count(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $mostReviewed = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Most Reviewed']);
+        $oneReview = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'One Review']);
+        Cocktail::factory()->recycle($membership->bar)->create(['name' => 'No Reviews']);
+
+        $this->createReviewFromNewMember($membership, $mostReviewed, 'Review 1');
+        $this->createReviewFromNewMember($membership, $mostReviewed, 'Review 2');
+        $this->createReviewFromNewMember($membership, $mostReviewed, 'Review 3');
+        $this->createReviewFromNewMember($membership, $oneReview, 'Review 4');
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->getJson('/api/cocktails?sort=-reviews_count');
+        $response->assertOk();
+        $response->assertJsonPath('data.0.name', 'Most Reviewed');
+        $response->assertJsonPath('data.1.name', 'One Review');
+        $response->assertJsonPath('data.2.name', 'No Reviews');
+
+        $response = $this->getJson('/api/cocktails?sort=reviews_count');
+        $response->assertOk();
+        $response->assertJsonPath('data.0.name', 'No Reviews');
+        $response->assertJsonPath('data.1.name', 'One Review');
+        $response->assertJsonPath('data.2.name', 'Most Reviewed');
     }
 
     public function test_cocktail_show_response(): void
@@ -1153,5 +1212,23 @@ class CocktailControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
         $response->assertJsonPath('data.0.name', 'High rated');
+    }
+
+    /**
+     * Create a review from a fresh member of the same bar (the unique constraint
+     * `[bar_membership_id, cocktail_id]` allows only one review per member per cocktail).
+     */
+    private function createReviewFromNewMember(BarMembership $hostMembership, Cocktail $cocktail, string $content): void
+    {
+        $newMember = BarMembership::factory()
+            ->for(User::factory()->create(), 'user')
+            ->for($hostMembership->bar)
+            ->create(['user_role_id' => UserRoleEnum::General->value]);
+
+        CocktailReview::factory()->create([
+            'cocktail_id' => $cocktail->id,
+            'bar_membership_id' => $newMember->id,
+            'content' => $content,
+        ]);
     }
 }
