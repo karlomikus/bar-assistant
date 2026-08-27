@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
+use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Glass;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -23,7 +24,12 @@ final class GlassQueryFilter extends QueryBuilder
             ])
             ->defaultSort('name')
             ->allowedSorts('name', 'created_at')
-            ->withCount('cocktails')
+            ->addSelect([
+                'cocktails_count' => Cocktail::query()
+                    ->selectRaw('count(*)')
+                    ->whereColumn('glasses.id', 'cocktails.glass_id')
+                    ->where('cocktails.bar_id', bar()->id)
+            ])
             ->with('images')
             ->filterByBar();
     }
