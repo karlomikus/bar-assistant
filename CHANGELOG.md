@@ -5,6 +5,9 @@
 - Added ingredients filter options: `distillery`, `origin`
 - Added origins and distilleries to `meta` on GET `/ingredients` endpoint
 
+## Fixes
+- Fixed robots txt not parsing some URLs as allowed
+
 # v6.4.0
 ## New
 - Added cocktail year filtering

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89ca0ad4fca203686a333739ec07c3d7",
+    "content-hash": "b57d3a299b3def897534c7c3bca1042a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -6217,66 +6217,6 @@
                 "source": "https://github.com/spatie/macroable/tree/2.1.0"
             },
             "time": "2026-01-30T17:13:34+00:00"
-        },
-        {
-            "name": "spatie/robots-txt",
-            "version": "2.5.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/robots-txt.git",
-                "reference": "a8dd35d0a94e863f52509a366a634978e9c1db03"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/robots-txt/zipball/a8dd35d0a94e863f52509a366a634978e9c1db03",
-                "reference": "a8dd35d0a94e863f52509a366a634978e9c1db03",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^11.5.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Robots\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brent Roose",
-                    "email": "brent@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Determine if a page may be crawled from robots.txt and robots meta tags",
-            "homepage": "https://github.com/spatie/robots-txt",
-            "keywords": [
-                "robots-txt",
-                "spatie"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/robots-txt/issues",
-                "source": "https://github.com/spatie/robots-txt/tree/2.5.4"
-            },
-            "funding": [
-                {
-                    "url": "https://spatie.be/open-source/support-us",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-02-25T07:59:20+00:00"
         },
         {
             "name": "spatie/url",
