@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
-use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Glass;
+use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 
