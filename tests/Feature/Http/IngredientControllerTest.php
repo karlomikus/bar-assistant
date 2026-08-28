@@ -372,6 +372,159 @@ class IngredientControllerTest extends TestCase
         $response->assertCreated();
     }
 
+    public function test_list_ingredients_filter_by_origin(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Ingredients in the bar
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Scotch 1', 'origin' => 'Scotland', 'distillery' => 'Buffalo Trace']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Scotch 2', 'origin' => 'Scotland', 'distillery' => 'Highland Park']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Sake', 'origin' => 'Japan', 'distillery' => 'Ozeki']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Null origin', 'origin' => null]);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Empty origin', 'origin' => '']);
+
+        // Ingredient in another bar with same origin
+        $otherBar = Bar::factory()->create();
+        Ingredient::factory()->for($otherBar)->create(['name' => 'Other Scotch', 'origin' => 'Scotland']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single origin match
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Multiple origins (OR match)
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland,Japan');
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        // Exact match required (partial does not match)
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scot');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Nonexistent origin
+        $response = $this->getJson('/api/ingredients?filter[origin]=Nonexistent');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Ingredients with null or empty origin are never returned when origin filter is active
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland');
+        $response->assertJsonMissing(['name' => 'Null origin']);
+        $response->assertJsonMissing(['name' => 'Empty origin']);
+
+        // Omitted/empty value is a no-op (returns all 5 ingredients in this bar)
+        $response = $this->getJson('/api/ingredients?filter[origin]=');
+        $response->assertOk();
+        $response->assertJsonCount(5, 'data');
+
+        // Empty names in the comma-separated list are ignored
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland,,Japan');
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+
+        // Origin filter combines with other filters using AND
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland&filter[distillery]=Highland%20Park');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Scotch 2');
+    }
+
+    public function test_list_ingredients_filter_by_distillery(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Ingredients in the bar
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Bourbon', 'distillery' => 'Buffalo Trace']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Scotch', 'distillery' => 'Highland Park']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Vodka', 'distillery' => 'Grey Goose']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Null distillery', 'distillery' => null]);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Empty distillery', 'distillery' => '']);
+
+        // Ingredient in another bar with same distillery
+        $otherBar = Bar::factory()->create();
+        Ingredient::factory()->for($otherBar)->create(['name' => 'Other Bourbon', 'distillery' => 'Buffalo Trace']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single distillery match
+        $response = $this->getJson('/api/ingredients?filter[distillery]=Buffalo%20Trace');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+
+        // Multiple distilleries (OR match)
+        $response = $this->getJson('/api/ingredients?filter[distillery]=Buffalo%20Trace,Highland%20Park');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Exact match required (partial does not match)
+        $response = $this->getJson('/api/ingredients?filter[distillery]=Buffalo');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Nonexistent distillery
+        $response = $this->getJson('/api/ingredients?filter[distillery]=Nonexistent');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Ingredients with null or empty distillery are never returned when distillery filter is active
+        $response = $this->getJson('/api/ingredients?filter[distillery]=Buffalo%20Trace');
+        $response->assertJsonMissing(['name' => 'Null distillery']);
+        $response->assertJsonMissing(['name' => 'Empty distillery']);
+
+        // Omitted/empty value is a no-op (returns all 5 ingredients in this bar)
+        $response = $this->getJson('/api/ingredients?filter[distillery]=');
+        $response->assertOk();
+        $response->assertJsonCount(5, 'data');
+    }
+
+    public function test_list_ingredients_meta_filters_origins_distilleries(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Ingredients in the bar (with duplicate origins, null and empty values)
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 1', 'origin' => 'Scotland', 'distillery' => 'Buffalo Trace']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 2', 'origin' => 'Japan', 'distillery' => 'Highland Park']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 3', 'origin' => 'Scotland', 'distillery' => 'Buffalo Trace']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 4', 'origin' => null, 'distillery' => null]);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 5', 'origin' => '', 'distillery' => '']);
+
+        // Ingredient in another bar
+        $otherBar = Bar::factory()->create();
+        Ingredient::factory()->for($otherBar)->create(['name' => 'Other Drink', 'origin' => 'Croatia', 'distillery' => 'Dingle']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Unfiltered request lists distinct origins and distilleries for this bar only, sorted alphabetically
+        $response = $this->getJson('/api/ingredients');
+        $response->assertOk();
+        $response->assertJsonPath('meta.filters.origins', [
+            ['name' => 'Japan'],
+            ['name' => 'Scotland'],
+        ]);
+        $response->assertJsonPath('meta.filters.distilleries', [
+            ['name' => 'Buffalo Trace'],
+            ['name' => 'Highland Park'],
+        ]);
+
+        // Filtered request still includes the bar's full distinct sets, not the filtered subset
+        $response = $this->getJson('/api/ingredients?filter[origin]=Scotland');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonPath('meta.filters.origins', [
+            ['name' => 'Japan'],
+            ['name' => 'Scotland'],
+        ]);
+        $response->assertJsonPath('meta.filters.distilleries', [
+            ['name' => 'Buffalo Trace'],
+            ['name' => 'Highland Park'],
+        ]);
+    }
+
     public function test_parent_ingredient_descendants_filtering(): void
     {
         $membership = $this->setupBarMembership();
