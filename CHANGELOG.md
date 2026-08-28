@@ -1,3 +1,13 @@
+# v6.5.0
+## New
+- Added bar member cocktail reviews
+- Added cocktail sort options: `review_count`, `year`
+- Added ingredients filter options: `distillery`, `origin`
+- Added origins and distilleries to `meta` on GET `/ingredients` endpoint
+
+## Fixes
+- Fixed robots txt not parsing some URLs as allowed
+
 # v6.4.0
 ## New
 - Added cocktail year filtering
@@ -5,6 +15,7 @@
 ## Fixes
 - Relaxed slug regex to allow for legacy slugs
 - Fixed missing currency validation when creating bar
+- Fixed missing location header expose in CORS response
 
 # v6.3.0
 ## New

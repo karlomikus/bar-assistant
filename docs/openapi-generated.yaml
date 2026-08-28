@@ -1723,7 +1723,7 @@ paths:
         -
           name: sort
           in: query
-          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `total_ingredients`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.'
+          description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `year`, `total_ingredients`, `reviews_count`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.'
           schema:
             type: string
         -
@@ -4315,7 +4315,10 @@ paths:
                 description: 'Filter by ingredient name(s) (exact match)'
                 type: string
               origin:
-                description: 'Filter by ingredient origin'
+                description: 'Filter by ingredient origin name(s). Comma separated list of origin names. Exact match.'
+                type: string
+              distillery:
+                description: 'Filter by ingredient distillery name(s). Comma separated list of distillery names. Exact match.'
                 type: string
               created_user_id:
                 description: 'Filter by user(s) who created the ingredient'
@@ -4380,7 +4383,7 @@ paths:
                 properties:
                   data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Ingredient' } }
                   links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer }, filters: { required: [origins, distilleries], properties: { origins: { required: [name], type: array, items: { properties: { name: { type: string } }, type: object } }, distilleries: { required: [name], type: array, items: { properties: { name: { type: string } }, type: object } } }, type: object } }, type: object }
                 type: object
         '403':
           description: 'You are not authorized for this action.'
@@ -7323,6 +7326,212 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailBasic' } }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/reviews':
+    get:
+      tags:
+        - Reviews
+      summary: 'List cocktail reviews'
+      description: 'List reviews for a single cocktail'
+      operationId: listCocktailReviews
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: page
+          in: query
+          description: 'Set current page number'
+          schema:
+            type: integer
+        -
+          name: per_page
+          in: query
+          description: 'Set number of results per page'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/Review' } }
+                  links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer } }, type: object }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+    post:
+      tags:
+        - Reviews
+      summary: 'Create cocktail review'
+      description: 'Create a review for a single cocktail'
+      operationId: saveCocktailReview
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+  '/cocktails/{id}/reviews/{reviewId}':
+    delete:
+      tags:
+        - Reviews
+      summary: 'Delete cocktail review'
+      description: 'Delete a review for a single cocktail'
+      operationId: deleteCocktailReview
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Database id of a resource'
+          required: true
+          schema:
+            type: integer
+        -
+          name: reviewId
+          in: path
+          description: 'Database id of a review'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'Successful response'
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -10754,6 +10963,54 @@ components:
             - 'null'
           example: 'Author name'
       type: object
+    Review:
+      description: 'Review resource'
+      required:
+        - id
+        - content
+        - rating
+        - author
+        - created_at
+        - updated_at
+      properties:
+        id:
+          description: 'Review ID'
+          type: integer
+          example: 1
+        content:
+          description: 'Review text content'
+          type: string
+          example: 'A great cocktail.'
+        rating:
+          description: 'Author current rating for the cocktail, joined live from ratings'
+          type:
+            - number
+            - 'null'
+          example: 4.5
+        author:
+          properties:
+            id:
+              description: 'Author user ID'
+              type: integer
+              example: 1
+            name:
+              description: 'Author display name'
+              type: string
+              example: 'John Doe'
+          type: object
+        created_at:
+          description: 'Creation date and time'
+          type: string
+          format: date-time
+          example: '2022-01-01T00:00:00+00:00'
+        updated_at:
+          description: 'Last update date and time'
+          type:
+            - string
+            - 'null'
+          format: date-time
+          example: '2022-01-02T00:00:00+00:00'
+      type: object
     SSOProvider:
       description: 'SSO Provider information'
       required:
@@ -11850,6 +12107,14 @@ components:
           minLength: 5
           example: password
       type: object
+    ReviewRequest:
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          example: 'A great cocktail, well balanced.'
+      type: object
     ServerVersion:
       required:
         - version
@@ -12051,6 +12316,9 @@ tags:
   -
     name: Recommender
     description: Recommender
+  -
+    name: Reviews
+    description: Reviews
   -
     name: Server
     description: Server

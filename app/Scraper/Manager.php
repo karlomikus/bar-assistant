@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Spatie\Robots\Robots;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Kevinrob\GuzzleCache\CacheMiddleware;
+use Illuminate\Http\Client\HttpClientException;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
 use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
@@ -21,6 +21,8 @@ use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 final class Manager
 {
     public const string USER_AGENT = 'BarAssistantBot/1.0';
+
+    public const string PRODUCT_TOKEN = 'BarAssistantBot';
 
     /**
      * @var array<class-string<AbstractSite>>
@@ -114,8 +116,35 @@ final class Manager
 
     private function scrapingAllowed(): bool
     {
-        $robots = Robots::create(self::USER_AGENT);
+        $robotsUrl = $this->robotsUrl();
+        if ($robotsUrl === null) {
+            return true;
+        }
 
-        return $robots->mayIndex($this->url);
+        $robotsTxt = Cache::remember('scraper_robots_txt_' . $robotsUrl, 60 * 60 * 24, function () use ($robotsUrl): string {
+            try {
+                return Http::withUserAgent(self::USER_AGENT)->timeout(10)->throw()->get($robotsUrl)->body();
+            } catch (HttpClientException) {
+                return '';
+            }
+        });
+
+        return (new RobotsTxtEvaluator($robotsTxt))->allows($this->url, self::PRODUCT_TOKEN);
+    }
+
+    private function robotsUrl(): ?string
+    {
+        $parts = parse_url($this->url);
+        if ($parts === false) {
+            return null;
+        }
+
+        $scheme = $parts['scheme'] ?? null;
+        $host = $parts['host'] ?? null;
+        if ($scheme === null || $host === null) {
+            return null;
+        }
+
+        return $scheme . '://' . $host . '/robots.txt';
     }
 }

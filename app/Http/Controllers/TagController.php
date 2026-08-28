@@ -25,7 +25,16 @@ class TagController extends Controller
     ])]
     public function index(): JsonResource
     {
-        $tags = Tag::orderBy('name')->withCount('cocktails')->filterByBar()->get();
+        $tags = Tag::orderBy('name')
+            ->addSelect([
+                'cocktails_count' => Cocktail::query()
+                    ->selectRaw('count(*)')
+                    ->join('cocktail_tag', 'cocktails.id', '=', 'cocktail_tag.cocktail_id')
+                    ->whereColumn('tags.id', 'cocktail_tag.tag_id')
+                    ->where('cocktails.bar_id', bar()->id)
+            ])
+            ->filterByBar()
+            ->get();
 
         return TagResource::collection($tags);
     }

@@ -37,7 +37,8 @@ class IngredientController extends Controller
             new OAT\Property(property: 'id', type: 'string', description: 'Filter by ingredient id(s)'),
             new OAT\Property(property: 'name', type: 'string', description: 'Filter by ingredient name(s) (fuzzy search)'),
             new OAT\Property(property: 'name_exact', type: 'string', description: 'Filter by ingredient name(s) (exact match)'),
-            new OAT\Property(property: 'origin', type: 'string', description: 'Filter by ingredient origin'),
+            new OAT\Property(property: 'origin', type: 'string', description: 'Filter by ingredient origin name(s). Comma separated list of origin names. Exact match.'),
+            new OAT\Property(property: 'distillery', type: 'string', description: 'Filter by ingredient distillery name(s). Comma separated list of distillery names. Exact match.'),
             new OAT\Property(property: 'created_user_id', type: 'string', description: 'Filter by user(s) who created the ingredient'),
             new OAT\Property(property: 'on_shopping_list', type: 'boolean', description: 'Show only ingredients that are on the shopping list'),
             new OAT\Property(property: 'on_shelf', type: 'boolean', description: 'Show only ingredients that are on the shelf'),
@@ -53,7 +54,16 @@ class IngredientController extends Controller
         new OAT\Parameter(name: 'include', in: 'query', description: 'Include additional relationships. Available relations: `parentIngredient`, `varieties`, `prices`, `ingredientParts`, `descendants`, `ancestors`, `images`.', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\SuccessfulResponse(content: [
-        new BAO\PaginateData(IngredientResource::class),
+        new BAO\PaginateData(IngredientResource::class, [
+            new OAT\Property(property: 'filters', type: 'object', required: ['origins', 'distilleries'], properties: [
+                new OAT\Property(property: 'origins', type: 'array', required: ['name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
+                new OAT\Property(property: 'distilleries', type: 'array', required: ['name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
+            ]),
+        ]),
     ])]
     #[BAO\NotAuthorizedResponse]
     public function index(\Kami\Cocktail\Services\IngredientService $ingredientQuery, Request $request): JsonResource
@@ -64,7 +74,32 @@ class IngredientController extends Controller
             abort(400, $e->getMessage());
         }
 
-        return IngredientResource::collection($ingredients->withQueryString());
+        $origins = DB::table('ingredients')
+            ->where('bar_id', bar()->id)
+            ->whereNotNull('origin')
+            ->where('origin', '!=', '')
+            ->distinct()
+            ->orderByRaw('LOWER(origin) ASC')
+            ->pluck('origin')
+            ->map(fn ($name) => ['name' => $name]);
+
+        $distilleries = DB::table('ingredients')
+            ->where('bar_id', bar()->id)
+            ->whereNotNull('distillery')
+            ->where('distillery', '!=', '')
+            ->distinct()
+            ->orderByRaw('LOWER(distillery) ASC')
+            ->pluck('distillery')
+            ->map(fn ($name) => ['name' => $name]);
+
+        return IngredientResource::collection($ingredients->withQueryString())->additional([
+            'meta' => [
+                'filters' => [
+                    'origins' => $origins,
+                    'distilleries' => $distilleries,
+                ],
+            ],
+        ]);
     }
 
     #[OAT\Get(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'showIngredient', description: 'Show a specific ingredient', summary: 'Show ingredient', parameters: [

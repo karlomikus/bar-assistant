@@ -34,7 +34,8 @@ final class IngredientQueryFilter extends QueryBuilder
                 }),
                 AllowedFilter::custom('name', new FilterNameSearch()),
                 AllowedFilter::beginsWithStrict('name_exact', 'name'),
-                AllowedFilter::partial('origin'),
+                AllowedFilter::exact('origin')->ignore(''),
+                AllowedFilter::exact('distillery')->ignore(''),
                 AllowedFilter::exact('created_user_id'),
                 AllowedFilter::callback('on_shopping_list', function ($query, $value) use ($barMembership) {
                     if ($value === true) {
