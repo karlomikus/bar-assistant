@@ -1,3 +1,10 @@
+# v6.6.0
+## New
+- Updated starter media catalog
+
+## Fixes
+- Fixed author and year not being imported via datapack
+
 # v6.5.0
 ## New
 - Added bar member cocktail reviews
