@@ -488,6 +488,8 @@ class FromDataPack
                 'bar_id' => $bar->id,
                 'created_at' => $externalCocktail->createdAt ?? now(),
                 'updated_at' => $externalCocktail->updatedAt,
+                'year' => $externalCocktail->year,
+                'author' => $externalCocktail->author,
             ];
 
             if ($externalCocktail->parentCocktailId) {

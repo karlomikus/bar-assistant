@@ -417,7 +417,7 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$id of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
@@ -459,29 +459,23 @@ parameters:
 		-
 			message: '#^Parameter \#10 \$tags of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#11 \$glass of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#12 \$method of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
-			path: app/External/Model/Cocktail.php
-
-		-
-			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, array\<mixed\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
-			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
+			message: '#^Parameter \#13 \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, array\<mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/External/Model/Cocktail.php
@@ -499,37 +493,19 @@ parameters:
 			path: app/External/Model/Cocktail.php
 
 		-
-			message: '#^Parameter \#16 \$parentCocktailId of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/External/Model/Cocktail.php
-
-		-
-			message: '#^Parameter \#17 \$year of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/External/Model/Cocktail.php
-
-		-
 			message: '#^Parameter \#2 \$name of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#3 \$instructions of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#4 \$createdAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 2
-			path: app/External/Model/Cocktail.php
-
-		-
-			message: '#^Parameter \#5 \$updatedAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: app/External/Model/Cocktail.php
@@ -537,25 +513,121 @@ parameters:
 		-
 			message: '#^Parameter \#6 \$description of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#7 \$source of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#8 \$garnish of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
 			message: '#^Parameter \#9 \$abv of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects float\|null, mixed given\.$#'
 			identifier: argument.type
-			count: 2
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$abv of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$author of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$createdAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$description of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$garnish of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$glass of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$id of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$instructions of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$method of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$name of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$parentCocktailId of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$source of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$tags of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$updatedAt of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$utensils of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects array\<string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/External/Model/Cocktail.php
+
+		-
+			message: '#^Parameter \$year of class Kami\\Cocktail\\External\\Model\\Cocktail constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
 			path: app/External/Model/Cocktail.php
 
 		-
@@ -2127,19 +2199,31 @@ parameters:
 		-
 			message: '#^Cannot call method where\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 2
+			count: 4
 			path: app/Http/Filters/PublicCocktailQueryFilter.php
 
 		-
 			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: app/Http/Filters/PublicCocktailQueryFilter.php
 
 		-
 			message: '#^Cannot call method whereIn\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 2
+			count: 4
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 3
+			path: app/Http/Filters/PublicCocktailQueryFilter.php
+
+		-
+			message: '#^Parameter \#2 \$string of function explode expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
 			path: app/Http/Filters/PublicCocktailQueryFilter.php
 
 		-

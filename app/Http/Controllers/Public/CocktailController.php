@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers\Public;
 
 use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
@@ -28,17 +29,26 @@ class CocktailController extends Controller
             new OAT\Property(property: 'glass', type: 'string', description: 'Filter by cocktail glass type name(s) (fuzzy search)'),
             new OAT\Property(property: 'method', type: 'string', description: 'Filter by cocktail method name(s) (fuzzy search)'),
             new OAT\Property(property: 'bar_shelf', type: 'boolean', description: 'Show only cocktails on the bar shelf'),
+            new OAT\Property(property: 'collection_id', type: 'string', description: 'Filter by shared collection ID(s), comma-separated'),
             new OAT\Property(property: 'abv', type: 'number', description: 'Filter by greater than or equal ABV. Use >=, >, <=, < operators (e.g., `filter[abv]=>=20` to get cocktails with ABV greater than or equal to 20).'),
+            new OAT\Property(property: 'abv_min', type: 'number', description: 'Filter by minimum ABV, inclusive'),
+            new OAT\Property(property: 'abv_max', type: 'number', description: 'Filter by maximum ABV, inclusive'),
+            new OAT\Property(property: 'average_rating_min', type: 'number', description: 'Filter by minimum average member rating, inclusive'),
+            new OAT\Property(property: 'tag_id', type: 'string', description: 'Filter by exact tag ID(s), comma-separated'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `abv`, `random`.', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(CocktailResource::class, [
-            new OAT\Property(property: 'filters', type: 'object', required: ['collections'], properties: [
+            new OAT\Property(property: 'filters', type: 'object', required: ['collections', 'tags'], properties: [
                 new OAT\Property(property: 'collections', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
                     new OAT\Property(property: 'id', type: 'integer'),
                     new OAT\Property(property: 'name', type: 'string'),
-                ]))
+                ])),
+                new OAT\Property(property: 'tags', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'id', type: 'integer'),
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
             ])
         ]),
     ])]
@@ -57,7 +67,16 @@ class CocktailController extends Controller
             ->orderBy('name')
             ->get(['collections.id', 'collections.name']);
 
-        $additionalData = ['meta' => ['filters' => ['collections' => $cocktailCollections]]];
+        $cocktailTags = Tag::query()
+            ->select('tags.id', 'tags.name')
+            ->join('cocktail_tag', 'cocktail_tag.tag_id', '=', 'tags.id')
+            ->join('cocktails', 'cocktails.id', '=', 'cocktail_tag.cocktail_id')
+            ->where('cocktails.bar_id', $bar->id)
+            ->distinct()
+            ->orderBy('tags.name')
+            ->get();
+
+        $additionalData = ['meta' => ['filters' => ['collections' => $cocktailCollections, 'tags' => $cocktailTags]]];
 
         $queryParams = $request->only(['filter', 'sort', 'page']);
         ksort($queryParams);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Filters;
 
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\Rating;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -46,6 +47,24 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                     }
                 }),
                 AllowedFilter::operator('abv', FilterOperator::DYNAMIC),
+                AllowedFilter::callback('abv_min', function ($query, $value) {
+                    $query->where('abv', '>=', (float) $value);
+                }),
+                AllowedFilter::callback('abv_max', function ($query, $value) {
+                    $query->where('abv', '<=', (float) $value);
+                }),
+                AllowedFilter::callback('average_rating_min', function ($query, $value) {
+                    $query->whereIn('cocktails.id', Rating::query()
+                            ->select('rateable_id')
+                            ->where('rateable_type', Cocktail::class)
+                            ->groupBy('rateable_id')
+                            ->havingRaw('AVG(rating) >= CAST(? AS REAL)', [(float) $value]));
+                }),
+                AllowedFilter::callback('tag_id', function ($query, $value) {
+                    $query->whereHas('tags', function ($query) use ($value) {
+                        $query->whereIn('tags.id', is_array($value) ? $value : explode(',', $value));
+                    });
+                }),
             ])
             ->defaultSort('name')
             ->allowedSorts([
@@ -57,6 +76,12 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 }),
             ])
             ->select('cocktails.*')
+            ->selectSub(
+                Rating::selectRaw('AVG(rating)')
+                    ->whereColumn('rateable_id', 'cocktails.id')
+                    ->where('rateable_type', Cocktail::class),
+                'average_rating',
+            )
             ->leftJoin('cocktail_ingredients AS ci', 'ci.cocktail_id', '=', 'cocktails.id')
             ->leftJoin('cocktail_ingredient_substitutes AS cis', 'cis.cocktail_ingredient_id', '=', 'ci.id')
             ->where('cocktails.bar_id', $bar->id)
