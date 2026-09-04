@@ -17,7 +17,10 @@ final class VersionCheckService
             return null;
         }
 
-        return $response->json('tag_name') ?? null;
+        /** @var string|null $tagName */
+        $tagName = $response->json('tag_name');
+
+        return (string) $tagName;
     }
 
     public function isLatest(?string $latest, ?string $current): bool

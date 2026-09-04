@@ -57,6 +57,9 @@ final readonly class ImageUploadService
     public function changeImage(int $imageId, ImageUploadResult $newImage): ImageUploadResult
     {
         $imageModel = Image::findOrFail($imageId);
+        if ($imageModel->imageable === null) {
+            throw new \RuntimeException('Image does not have an attached resource');
+        }
 
         // For temporary images we can just use the new image that is also temporary
         if ($imageModel->isTemporaryImage()) {

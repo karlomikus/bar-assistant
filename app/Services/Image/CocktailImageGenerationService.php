@@ -62,6 +62,10 @@ final readonly class CocktailImageGenerationService
 
         $imageContents = $this->getGeneratedImageContents($generatedImage, $providerConfiguration->timeout);
         $uploadedImage = $this->imageUploadService->uploadImage($imageContents);
+        if ($uploadedImage === null) {
+            throw new HttpException(502, 'Failed to upload generated image.');
+        }
+
         $storedImage = $this->imageService->createImage(new CreateImage($uploadedImage->path, $uploadedImage->extension, $userId, 1, 'AI (' . $providerConfiguration->provider->name . ')', $uploadedImage->placeholderHash));
 
         return Image::findOrFail($storedImage->id);
