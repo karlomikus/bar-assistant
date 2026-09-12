@@ -10,8 +10,8 @@ use BarAssistant\Domain\Rating\RateableId;
 use BarAssistant\Domain\Common\RatingValue;
 use BarAssistant\Domain\Rating\RateableType;
 use BarAssistant\Domain\Rating\RatingRepository;
+use BarAssistant\Application\Rating\DTO\RateRequest;
 use BarAssistant\Application\Rating\DTO\RatingResult;
-use BarAssistant\Application\Rating\DTO\RateCocktailRequest;
 use BarAssistant\Application\Exception\EntityNotFoundException;
 
 final readonly class RatingService
@@ -21,12 +21,12 @@ final readonly class RatingService
     ) {
     }
 
-    public function rate(RateCocktailRequest $request): ?RatingResult
+    public function rate(RateRequest $request): ?RatingResult
     {
         $memberId = new MemberId($request->barMembershipId);
-        $cocktailId = new RateableId($request->cocktailId);
+        $rateableId = new RateableId($request->rateableId);
 
-        $existingRating = $this->ratingRepository->findMemberRating($cocktailId, RateableType::Cocktail, $memberId);
+        $existingRating = $this->ratingRepository->findMemberRating($rateableId, $request->type, $memberId);
 
         if ($existingRating !== null) {
             // Toggle behavior: submitting the same value that is already stored
@@ -45,8 +45,8 @@ final readonly class RatingService
             $savedRating = $this->ratingRepository->save($existingRating);
         } else {
             $rating = Rating::create(
-                rateableId: $cocktailId,
-                type: RateableType::Cocktail,
+                rateableId: $rateableId,
+                type: $request->type,
                 memberId: $memberId,
                 value: RatingValue::create($request->value),
             );
@@ -57,12 +57,12 @@ final readonly class RatingService
         return $this->toResult($savedRating);
     }
 
-    public function removeRating(int $barMembershipId, int $cocktailId): void
+    public function removeRating(int $barMembershipId, int $rateableId, RateableType $type): void
     {
         $memberId = new MemberId($barMembershipId);
-        $cocktailId = new RateableId($cocktailId);
+        $rateableId = new RateableId($rateableId);
 
-        $rating = $this->ratingRepository->findMemberRating($cocktailId, RateableType::Cocktail, $memberId);
+        $rating = $this->ratingRepository->findMemberRating($rateableId, $type, $memberId);
 
         if ($rating === null || $rating->getId() === null) {
             throw new EntityNotFoundException('Rating not found.');
@@ -77,7 +77,7 @@ final readonly class RatingService
 
         return new RatingResult(
             id: $ratingId !== null ? $ratingId->value : 0,
-            cocktailId: $rating->getRateableId()->value,
+            rateableId: $rating->getRateableId()->value,
             barMembershipId: $rating->getMemberId()->value,
             value: $rating->getValue()->value,
             createdAt: $rating->getCreatedAt()->format('Y-m-d H:i:s'),

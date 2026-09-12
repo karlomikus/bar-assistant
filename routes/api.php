@@ -37,6 +37,9 @@ use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
 use Kami\Cocktail\Http\Controllers\MemberInventoryController;
+use Kami\Cocktail\Http\Controllers\TasteDescriptorController;
+use Kami\Cocktail\Http\Controllers\IngredientRatingController;
+use Kami\Cocktail\Http\Controllers\IngredientReviewController;
 use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 
 /*
@@ -111,7 +114,21 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::get('/{idOrSlug}/cocktails', [IngredientController::class, 'cocktails'])->middleware(['ability:ingredients.read']);
         Route::get('/{idOrSlug}/substitutes', [IngredientController::class, 'substitutes'])->middleware(['ability:ingredients.read']);
         Route::get('/{idOrSlug}/tree', [IngredientController::class, 'tree'])->middleware(['ability:ingredients.read']);
+
+        Route::prefix('/{id}/reviews')->middleware([EnsureRequestHasBarQuery::class])->group(function () {
+            Route::get('/', [IngredientReviewController::class, 'index'])->name('ingredient-reviews.index')->middleware(['ability:ingredients.read']);
+            Route::post('/', [IngredientReviewController::class, 'store'])->name('ingredient-reviews.store')->middleware(['ability:ingredients.write']);
+            Route::put('/{reviewId}', [IngredientReviewController::class, 'update'])->name('ingredient-reviews.update')->middleware(['ability:ingredients.write']);
+            Route::delete('/{reviewId}', [IngredientReviewController::class, 'destroy'])->name('ingredient-reviews.destroy')->middleware(['ability:ingredients.write']);
+        });
+
+        Route::prefix('/{id}/ratings')->middleware([EnsureRequestHasBarQuery::class])->group(function () {
+            Route::post('/', [IngredientRatingController::class, 'rate'])->name('ingredient-ratings.rate')->middleware(['ability:ingredients.write']);
+            Route::delete('/', [IngredientRatingController::class, 'unrate'])->name('ingredient-ratings.unrate')->middleware(['ability:ingredients.write']);
+        });
     });
+
+    Route::get('/taste-descriptors', [TasteDescriptorController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:ingredients.read']);
 
     Route::prefix('cocktails')->group(function () {
         Route::get('/', [CocktailController::class, 'index'])->name('cocktails.index')->middleware([EnsureRequestHasBarQuery::class, 'ability:cocktails.read']);

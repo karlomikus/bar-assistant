@@ -122,7 +122,9 @@ class IngredientController extends Controller
             'prices.priceCategory',
             'cocktailIngredientSubstitutes.cocktailIngredient.ingredient',
             'descendants',
-            'ancestors'
+            'ancestors',
+            'ratings',
+            'ingredientReviews.tasteDescriptors'
         )
             ->withCount('cocktails')
             ->where('id', $idOrSlug)

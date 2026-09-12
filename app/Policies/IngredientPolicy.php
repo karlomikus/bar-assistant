@@ -30,6 +30,16 @@ class IngredientPolicy
         return $user->hasBarMembership($ingredient->bar_id);
     }
 
+    public function rate(User $user, Ingredient $ingredient): bool
+    {
+        return $user->hasBarMembership($ingredient->bar_id);
+    }
+
+    public function review(User $user, Ingredient $ingredient): bool
+    {
+        return $user->hasBarMembership($ingredient->bar_id);
+    }
+
     public function edit(User $user, Ingredient $ingredient): bool
     {
         return ($user->id === $ingredient->created_user_id && $user->hasBarMembership($ingredient->bar_id))
