@@ -124,6 +124,49 @@ class BarControllerTest extends TestCase
         $response->assertNoContent();
     }
 
+    public function test_create_bar_with_standard_drink_region(): void
+    {
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'standard_drink_region' => 'us',
+        ]);
+
+        $response->assertCreated();
+
+        $bar = Bar::orderByDesc('id')->first();
+        $this->assertSame('us', $bar->settings['standard_drink_region']);
+    }
+
+    public function test_create_bar_with_invalid_standard_drink_region_rejected(): void
+    {
+        $response = $this->postJson('/api/bars', [
+            'name' => 'Test bar name',
+            'standard_drink_region' => 'fr',
+        ]);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_bar_details_default_standard_drink_region(): void
+    {
+        $response = $this->getJson('/api/bars/3');
+
+        $response->assertOk();
+        $response->assertJsonPath('data.settings.standard_drink_region', 'uk');
+    }
+
+    public function test_bar_details_report_stored_standard_drink_region(): void
+    {
+        $bar = Bar::find(3);
+        $bar->settings = ['standard_drink_region' => 'us'];
+        $bar->save();
+
+        $response = $this->getJson('/api/bars/3');
+
+        $response->assertOk();
+        $response->assertJsonPath('data.settings.standard_drink_region', 'us');
+    }
+
     public function test_bar_delete(): void
     {
         $response = $this->deleteJson('/api/bars/3');

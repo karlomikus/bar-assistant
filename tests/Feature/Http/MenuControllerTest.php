@@ -115,6 +115,78 @@ class MenuControllerTest extends TestCase
         $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
     }
 
+    public function test_token_with_menu_read_can_read_and_export_but_not_update_menu(): void
+    {
+        $menu = Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+        MenuCocktail::factory()->recycle($menu)->count(3)->create();
+
+        $this->actingAs($this->barMembership->user, abilities: ['menu.read']);
+
+        $readResponse = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $readResponse->assertSuccessful();
+
+        $exportResponse = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $exportResponse->assertSuccessful();
+
+        $updateResponse = $this->postJson('/api/menu', [
+            'is_enabled' => true,
+            'categories' => [],
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $updateResponse->assertForbidden();
+    }
+
+    public function test_token_with_menu_write_can_update_and_read_menu(): void
+    {
+        Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+
+        $this->actingAs($this->barMembership->user, abilities: ['menu.write']);
+
+        $updateResponse = $this->postJson('/api/menu', [
+            'is_enabled' => true,
+            'categories' => [],
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $updateResponse->assertNoContent();
+
+        $readResponse = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $readResponse->assertSuccessful();
+    }
+
+    public function test_token_without_menu_ability_cannot_access_menu(): void
+    {
+        $this->actingAs($this->barMembership->user, abilities: ['ingredients.read']);
+
+        $readResponse = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $readResponse->assertForbidden();
+
+        $exportResponse = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $exportResponse->assertForbidden();
+
+        $updateResponse = $this->postJson('/api/menu', [
+            'is_enabled' => true,
+            'categories' => [],
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $updateResponse->assertForbidden();
+    }
+
+    public function test_wildcard_token_can_access_all_menu_routes(): void
+    {
+        Menu::factory()->for($this->barMembership->bar)->create(['is_enabled' => true]);
+
+        $this->actingAs($this->barMembership->user, abilities: ['*']);
+
+        $readResponse = $this->getJson('/api/menu', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $readResponse->assertSuccessful();
+
+        $exportResponse = $this->getJson('/api/menu/export', ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $exportResponse->assertSuccessful();
+
+        $updateResponse = $this->postJson('/api/menu', [
+            'is_enabled' => true,
+            'categories' => [],
+        ], ['Bar-Assistant-Bar-Id' => $this->barMembership->bar_id]);
+        $updateResponse->assertNoContent();
+    }
+
     public function test_update_menu_with_disabled_category(): void
     {
         $cocktail = Cocktail::factory()->for($this->barMembership->bar)->create();

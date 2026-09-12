@@ -15,6 +15,7 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
+use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Domain\Exception\DomainException;
 
@@ -40,6 +41,7 @@ final class BarTest extends TestCase
         $this->assertFalse($bar->isInviteCodeEnabled());
         $this->assertNull($bar->getDefaultUnits());
         $this->assertNull($bar->getDefaultCurrency());
+        $this->assertSame(StandardDrinkRegion::Uk, $bar->getStandardDrinkRegion());
         $this->assertSame(BarStatus::Active, $bar->getStatus());
         $this->assertFalse($bar->isPublic());
     }
@@ -66,11 +68,13 @@ final class BarTest extends TestCase
             isInviteCodeEnabled: true,
             defaultUnits: Unit::from('oz'),
             defaultCurrency: Currency::of('USD'),
+            standardDrinkRegion: StandardDrinkRegion::Us,
         ));
 
         $this->assertTrue($bar->isInviteCodeEnabled());
         $this->assertSame('oz', (string) $bar->getDefaultUnits());
         $this->assertSame('USD', $bar->getDefaultCurrency()?->getCurrencyCode());
+        $this->assertSame(StandardDrinkRegion::Us, $bar->getStandardDrinkRegion());
     }
 
     public function test_update_details_rejects_transient_bar(): void

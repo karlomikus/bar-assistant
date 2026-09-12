@@ -15,6 +15,7 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use BarAssistant\Domain\Bar\BarRepository;
 use BarAssistant\Application\Bar\DTO\BarResult;
+use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\UpdateBarRequest;
@@ -33,6 +34,7 @@ final readonly class BarService
             isInviteCodeEnabled: $request->isInviteCodeEnabled ?? false,
             defaultUnits: $request->defaultUnits ? Unit::from($request->defaultUnits) : null,
             defaultCurrency: $request->defaultCurrency ? Currency::of($request->defaultCurrency) : null,
+            standardDrinkRegion: $request->standardDrinkRegion ? StandardDrinkRegion::from($request->standardDrinkRegion) : null,
         );
 
         $bar = Bar::create(
@@ -83,6 +85,7 @@ final readonly class BarService
             isInviteCodeEnabled: $request->isInviteCodeEnabled ?? false,
             defaultUnits: $request->defaultUnits ? Unit::from($request->defaultUnits) : null,
             defaultCurrency: $request->defaultCurrency ? Currency::of($request->defaultCurrency) : null,
+            standardDrinkRegion: $request->standardDrinkRegion ? StandardDrinkRegion::from($request->standardDrinkRegion) : $bar->getStandardDrinkRegion(),
         ));
 
         $bar->removeAllImages();

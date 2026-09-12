@@ -9,6 +9,7 @@ use Kami\Cocktail\Rules\ValidCurrency;
 use Kami\Cocktail\External\BarOptionsEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
+use BarAssistant\Domain\Bar\StandardDrinkRegion;
 
 class BarRequest extends FormRequest
 {
@@ -38,6 +39,10 @@ class BarRequest extends FormRequest
             ],
             'default_units' => 'string',
             'default_currency' => ['nullable', 'size:3', new ValidCurrency()],
+            'standard_drink_region' => [
+                'nullable',
+                Rule::enum(StandardDrinkRegion::class),
+            ],
             'default_lang' => 'string',
             'status' => [
                 Rule::enum(BarStatusEnum::class),

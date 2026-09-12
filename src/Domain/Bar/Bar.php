@@ -144,6 +144,14 @@ final class Bar implements Identity
         return $this->settings?->defaultCurrency;
     }
 
+    /**
+     * Returns the standard drink region convention for the bar
+     */
+    public function getStandardDrinkRegion(): StandardDrinkRegion
+    {
+        return $this->settings->standardDrinkRegion ?? StandardDrinkRegion::default();
+    }
+
     public function getAuthors(): Authors
     {
         return $this->authors;

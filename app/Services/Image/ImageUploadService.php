@@ -65,9 +65,14 @@ final readonly class ImageUploadService
             return $newImage;
         }
 
+        $imageable = $imageModel->imageable;
+        if ($imageable === null) {
+            throw new \RuntimeException('Image does not have an attached resource');
+        }
+
         // For images with attached resource, we need to move it to correct
         // upload folder and then update the path
-        $newImagePath = $imageModel->imageable->generateImagePath($newImage->extension);
+        $newImagePath = $imageable->generateImagePath($newImage->extension);
 
         if ($this->filesystem->exists($newImage->path)) {
             $this->filesystem->move($newImage->path, $newImagePath);

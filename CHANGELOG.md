@@ -1,3 +1,8 @@
+# v6.7.0
+## New
+- Added menu edit and view permissions to PAT
+- Added US/UK standard drink setting to bar settings
+
 # v6.6.0
 ## New
 - Updated starter media catalog

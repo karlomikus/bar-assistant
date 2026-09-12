@@ -41,7 +41,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'method', type: CocktailMethodResource::class, description: 'Cocktail method', nullable: true),
         new OAT\Property(property: 'abv', type: 'number', format: 'float', example: 0.5, description: 'Alcohol by volume (ABV) percentage', nullable: true),
         new OAT\Property(property: 'volume_ml', type: 'number', format: 'float', example: 200, description: 'Cocktail volume in milliliters'),
-        new OAT\Property(property: 'alcohol_units', type: 'number', format: 'float', example: 1.5, description: 'Alcohol units in the cocktail'),
+        new OAT\Property(property: 'alcohol_units', type: 'number', format: 'float', example: 1.5, description: 'Alcohol content expressed in the bar\'s standard-drink convention: US standard drinks (14 g of pure alcohol) for `us` bars or UK units (8 g) for `uk` bars'),
         new OAT\Property(property: 'calories', type: 'number', format: 'float', example: 150, description: 'Calories in the cocktail'),
         new OAT\Property(property: 'created_user', type: UserBasicResource::class, description: 'User who created the cocktail'),
         new OAT\Property(property: 'updated_user', type: UserBasicResource::class, description: 'User who last updated the cocktail', nullable: true),

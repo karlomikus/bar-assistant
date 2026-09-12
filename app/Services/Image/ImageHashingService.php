@@ -27,9 +27,9 @@ class ImageHashingService
             $rgbaPixels[] = $pixels[$i + 3];
         }
 
+        /** @var array<int, int> */
         $hash = Thumbhash::RGBAToHash($width, $height, $rgbaPixels);
-        $key = Thumbhash::convertHashToString($hash);
 
-        return $key;
+        return Thumbhash::convertHashToString($hash);
     }
 }

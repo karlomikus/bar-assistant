@@ -54,6 +54,27 @@ class PATControllerTest extends TestCase
         $this->assertDatabaseHas('personal_access_tokens', ['name' => 'My new token', 'abilities' => json_encode([AbilityEnum::CocktailsRead->value, AbilityEnum::IngredientsWrite->value])]);
     }
 
+    public function test_create_token_with_menu_abilities(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/tokens', [
+            'name' => 'My menu token',
+            'abilities' => [AbilityEnum::MenuRead->value, AbilityEnum::MenuWrite->value],
+            'expires_at' => Carbon::now()->addMonth()->toAtomString(),
+        ]);
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) => $json->has('data.token')
+        );
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'name' => 'My menu token',
+            'abilities' => json_encode([AbilityEnum::MenuRead->value, AbilityEnum::MenuWrite->value]),
+        ]);
+    }
+
     public function test_delete_token(): void
     {
         $user = User::factory()->create();

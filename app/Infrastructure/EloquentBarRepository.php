@@ -19,6 +19,7 @@ use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
 use Kami\Cocktail\Models\Image as ModelImage;
+use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
 
 final class EloquentBarRepository implements BarRepository
@@ -52,6 +53,7 @@ final class EloquentBarRepository implements BarRepository
         if ($bar->getDefaultCurrency()) {
             $settings['default_currency'] = $bar->getDefaultCurrency()->getCurrencyCode();
         }
+        $settings['standard_drink_region'] = $bar->getStandardDrinkRegion()->value;
         $model->settings = $settings;
 
         if ($bar->isInviteCodeEnabled()) {
@@ -96,11 +98,13 @@ final class EloquentBarRepository implements BarRepository
         $modelBarSettings = is_array($model->settings) ? $model->settings : [];
         $defaultUnits = $modelBarSettings['default_units'] ?? null;
         $defaultCurrency = $modelBarSettings['default_currency'] ?? null;
+        $standardDrinkRegion = $modelBarSettings['standard_drink_region'] ?? null;
 
         $barSettings = BarSettings::create(
             isInviteCodeEnabled: $model->invite_code !== null,
             defaultUnits: is_string($defaultUnits) ? Unit::from($defaultUnits) : null,
             defaultCurrency: is_string($defaultCurrency) || is_int($defaultCurrency) ? Currency::of($defaultCurrency) : null,
+            standardDrinkRegion: is_string($standardDrinkRegion) ? StandardDrinkRegion::tryFrom($standardDrinkRegion) : null,
         );
 
         $createdAt = $model->created_at?->toDateTimeImmutable();

@@ -148,7 +148,7 @@ final class IngredientHierarchyNode implements Identity
                 throw new IngredientHierarchyException('Nodes must be from the same bar');
             }
 
-            if ($this->id->equals($parent->id)) {
+            if ($parent->id && $this->id?->equals($parent->id)) {
                 throw new IngredientHierarchyException('Node cannot be its own parent');
             }
 

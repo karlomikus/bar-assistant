@@ -265,10 +265,10 @@ Route::middleware($apiMiddleware)->group(function () {
         Route::post('/subscription', [SubscriptionController::class, 'updateSubscription']);
     });
 
-    Route::prefix('menu')->middleware(['ability:*'])->group(function () {
-        Route::get('/', [MenuController::class, 'index'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::post('/', [MenuController::class, 'update'])->middleware(EnsureRequestHasBarQuery::class);
-        Route::get('/export', [MenuController::class, 'export'])->middleware(EnsureRequestHasBarQuery::class);
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->middleware([EnsureRequestHasBarQuery::class, 'ability:menu.read,menu.write']);
+        Route::post('/', [MenuController::class, 'update'])->middleware([EnsureRequestHasBarQuery::class, 'ability:menu.write']);
+        Route::get('/export', [MenuController::class, 'export'])->middleware([EnsureRequestHasBarQuery::class, 'ability:menu.read,menu.write']);
     });
 
     Route::prefix('tokens')->middleware(['ability:*'])->group(function () {

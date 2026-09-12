@@ -130,6 +130,7 @@ class BarController extends Controller
             images: $barRequest->images,
             defaultCurrency: $barRequest->defaultCurrency,
             defaultUnits: $barRequest->defaultUnits,
+            standardDrinkRegion: $barRequest->standardDrinkRegion,
         ));
 
         $memberService->addMemberToBar(new CreateMemberRequest(
@@ -184,6 +185,7 @@ class BarController extends Controller
             images: $barRequest->images,
             defaultCurrency: $barRequest->defaultCurrency,
             defaultUnits: $barRequest->defaultUnits,
+            standardDrinkRegion: $barRequest->standardDrinkRegion,
         ));
 
         return new Response(status: 204);

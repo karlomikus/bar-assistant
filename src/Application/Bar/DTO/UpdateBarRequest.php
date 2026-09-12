@@ -20,6 +20,7 @@ final readonly class UpdateBarRequest
         public array $images = [],
         public ?string $defaultUnits = null,
         public ?string $defaultCurrency = null,
+        public ?string $standardDrinkRegion = null,
     ) {
     }
 }

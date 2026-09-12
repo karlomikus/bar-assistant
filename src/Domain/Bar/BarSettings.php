@@ -13,6 +13,7 @@ final readonly class BarSettings
         public bool $isInviteCodeEnabled = false,
         public ?Unit $defaultUnits = null,
         public ?Currency $defaultCurrency = null,
+        public StandardDrinkRegion $standardDrinkRegion = StandardDrinkRegion::Uk,
     ) {
     }
 
@@ -25,11 +26,13 @@ final readonly class BarSettings
         bool $isInviteCodeEnabled,
         ?Unit $defaultUnits,
         ?Currency $defaultCurrency,
+        ?StandardDrinkRegion $standardDrinkRegion = null,
     ): self {
         return new self(
             isInviteCodeEnabled: $isInviteCodeEnabled,
             defaultUnits: $defaultUnits,
             defaultCurrency: $defaultCurrency,
+            standardDrinkRegion: $standardDrinkRegion ?? StandardDrinkRegion::default(),
         );
     }
 }

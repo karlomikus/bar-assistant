@@ -15,6 +15,7 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as BarModel;
+use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
@@ -38,6 +39,7 @@ final class EloquentBarRepositoryTest extends TestCase
                 isInviteCodeEnabled: true,
                 defaultUnits: Unit::from('ml'),
                 defaultCurrency: Currency::of('EUR'),
+                standardDrinkRegion: StandardDrinkRegion::Us,
             ),
         );
 
@@ -60,6 +62,11 @@ final class EloquentBarRepositoryTest extends TestCase
         $this->assertNotNull($model->invite_code);
         $this->assertSame('ml', $model->settings['default_units']);
         $this->assertSame('EUR', $model->settings['default_currency']);
+        $this->assertSame('us', $model->settings['standard_drink_region']);
+
+        $foundBar = $repository->findById($bar->getId());
+        $this->assertNotNull($foundBar);
+        $this->assertSame(StandardDrinkRegion::Us, $foundBar->getStandardDrinkRegion());
     }
 
     public function test_it_updates_bar(): void

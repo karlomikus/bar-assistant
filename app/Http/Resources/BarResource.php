@@ -74,6 +74,9 @@ class BarResource extends JsonResource
     #[\Override]
     public function toArray($request)
     {
+        $settings = is_array($this->settings) ? $this->settings : [];
+        $settings['standard_drink_region'] = $settings['standard_drink_region'] ?? 'uk';
+
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -82,7 +85,7 @@ class BarResource extends JsonResource
             'description' => $this->description,
             'invite_code' => $this->invite_code,
             'status' => $this->getStatus()->value,
-            'settings' => $this->settings ?? [],
+            'settings' => $settings,
             'search_host' => config('scout.meilisearch.host'),
             'search_token' => $this->search_token,
             'created_at' => $this->created_at->toAtomString(),

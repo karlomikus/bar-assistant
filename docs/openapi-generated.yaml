@@ -9715,7 +9715,7 @@ components:
           format: float
           example: 200
         alcohol_units:
-          description: 'Alcohol units in the cocktail'
+          description: "Alcohol content expressed in the bar's standard-drink convention: US standard drinks (14 g of pure alcohol) for `us` bars or UK units (8 g) for `uk` bars"
           type: number
           format: float
           example: 1.5
@@ -11343,6 +11343,8 @@ components:
         - ingredients.write
         - bars.read
         - bars.write
+        - menu.read
+        - menu.write
     BarStatusEnum:
       type: string
       enum:
@@ -11407,6 +11409,13 @@ components:
             - string
             - 'null'
           example: EUR
+        standard_drink_region:
+          description: 'Convention used to express the alcohol content of cocktails. `uk` for UK alcohol units, `us` for US standard drinks. Default `uk`.'
+          type: string
+          enum:
+            - us
+            - uk
+          example: uk
         enable_invites:
           description: 'Enable users with invite code to join this bar. Default `false`.'
           type: boolean
@@ -11437,6 +11446,13 @@ components:
           type:
             - string
             - 'null'
+        standard_drink_region:
+          description: 'Convention used to express the alcohol content of cocktails. `uk` for UK alcohol units, `us` for US standard drinks.'
+          type: string
+          enum:
+            - us
+            - uk
+          example: uk
       type: object
     CalculatorBlockRequest:
       required:

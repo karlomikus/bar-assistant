@@ -25,6 +25,8 @@ class BarRequest
     public ?string $defaultUnits = null;
     #[OAT\Property(property: 'default_currency', example: 'EUR', description: 'ISO 4217 format of currency. Used only as a setting for client apps.')]
     public ?string $defaultCurrency = null;
+    #[OAT\Property(property: 'standard_drink_region', type: 'string', enum: ['us', 'uk'], example: 'uk', description: 'Convention used to express the alcohol content of cocktails. `uk` for UK alcohol units, `us` for US standard drinks. Default `uk`.')]
+    public ?string $standardDrinkRegion = null;
     #[OAT\Property(property: 'enable_invites', description: 'Enable users with invite code to join this bar. Default `false`.')]
     public bool $invitesEnabled = false;
     #[OAT\Property(description: 'List of data that the bar will start with. Cocktails cannot be imported without ingredients.')]
@@ -57,6 +59,10 @@ class BarRequest
 
         if ($defaultCurrency = $request->input('default_currency')) {
             $result->defaultCurrency = $defaultCurrency;
+        }
+
+        if ($standardDrinkRegion = $request->input('standard_drink_region')) {
+            $result->standardDrinkRegion = $standardDrinkRegion;
         }
 
         $result->images = array_map(intval(...), $request->input('images', []));

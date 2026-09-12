@@ -372,6 +372,51 @@ class CocktailControllerTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_cocktail_alcohol_units_follow_bar_standard_drink_region(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $method = CocktailMethod::factory()->recycle($membership->bar)->create(['dilution_percentage' => 0]);
+        $ingredient = Ingredient::factory()->recycle($membership->bar)->create(['strength' => 40]);
+
+        $cocktail = Cocktail::factory()
+            ->recycle($membership->bar)
+            ->for($method, 'method')
+            ->has(CocktailIngredient::factory()->state([
+                'amount' => 100,
+                'units' => 'ml',
+                'optional' => false,
+                'ingredient_id' => $ingredient->id,
+            ]), 'ingredients')
+            ->create();
+
+        $membership->bar->settings = ['standard_drink_region' => 'uk'];
+        $membership->bar->save();
+        $uk = $this->getJson('/api/cocktails/' . $cocktail->id)->json('data.alcohol_units');
+
+        $membership->bar->settings = ['standard_drink_region' => 'us'];
+        $membership->bar->save();
+        $us = $this->getJson('/api/cocktails/' . $cocktail->id)->json('data.alcohol_units');
+
+        $this->assertSame(3.95, $uk);
+        $this->assertSame(2.25, $us);
+        $this->assertEqualsWithDelta(1.75, $uk / $us, 0.01);
+    }
+
+    public function test_cocktail_alcohol_units_are_zero_without_method(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->recycle($membership->bar)->create(['cocktail_method_id' => null]);
+
+        $response = $this->getJson('/api/cocktails/' . $cocktail->id);
+
+        $response->assertOk();
+        $response->assertJsonPath('data.alcohol_units', 0);
+    }
+
     public function test_cocktail_create_response(): void
     {
         $membership = $this->setupBarMembership();

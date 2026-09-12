@@ -206,7 +206,13 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
             return 0.0;
         }
 
-        return (float) number_format(($this->getVolume() * $this->getABV()) / 1000, 2);
+        $settings = $this->bar?->settings ?? [];
+        $region = is_array($settings) ? ($settings['standard_drink_region'] ?? 'uk') : 'uk';
+        $threshold = $region === 'us' ? 14 : 8;
+
+        $pureAlcoholGrams = $this->getVolume() * ($this->getABV() / 100) * 0.789;
+
+        return (float) number_format($pureAlcoholGrams / $threshold, 2);
     }
 
     public function getCalories(): int
