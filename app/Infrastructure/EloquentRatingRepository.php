@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Infrastructure;
 
 use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 use BarAssistant\Domain\Bar\MemberId;
 use BarAssistant\Domain\Rating\Rating;
 use BarAssistant\Domain\Rating\RatingId;
@@ -16,10 +17,10 @@ use BarAssistant\Domain\Rating\RatingRepository;
 
 final class EloquentRatingRepository implements RatingRepository
 {
-    public function findMemberRating(RateableId $cocktailId, RateableType $type, MemberId $memberId): ?Rating
+    public function findMemberRating(RateableId $rateableId, RateableType $type, MemberId $memberId): ?Rating
     {
-        $model = Model::where('rateable_id', $cocktailId->value)
-            ->where('rateable_type', \Kami\Cocktail\Models\Cocktail::class)
+        $model = Model::where('rateable_id', $rateableId->value)
+            ->where('rateable_type', self::modelClass($type))
             ->where('bar_membership_id', $memberId->value)
             ->first();
 
@@ -32,7 +33,8 @@ final class EloquentRatingRepository implements RatingRepository
 
     public function save(Rating $rating): Rating
     {
-        $modelToRate = Cocktail::findOrFail($rating->getRateableId());
+        $modelClass = self::modelClass($rating->getType());
+        $modelToRate = $modelClass::findOrFail($rating->getRateableId()->value);
         $ratingModel = $modelToRate->rate($rating->getValue()->value, $rating->getMemberId()->value);
 
         return self::map($ratingModel);
@@ -43,11 +45,30 @@ final class EloquentRatingRepository implements RatingRepository
         Model::destroy($id->value);
     }
 
+    /**
+     * @return class-string<Cocktail|Ingredient>
+     */
+    private static function modelClass(RateableType $type): string
+    {
+        return match ($type) {
+            RateableType::Cocktail => Cocktail::class,
+            RateableType::Ingredient => Ingredient::class,
+        };
+    }
+
+    private static function typeFromModelClass(string $modelClass): RateableType
+    {
+        return match ($modelClass) {
+            Ingredient::class => RateableType::Ingredient,
+            default => RateableType::Cocktail,
+        };
+    }
+
     private static function map(Model $model): Rating
     {
         $rating = Rating::create(
             rateableId: new RateableId((int) $model->rateable_id),
-            type: RateableType::Cocktail,
+            type: self::typeFromModelClass((string) $model->rateable_type),
             memberId: new MemberId((int) $model->bar_membership_id),
             value: RatingValue::create((float) $model->rating),
         )->setId(new RatingId((int) $model->id));

@@ -48,6 +48,12 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientHierarchy;
         new OAT\Property(property: 'acidity', type: 'number', format: 'float', example: 0.0, description: 'The acidity of the ingredient', nullable: true),
         new OAT\Property(property: 'distillery', type: 'string', example: 'Distillery Name', description: 'The distillery of the ingredient', nullable: true),
         new OAT\Property(property: 'units', type: 'string', example: 'ml', description: 'The units of the ingredient', nullable: true),
+        new OAT\Property(property: 'rating', type: 'object', properties: [
+            new OAT\Property(property: 'user', type: 'number', format: 'float', nullable: true, example: 3.5, description: 'The requesting member rating, or null when unrated'),
+            new OAT\Property(property: 'average', type: 'number', format: 'float', example: 4.5, description: 'The average rating rounded to the nearest 0.5'),
+            new OAT\Property(property: 'total_votes', type: 'integer', example: 3, description: 'The number of ratings'),
+        ], description: 'Rating summary for the ingredient'),
+        new OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(ref: TasteDescriptorResource::class), description: 'Distinct taste descriptors aggregated from the ingredient reviews'),
     ],
     required: ['id', 'slug', 'name', 'description', 'origin', 'color', 'created_at', 'updated_at', 'strength', 'hierarchy', 'materialized_path']
 )]
@@ -117,6 +123,11 @@ class IngredientResource extends JsonResource
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
             'units' => $this->units,
+            'rating' => $this->getRatingSummary($request->user()?->getBarMembership((int) $this->bar_id)?->id),
+            'taste_descriptors' => $this->when(
+                $this->relationLoaded('ingredientReviews'),
+                fn () => TasteDescriptorResource::collection($this->getAggregatedTasteDescriptors())
+            ),
         ];
     }
 }

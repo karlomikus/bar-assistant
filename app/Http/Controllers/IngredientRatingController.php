@@ -8,15 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
-use Kami\Cocktail\Models\Cocktail;
+use Kami\Cocktail\Models\Ingredient;
 use BarAssistant\Domain\Rating\RateableType;
 use Kami\Cocktail\Http\Requests\RatingRequest;
 use BarAssistant\Application\Rating\RatingService;
 use BarAssistant\Application\Rating\DTO\RateRequest;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 
-class RatingController extends Controller
+class IngredientRatingController extends Controller
 {
-    #[OAT\Post(path: '/cocktails/{id}/ratings', tags: ['Ratings'], operationId: 'rateCocktail', description: 'Rate a single cocktail', summary: 'Rate cocktail', parameters: [
+    #[OAT\Post(path: '/ingredients/{id}/ratings', tags: ['Ingredient Ratings'], operationId: 'rateIngredient', description: 'Rate a single ingredient', summary: 'Rate ingredient', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ], requestBody: new OAT\RequestBody(
         required: true,
@@ -29,49 +30,53 @@ class RatingController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotFoundResponse]
     #[BAO\NotAuthorizedResponse]
-    public function rateCocktail(RatingService $ratingService, RatingRequest $request, int $id): Response
+    public function rate(RatingService $ratingService, RatingRequest $request, int $id): Response
     {
-        $cocktail = Cocktail::findOrFail($id);
+        $ingredient = Ingredient::findOrFail($id);
 
-        if ($request->user()->cannot('rate', $cocktail)) {
+        if ($request->user()->cannot('rate', $ingredient)) {
             abort(403);
         }
 
-        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        $barMembership = $request->user()->getBarMembership((int) $ingredient->bar_id);
         if ($barMembership === null) {
             abort(403);
         }
 
         $ratingService->rate(new RateRequest(
             barMembershipId: $barMembership->id,
-            rateableId: $cocktail->id,
-            type: RateableType::Cocktail,
+            rateableId: $ingredient->id,
+            type: RateableType::Ingredient,
             value: (float) $request->post('rating'),
         ));
 
         return new Response(null, 204);
     }
 
-    #[OAT\Delete(path: '/cocktails/{id}/ratings', tags: ['Ratings'], operationId: 'deleteRating', description: 'Delete current user cocktail rating', summary: 'Delete cocktail rating', parameters: [
+    #[OAT\Delete(path: '/ingredients/{id}/ratings', tags: ['Ingredient Ratings'], operationId: 'deleteIngredientRating', description: 'Delete current user ingredient rating', summary: 'Delete ingredient rating', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function deleteCocktailRating(RatingService $ratingService, Request $request, int $id): Response
+    public function unrate(RatingService $ratingService, Request $request, int $id): Response
     {
-        $cocktail = Cocktail::findOrFail($id);
+        $ingredient = Ingredient::findOrFail($id);
 
-        if ($request->user()->cannot('rate', $cocktail)) {
+        if ($request->user()->cannot('rate', $ingredient)) {
             abort(403);
         }
 
-        $barMembership = $request->user()->getBarMembership($cocktail->bar_id);
+        $barMembership = $request->user()->getBarMembership((int) $ingredient->bar_id);
         if ($barMembership === null) {
             abort(403);
         }
 
-        $ratingService->removeRating($barMembership->id, $cocktail->id, RateableType::Cocktail);
+        try {
+            $ratingService->removeRating($barMembership->id, $ingredient->id, RateableType::Ingredient);
+        } catch (EntityNotFoundException) {
+            abort(404);
+        }
 
         return new Response(null, 204);
     }

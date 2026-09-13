@@ -8,7 +8,7 @@ final readonly class RatingResult
 {
     public function __construct(
         public int $id,
-        public int $cocktailId,
+        public int $rateableId,
         public int $barMembershipId,
         public float $value,
         public string $createdAt,

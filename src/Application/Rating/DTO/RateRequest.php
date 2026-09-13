@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\Rating\DTO;
 
-final readonly class RateCocktailRequest
+use BarAssistant\Domain\Rating\RateableType;
+
+final readonly class RateRequest
 {
     public function __construct(
         public int $barMembershipId,
-        public int $cocktailId,
+        public int $rateableId,
+        public RateableType $type,
         public float $value,
     ) {
     }

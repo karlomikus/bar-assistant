@@ -7,4 +7,5 @@ namespace BarAssistant\Domain\Rating;
 enum RateableType
 {
     case Cocktail;
+    case Ingredient;
 }

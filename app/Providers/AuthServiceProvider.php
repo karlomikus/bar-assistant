@@ -4,6 +4,8 @@ namespace Kami\Cocktail\Providers;
 
 use BarAssistant\Domain\Review\Review;
 use Kami\Cocktail\Policies\ReviewPolicy;
+use BarAssistant\Domain\Review\IngredientReview;
+use Kami\Cocktail\Policies\IngredientReviewPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Review::class => ReviewPolicy::class,
+        IngredientReview::class => IngredientReviewPolicy::class,
     ];
 
     /**

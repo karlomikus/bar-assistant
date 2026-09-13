@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Concerns\HasImages;
+use Kami\Cocktail\Models\Concerns\HasRating;
 use Kami\Cocktail\Models\Concerns\HasAuthors;
 use Kami\Cocktail\Models\Concerns\IsExternalized;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -34,6 +35,7 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     use Searchable;
     use HasImages;
     use HasSlug;
+    use HasRating;
     use HasBarAwareScope;
     use HasAuthors;
 
@@ -167,6 +169,54 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     }
 
     /**
+     * @return HasMany<IngredientReview, $this>
+     */
+    public function ingredientReviews(): HasMany
+    {
+        return $this->hasMany(IngredientReview::class);
+    }
+
+    /**
+     * @return array{user: float|null, average: float, total_votes: int}
+     */
+    public function getRatingSummary(?int $barMembershipId): array
+    {
+        $ratings = $this->relationLoaded('ratings') ? $this->ratings : $this->ratings()->get();
+        $count = $ratings->count();
+
+        $userRating = null;
+        if ($barMembershipId !== null) {
+            $userRating = $ratings->firstWhere('bar_membership_id', $barMembershipId)?->rating;
+        }
+
+        return [
+            'user' => $userRating !== null ? (float) $userRating : null,
+            'average' => $count > 0 ? round(((float) $ratings->avg('rating')) * 2) / 2 : 0.0,
+            'total_votes' => $count,
+        ];
+    }
+
+    /**
+     * @return Collection<int, TasteDescriptor>
+     */
+    public function getAggregatedTasteDescriptors(): Collection
+    {
+        $descriptors = $this->ingredientReviews
+            ->flatMap(fn (IngredientReview $review) => $review->tasteDescriptors);
+
+        $usageCounts = $descriptors->countBy('id');
+
+        return $descriptors
+            ->unique('id')
+            ->sort(function (TasteDescriptor $a, TasteDescriptor $b) use ($usageCounts): int {
+                return ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
+                    ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name));
+            })
+            ->take(7)
+            ->values();
+    }
+
+    /**
      * @return Collection<int, Cocktail>
      */
     public function cocktailsAsSubstituteIngredient(): Collection
@@ -257,6 +307,7 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
         }
 
         $this->deleteImages();
+        $this->deleteRatings();
 
         return parent::delete();
     }
