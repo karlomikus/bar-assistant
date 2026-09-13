@@ -201,10 +201,18 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
      */
     public function getAggregatedTasteDescriptors(): Collection
     {
-        return $this->ingredientReviews
-            ->flatMap(fn (IngredientReview $review) => $review->tasteDescriptors)
+        $descriptors = $this->ingredientReviews
+            ->flatMap(fn (IngredientReview $review) => $review->tasteDescriptors);
+
+        $usageCounts = $descriptors->countBy('id');
+
+        return $descriptors
             ->unique('id')
-            ->sortBy(fn (TasteDescriptor $descriptor) => mb_strtolower($descriptor->name))
+            ->sort(function (TasteDescriptor $a, TasteDescriptor $b) use ($usageCounts): int {
+                return ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
+                    ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name));
+            })
+            ->take(7)
             ->values();
     }
 

@@ -435,7 +435,7 @@ class IngredientReviewControllerTest extends TestCase
 
         $response->assertOk();
         $names = $response->json('data.taste_descriptors');
-        $this->assertSame(['Smoky', 'Sweet'], array_column($names, 'name'));
+        $this->assertSame(['Sweet', 'Smoky'], array_column($names, 'name'));
     }
 
     private function createReview(BarMembership $membership, Ingredient $ingredient, string $content, $createdAt = null, array $descriptors = []): int
