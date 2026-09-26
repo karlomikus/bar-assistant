@@ -67,6 +67,10 @@ Bar Assistant is available as a Docker image on [Docker Hub](https://hub.docker.
 
 We recommend that you always use the latest major release, as it will always be the most stable version.
 
+## ☁️ One-Click Deploy
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/bar-assistant/)
+
 ## Environment Variables
 
 Here's a list of interesting environment variables you can set to configure Bar Assistant:
