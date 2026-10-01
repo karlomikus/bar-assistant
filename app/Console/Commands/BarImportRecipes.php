@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Console\Commands;
 
+use BarAssistant\Application\Bar\BarService;
+use BarAssistant\Application\Bar\DTO\CreateBarRequest;
+use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
+use BarAssistant\Application\Bar\MemberService;
 use Throwable;
 use ZipArchive;
 use Illuminate\Support\Str;
@@ -33,7 +37,7 @@ class BarImportRecipes extends Command
      */
     protected $description = 'Import recipes exported as a Bar Assistant datapack';
 
-    public function __construct(private readonly FromDataPack $importer)
+    public function __construct(private readonly FromDataPack $importer, private BarService $barService, private MemberService $memberService)
     {
         parent::__construct();
     }
@@ -78,7 +82,7 @@ class BarImportRecipes extends Command
         $barId = $this->ask('Enter the id of the bar you want to import to, or leave empty to create a new one');
         if ($barId !== null) {
             $bar = Bar::findOrFail((int) $barId);
-            $user = $bar->createdUser;
+            $userId = $bar->createdUser->id;
 
             $this->line(sprintf('Using existing bar: %s - %s', $bar->id, $bar->name));
         } else {
@@ -88,12 +92,13 @@ class BarImportRecipes extends Command
 
             $this->line(sprintf('User with id found: %s - %s', $user->id, $user->email));
 
-            $bar = new Bar();
-            $bar->name = $barName;
-            $bar->created_user_id = $userId;
-            $bar->save();
+            $barCreateResult = $this->barService->createBar(new CreateBarRequest(
+                name: $barName,
+                createdUserId: $user->id,
+            ));
+            $barId = $barCreateResult->id;
 
-            $user->joinBarAs($bar, UserRoleEnum::Admin);
+            $this->memberService->addMemberToBar(new CreateMemberRequest($user->id, $barCreateResult->id, UserRoleEnum::Admin->value));
 
             $this->line('Bar created successfully');
         }
@@ -108,7 +113,7 @@ class BarImportRecipes extends Command
         Cache::flush();
 
         try {
-            $this->importer->process($tempUnzipDisk, $bar->id, $user->id, BarOptionsEnum::Cocktails, DataPackMediaMode::OwnedUpload);
+            $this->importer->process($tempUnzipDisk, $barId, $userId, BarOptionsEnum::Cocktails, DataPackMediaMode::OwnedUpload);
         } catch (Throwable $e) {
             // TODO: Reset "stuck" bar status
             // $bar->status = null;
