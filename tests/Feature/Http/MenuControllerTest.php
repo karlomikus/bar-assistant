@@ -305,6 +305,56 @@ class MenuControllerTest extends TestCase
         );
     }
 
+    public function test_public_menu_reflects_last_updated_time_after_price_change(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar-updated';
+        $bar->save();
+
+        $cocktail = Cocktail::factory()->for($bar)->create();
+
+        $menuPayload = static fn (int $price): array => [
+            'is_enabled' => true,
+            'categories' => [
+                [
+                    'sort' => 1,
+                    'name' => 'Category',
+                    'items' => [
+                        [
+                            'id' => $cocktail->id,
+                            'type' => MenuItemTypeEnum::Cocktail->value,
+                            'sort' => 1,
+                            'price' => $price,
+                            'currency' => 'EUR',
+                            'is_bar_inventory_aware' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->postJson('/api/menu', $menuPayload(200), ['Bar-Assistant-Bar-Id' => $bar->id])->assertNoContent();
+
+        $menu = Menu::where('bar_id', $bar->id)->firstOrFail();
+        $menu->refresh();
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-updated/menu');
+        $response->assertSuccessful();
+        $response->assertJsonPath('data.updated_at', $menu->updated_at?->toAtomString());
+        $firstUpdatedAt = $response->json('data.updated_at');
+
+        $this->travel(1)->minutes();
+
+        $this->postJson('/api/menu', $menuPayload(500), ['Bar-Assistant-Bar-Id' => $bar->id])->assertNoContent();
+
+        $menu->refresh();
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-updated/menu');
+        $response->assertSuccessful();
+        $response->assertJsonPath('data.updated_at', $menu->updated_at?->toAtomString());
+        $this->assertNotSame($firstUpdatedAt, $response->json('data.updated_at'));
+    }
+
     public function test_public_menu_filters_unavailable_inventory_items(): void
     {
         $bar = $this->barMembership->bar;

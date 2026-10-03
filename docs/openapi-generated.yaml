@@ -11027,6 +11027,7 @@ components:
       description: 'Menu resource'
       required:
         - bar
+        - updated_at
         - categories
       properties:
         bar:
@@ -11058,6 +11059,12 @@ components:
                 - 'https://example.com/image1.jpg'
                 - 'https://example.com/image2.jpg'
           type: object
+        updated_at:
+          description: 'Last update date'
+          type:
+            - string
+            - 'null'
+          format: date-time
         categories:
           description: 'List of menu categories'
           type: array
