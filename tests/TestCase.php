@@ -11,12 +11,20 @@ use Kami\Cocktail\Models\User;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\BarMembership;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
+use Spatie\QueryBuilder\QueryBuilderRequest;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+
+    protected function tearDown(): void
+    {
+        QueryBuilderRequest::resetDelimiters();
+
+        parent::tearDown();
+    }
 
     public function setupBar(): Bar
     {

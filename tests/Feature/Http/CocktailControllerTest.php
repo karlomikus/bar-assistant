@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Kami\Cocktail\Models\Bar;
+use Kami\Cocktail\Models\Tag;
 use Kami\Cocktail\Models\Menu;
 use Kami\Cocktail\Models\User;
 use Kami\Cocktail\Models\Glass;
@@ -613,6 +614,71 @@ class CocktailControllerTest extends TestCase
         $invalid->assertJsonValidationErrors(['origin_bar']);
     }
 
+    public function test_cocktail_author_and_origin_bar_reject_reserved_filter_delimiter(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $ingredient = Ingredient::factory()->for($membership->bar)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $invalidAuthor = $this->postJson('/api/cocktails', [
+            'name' => 'Invalid Author',
+            'instructions' => "1. Stir",
+            'author' => 'Jerry|Thomas',
+            'ingredients' => [
+                ['ingredient_id' => $ingredient->id, 'amount' => 60, 'units' => 'ml', 'sort' => 1],
+            ],
+        ]);
+        $invalidAuthor->assertUnprocessable();
+        $invalidAuthor->assertJsonValidationErrors(['author']);
+        $this->assertDatabaseMissing('cocktails', ['name' => 'Invalid Author']);
+
+        $invalidOriginBar = $this->postJson('/api/cocktails', [
+            'name' => 'Invalid Origin Bar',
+            'instructions' => "1. Stir",
+            'origin_bar' => 'American|Bar',
+            'ingredients' => [
+                ['ingredient_id' => $ingredient->id, 'amount' => 60, 'units' => 'ml', 'sort' => 1],
+            ],
+        ]);
+        $invalidOriginBar->assertUnprocessable();
+        $invalidOriginBar->assertJsonValidationErrors(['origin_bar']);
+        $this->assertDatabaseMissing('cocktails', ['name' => 'Invalid Origin Bar']);
+
+        $accepted = $this->postJson('/api/cocktails', [
+            'name' => 'Comma Value',
+            'instructions' => "1. Stir",
+            'author' => 'Thomas, Jerry',
+            'origin_bar' => 'American Bar, London',
+            'ingredients' => [
+                ['ingredient_id' => $ingredient->id, 'amount' => 60, 'units' => 'ml', 'sort' => 1],
+            ],
+        ]);
+        $accepted->assertStatus(201);
+
+        $cocktail = Cocktail::where('bar_id', $membership->bar_id)->where('name', 'Comma Value')->firstOrFail();
+        $this->assertSame('Thomas, Jerry', $cocktail->author);
+        $this->assertSame('American Bar, London', $cocktail->origin_bar);
+
+        $invalidUpdate = $this->putJson('/api/cocktails/' . $cocktail->id, [
+            'name' => 'Comma Value',
+            'instructions' => "1. Stir",
+            'author' => 'Jerry|Thomas',
+            'origin_bar' => 'American|Bar',
+            'ingredients' => [
+                ['ingredient_id' => $ingredient->id, 'amount' => 60, 'units' => 'ml', 'sort' => 1],
+            ],
+        ]);
+        $invalidUpdate->assertUnprocessable();
+        $invalidUpdate->assertJsonValidationErrors(['author', 'origin_bar']);
+
+        $cocktail->refresh();
+        $this->assertSame('Thomas, Jerry', $cocktail->author);
+        $this->assertSame('American Bar, London', $cocktail->origin_bar);
+    }
+
     public function test_cocktail_delete_response(): void
     {
         $this->setupBar();
@@ -1204,7 +1270,7 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonPath('data.0.name', 'Cocktail 1');
 
         // Multiple authors (OR match)
-        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas,Audrey Saunders');
+        $response = $this->getJson('/api/cocktails?filter[author]=Jerry Thomas|Audrey Saunders');
         $response->assertOk();
         $response->assertJsonCount(2, 'data');
 
@@ -1304,7 +1370,7 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonPath('data.0.name', 'Cocktail 1');
 
         // Multiple origin bars (OR match)
-        $response = $this->getJson('/api/cocktails?filter[origin_bar]=American Bar,Harrys Bar');
+        $response = $this->getJson('/api/cocktails?filter[origin_bar]=American Bar|Harrys Bar');
         $response->assertOk();
         $response->assertJsonCount(2, 'data');
 
@@ -1378,6 +1444,91 @@ class CocktailControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
         $response->assertJsonPath('meta.filters.origin_bars.0.name', 'American Bar');
+    }
+
+    public function test_cocktails_filter_multi_value_delimiters(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $tag1 = Tag::factory()->for($membership->bar)->create(['name' => 'Tag One']);
+        $tag2 = Tag::factory()->for($membership->bar)->create(['name' => 'Tag Two']);
+        $tag3 = Tag::factory()->for($membership->bar)->create(['name' => 'Tag Three']);
+
+        $cocktail1 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Tagged One']);
+        $cocktail2 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Tagged Two']);
+        $cocktail3 = Cocktail::factory()->recycle($membership->bar)->create(['name' => 'Tagged Three']);
+        $cocktail1->tags()->attach($tag1);
+        $cocktail2->tags()->attach($tag2);
+        $cocktail3->tags()->attach($tag3);
+
+        // ID/integer facets keep the comma delimiter they have always used
+        $response = $this->getJson('/api/cocktails?filter[tag_id]=' . $tag1->id . ',' . $tag2->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // ID/integer facets also accept the pipe delimiter
+        $response = $this->getJson('/api/cocktails?filter[tag_id]=' . $tag1->id . '|' . $tag2->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        $response = $this->getJson('/api/cocktails?filter[id]=' . $cocktail1->id . '|' . $cocktail3->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Favoriting users are an ID facet and keep comma separation
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+        $membership2 = BarMembership::factory()->recycle($user2, $membership->bar)->create();
+        $membership3 = BarMembership::factory()->recycle($user3, $membership->bar)->create();
+        CocktailFavorite::factory()->recycle($cocktail1, $membership2)->create();
+        CocktailFavorite::factory()->recycle($cocktail2, $membership3)->create();
+
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $user2->id . ',' . $user3->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        $response = $this->getJson('/api/cocktails?filter[favorited_by_user]=' . $user2->id . '|' . $user3->id);
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+    }
+
+    public function test_cocktails_filter_comma_values_match_exactly_and_ignore_empty_entries(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        Cocktail::factory()->recycle($membership->bar)->create([
+            'name' => 'Comma Value',
+            'origin_bar' => 'American Bar, London',
+            'author' => 'Thomas, Jerry',
+        ]);
+        Cocktail::factory()->recycle($membership->bar)->create([
+            'name' => 'Plain Value',
+            'origin_bar' => 'American Bar',
+            'author' => 'Jerry Thomas',
+        ]);
+
+        // A comma inside the origin bar is data and the value matches exactly
+        $response = $this->getJson('/api/cocktails?filter[origin_bar]=' . rawurlencode('American Bar, London'));
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Comma Value');
+
+        // A comma inside the author is data and the value matches exactly
+        $response = $this->getJson('/api/cocktails?filter[author]=' . rawurlencode('Thomas, Jerry'));
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Comma Value');
+
+        // Empty entries in a pipe-separated list are ignored
+        $response = $this->getJson('/api/cocktails?filter[origin_bar]=' . rawurlencode('American Bar, London||American Bar'));
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
     }
 
     public function test_cocktail_show_returns_half_value_user_and_average_ratings(): void

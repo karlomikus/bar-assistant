@@ -1612,7 +1612,7 @@ paths:
         -
           name: filter
           in: query
-          description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.'
+          description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values. The `author` and `origin_bar` filters use a pipe separated list of values.'
           style: deepObject
           explode: true
           schema:
@@ -1633,10 +1633,10 @@ paths:
                 description: 'Filter by creator ID(s)'
                 type: string
               author:
-                description: 'Filter by cocktail author name(s). Comma separated list of author names. Exact match.'
+                description: 'Filter by cocktail author name(s). Pipe separated list of author names. Exact match.'
                 type: string
               origin_bar:
-                description: 'Filter by origin bar name(s). Comma separated list of origin bar names. Exact match.'
+                description: 'Filter by origin bar name(s). Pipe separated list of origin bar names. Exact match.'
                 type: string
               glass_id:
                 description: 'Filter by glass ID(s)'

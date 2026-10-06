@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Filters;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Spatie\QueryBuilder\AllowedSort;
@@ -18,9 +19,20 @@ use Kami\Cocktail\Services\CocktailService;
  */
 final class CocktailQueryFilter extends QueryBuilder
 {
+    /**
+     * Free-text filters whose values may contain commas, so they use the pipe
+     * delimiter and treat commas as data. Every other multi-value filter keeps
+     * the comma delimiter it has always used.
+     *
+     * @var array<int, string>
+     */
+    private const PIPE_DELIMITED_FILTERS = ['author', 'origin_bar'];
+
     public function __construct(CocktailService $cocktailRepo)
     {
-        parent::__construct(Cocktail::query());
+        parent::__construct(Cocktail::query(), $this->normalizeFilterRequest());
+
+        AllowedFilter::setFilterArrayValueDelimiter('|');
 
         $barMembership = $this->request->user()->getBarMembership(bar()->id);
         if (!$barMembership) {
@@ -268,5 +280,34 @@ final class CocktailQueryFilter extends QueryBuilder
             ->filterByBar('cocktails')
             ->with(['bar.shelfIngredients', 'ingredients.ingredient.bar'])
             ->withRatings($this->request->user()->id);
+    }
+
+    /**
+     * Preserve the comma delimiter for every filter except the free-text ones
+     * that may contain commas. Values are rewritten to the pipe delimiter so
+     * existing comma-separated requests keep working for ID/integer facets.
+     */
+    private function normalizeFilterRequest(): Request
+    {
+        /** @var Request $request */
+        $request = request();
+
+        $filters = $request->query('filter');
+        if (!is_array($filters)) {
+            return $request;
+        }
+
+        foreach ($filters as $name => $value) {
+            if (in_array($name, self::PIPE_DELIMITED_FILTERS, true) || !is_string($value)) {
+                continue;
+            }
+
+            $filters[$name] = str_replace(',', '|', $value);
+        }
+
+        $query = $request->query->all();
+        $query['filter'] = $filters;
+
+        return $request->duplicate($query);
     }
 }
