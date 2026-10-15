@@ -6,6 +6,7 @@ namespace Tests\Feature\Http;
 
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
+use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -42,6 +43,45 @@ class ImportControllerTest extends TestCase
 
         $response->assertCreated();
         $response->assertHeader('Location');
+
+        $this->assertDatabaseHas('cocktails', [
+            'bar_id' => $membership->bar_id,
+            'name' => 'Gin and Tonic',
+            'author' => 'John Doe',
+            'origin_bar' => 'Caffe Casoni',
+            'year' => 1919,
+        ]);
+    }
+
+    public function test_import_cocktail_overwrite_updates_metadata(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $existing = Cocktail::factory()->for($membership->bar)->create([
+            'name' => 'Gin and Tonic',
+            'author' => 'Old Author',
+            'origin_bar' => 'Old Bar',
+            'year' => 1999,
+        ]);
+
+        $source = file_get_contents(base_path('tests/fixtures/external/recipe.json'));
+
+        $response = $this->postJson('/api/import/cocktail', [
+            'source' => $source,
+            'duplicate_actions' => 'overwrite',
+        ]);
+
+        $response->assertCreated();
+
+        $this->assertDatabaseHas('cocktails', [
+            'id' => $existing->id,
+            'author' => 'John Doe',
+            'origin_bar' => 'Caffe Casoni',
+            'year' => 1919,
+        ]);
     }
 
     public function test_import_csv_ingredients_from_file(): void

@@ -28,6 +28,12 @@ interface Site
 
     public function garnish(): ?string;
 
+    public function author(): ?string;
+
+    public function originBar(): ?string;
+
+    public function year(): ?int;
+
     /**
      * @return null|array<string, string>
      */

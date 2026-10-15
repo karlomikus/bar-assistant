@@ -150,7 +150,9 @@ final readonly class FromSchema
                 images: $cocktailImages,
                 utensils: [],
                 parentCocktailId: null,
-                year: null,
+                year: $schema->cocktail->year,
+                author: $schema->cocktail->author,
+                originBar: $schema->cocktail->originBar,
             ));
 
             return Cocktail::findOrFail($existingCocktail);
@@ -172,7 +174,9 @@ final readonly class FromSchema
             images: $cocktailImages,
             utensils: [],
             parentCocktailId: null,
-            year: null,
+            year: $schema->cocktail->year,
+            author: $schema->cocktail->author,
+            originBar: $schema->cocktail->originBar,
         ))->id);
     }
 }

@@ -130,6 +130,36 @@ abstract class AbstractSite implements Site
     }
 
     /**
+     * Cocktail author
+     *
+     * @return null|string
+     */
+    public function author(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Cocktail origin bar
+     *
+     * @return null|string
+     */
+    public function originBar(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Year the cocktail was created
+     *
+     * @return null|int
+     */
+    public function year(): ?int
+    {
+        return null;
+    }
+
+    /**
      * Cocktail information as array
      *
      * @return array{schema_version: string, scraper_meta: array<mixed>, schema: array<mixed> }
@@ -174,6 +204,9 @@ abstract class AbstractSite implements Site
             'method' => $this->method(),
             'images' => $images,
             'ingredients' => $ingredients,
+            'author' => $this->clean($this->author()),
+            'origin_bar' => $this->clean($this->originBar()),
+            'year' => $this->year(),
         ]);
 
         $model = new Schema($cocktail);

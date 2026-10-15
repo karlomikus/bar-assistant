@@ -104,6 +104,9 @@ class ExportTypesTest extends TestCase
                 'garnish' => 'Straw and lemon wheel',
                 'slug' => 'test-cocktail-1',
                 'abv' => 32.3,
+                'author' => 'John Doe',
+                'origin_bar' => 'Caffe Casoni',
+                'year' => 1919,
             ]);
     }
 }
