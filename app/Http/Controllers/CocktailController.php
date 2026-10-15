@@ -48,14 +48,14 @@ class CocktailController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
         new BAO\Parameters\PageParameter(),
         new BAO\Parameters\PerPageParameter(),
-        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
+        new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter by attributes. You can specify multiple matching filter values by passing a comma separated list of values. The `author` and `origin_bar` filters use a pipe separated list of values.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'string', description: 'Filter by cocktail ID(s)'),
             new OAT\Property(property: 'name', type: 'string', description: 'Filter by cocktail names(s) (fuzzy search)'),
             new OAT\Property(property: 'ingredient_name', type: 'string', description: 'Filter by cocktail ingredient names(s) (fuzzy search)'),
             new OAT\Property(property: 'tag_id', type: 'string', description: 'Filter by tag ID(s)'),
             new OAT\Property(property: 'created_user_id', type: 'string', description: 'Filter by creator ID(s)'),
-            new OAT\Property(property: 'author', type: 'string', description: 'Filter by cocktail author name(s). Comma separated list of author names. Exact match.'),
-            new OAT\Property(property: 'origin_bar', type: 'string', description: 'Filter by origin bar name(s). Comma separated list of origin bar names. Exact match.'),
+            new OAT\Property(property: 'author', type: 'string', description: 'Filter by cocktail author name(s). Pipe separated list of author names. Exact match.'),
+            new OAT\Property(property: 'origin_bar', type: 'string', description: 'Filter by origin bar name(s). Pipe separated list of origin bar names. Exact match.'),
             new OAT\Property(property: 'glass_id', type: 'string', description: 'Filter by glass ID(s)'),
             new OAT\Property(property: 'cocktail_method_id', type: 'string', description: 'Filter by cocktail method ID(s)'),
             new OAT\Property(property: 'collection_id', type: 'string', description: 'Filter by collection ID(s)'),

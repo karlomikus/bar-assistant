@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Kami\Cocktail\Rules\SubscriberImagesCount;
+use Kami\Cocktail\Rules\NoReservedFilterDelimiter;
 
 class CocktailRequest extends FormRequest
 {
@@ -46,8 +47,8 @@ class CocktailRequest extends FormRequest
             'ingredients.*.ingredient.substitutes.*.ingredient_id' => 'integer',
             'ingredients.*.ingredient.substitutes.*.amount' => 'numeric',
             'ingredients.*.ingredient.substitutes.*.amount_max' => 'nullable|numeric',
-            'author' => 'nullable|string',
-            'origin_bar' => 'nullable|string',
+            'author' => ['nullable', 'string', new NoReservedFilterDelimiter()],
+            'origin_bar' => ['nullable', 'string', new NoReservedFilterDelimiter()],
         ];
     }
 }

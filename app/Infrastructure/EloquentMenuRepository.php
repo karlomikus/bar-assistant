@@ -39,7 +39,10 @@ final class EloquentMenuRepository implements MenuRepository
     {
         $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value]);
         $model->is_enabled = $menu->isEnabled();
-        $model->save();
+        // Ensure updated_at advances on every save, even when only nested
+        // content (prices, availability, categories) changes and is_enabled
+        // stays the same, so the public menu freshness is accurate.
+        $model->touch();
 
         $bar = $model->bar;
         if ($bar === null) {

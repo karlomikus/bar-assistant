@@ -1,3 +1,9 @@
+# v6.9.0
+## New
+- Added last updated at timestamp to menu
+- Origin bar filter now uses pipe `|` as a separator for multiple values
+- Author filter now uses pipe `|` as a separator for multiple values
+
 # v6.8.1
 ## Fixes
 - Fixed server error when submitting empty tag

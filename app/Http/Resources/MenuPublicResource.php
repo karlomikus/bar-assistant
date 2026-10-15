@@ -26,6 +26,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
                 'https://example.com/image2.jpg',
             ]),
         ], required: ['name', 'subtitle', 'description']),
+        new OAT\Property(property: 'updated_at', format: 'date-time', type: 'string', description: 'Last update date', nullable: true),
         new OAT\Property(
             property: 'categories',
             type: 'array',
@@ -49,7 +50,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
                 ], required: ['name', 'items']),
         ),
     ],
-    required: ['bar', 'categories']
+    required: ['bar', 'updated_at', 'categories']
 )]
 class MenuPublicResource extends JsonResource
 {
@@ -72,6 +73,7 @@ class MenuPublicResource extends JsonResource
                     fn () => $this->bar->images->map(fn (Image $image) => $image->getImageUrl())->toArray(),
                 ),
             ],
+            'updated_at' => $this->updated_at?->toAtomString(),
             'categories' => $this->categories
                 ->filter(fn ($category) => $category->is_enabled)
                 ->map(fn ($category) => [
