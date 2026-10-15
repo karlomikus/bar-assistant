@@ -81,13 +81,8 @@ return [
     ],
 
     'ai' => [
-        'mcp_server' => env('ENABLE_MCP_SERVER', false),
         'provider' => env('GEN_AI_PROVIDER', null),
-        'model' => env('GEN_AI_MODEL', null),
-        'timeout' => env('GEN_AI_TIMEOUT', 60),
-        'image' => [
-            'provider' => env('GEN_AI_IMAGE_PROVIDER', null),
-            'model' => env('GEN_AI_IMAGE_MODEL', null),
-        ],
+        'provider_image' => env('GEN_AI_IMAGE_PROVIDER', null),
+        'timeout' => env('GEN_AI_TIMEOUT', 120),
     ],
 ];
