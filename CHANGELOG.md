@@ -1,3 +1,13 @@
+# v6.9.2
+## Fixes
+- Account deletion now revokes all personal access tokens and pending password reset links
+- Anonymized accounts can no longer authenticate, even if an access token still exists
+- Updating a deactivated bar no longer reactivates it
+
+# v6.9.1
+## Fixes
+- Update PHP version in docker build (CVE-2026-109618, CVE-2026-109619)
+
 # v6.9.0
 ## New
 - Added support for custom text and image generation models via `GEN_AI_MODEL` and `GEN_AI_IMAGE_MODEL`

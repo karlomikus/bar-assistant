@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use BarAssistant\Domain\User\User as DomainUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use BarAssistant\Domain\User\UserEmail as DomainUserEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -44,6 +46,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'settings' => AsArrayObject::class,
         ];
+    }
+
+    public function isAnonymized(): bool
+    {
+        return $this->name === DomainUser::ANONYMIZED_NAME
+            && str_starts_with((string) $this->email, DomainUserEmail::DELETED_PREFIX)
+            && $this->password === DomainUser::ANONYMIZED_PASSWORD;
     }
 
     /**

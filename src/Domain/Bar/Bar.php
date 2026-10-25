@@ -112,6 +112,13 @@ final class Bar implements Identity
         return $this->status;
     }
 
+    public function setStatus(BarStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
     /**
      * Returns the bar description
      */

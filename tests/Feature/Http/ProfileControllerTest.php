@@ -10,6 +10,7 @@ use Laravel\Paddle\Cashier;
 use Kami\Cocktail\Models\User;
 use Laravel\Paddle\Subscription;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\AccountDeleted;
@@ -181,6 +182,68 @@ class ProfileControllerTest extends TestCase
         $this->assertSame('deleted', $anonUser->password);
         $this->assertTrue(str_starts_with((string) $anonUser->email, 'userdeleted'));
         $this->assertNull($anonUser->email_verified_at);
+    }
+
+    public function test_delete_profile_revokes_all_access_tokens(): void
+    {
+        Mail::fake();
+
+        $membership = $this->setupBarMembership();
+        $user = $membership->user;
+        $bar = $membership->bar;
+
+        $loginToken = $user->createToken('login');
+        $personalToken = $user->createToken('personal', ['bars.write']);
+
+        $this->withToken($loginToken->plainTextToken)
+            ->deleteJson('/api/profile')
+            ->assertNoContent();
+
+        $this->assertDatabaseMissing('personal_access_tokens', ['tokenable_id' => $user->id]);
+
+        // Simulate a new request so the auth guard does not reuse the previous user
+        Auth::forgetGuards();
+
+        $this->withToken($loginToken->plainTextToken)
+            ->getJson('/api/profile')
+            ->assertUnauthorized();
+
+        $this->withToken($personalToken->plainTextToken)
+            ->putJson('/api/bars/' . $bar->id, ['name' => 'Hijacked bar'])
+            ->assertUnauthorized();
+
+        $this->assertDatabaseHas('bars', [
+            'id' => $bar->id,
+            'name' => $bar->name,
+            'status' => BarStatusEnum::Deactivated->value,
+        ]);
+    }
+
+    public function test_anonymized_user_cannot_authenticate_even_with_a_valid_token(): void
+    {
+        Mail::fake();
+
+        $membership = $this->setupBarMembership();
+        $user = $membership->user;
+
+        $token = $user->createToken('login');
+
+        $this->withToken($token->plainTextToken)
+            ->deleteJson('/api/profile')
+            ->assertNoContent();
+
+        Auth::forgetGuards();
+
+        $anonymizedUser = User::findOrFail($user->id);
+        $ghostToken = $anonymizedUser->createToken('ghost');
+
+        $this->withToken($ghostToken->plainTextToken)
+            ->getJson('/api/profile')
+            ->assertUnauthorized();
+
+        $this->withToken($ghostToken->plainTextToken)
+            ->postJson('/api/profile', ['email' => 'ghost@example.com', 'name' => 'Ghost'])
+            ->assertUnauthorized();
     }
 
     public function test_unauthenticated_access_policy(): void
