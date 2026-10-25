@@ -37,11 +37,13 @@ final readonly class CocktailImageGenerationService
 
         $this->log->info("[LLM] Generating cocktail image for cocktail ID: {$cocktail->id}");
 
+        $model = config('bar-assistant.ai.model_image');
+
         try {
             $response = LaravelAiImage::of($promptConfiguration->prompt)
                 ->portrait()
                 ->timeout(180)
-                ->generate();
+                ->generate(model: is_string($model) && $model !== '' ? $model : null);
         } catch (Throwable $e) {
             $this->log->error('[LLM] generateCocktailImage: Image generation error', [$e->getMessage()]);
 

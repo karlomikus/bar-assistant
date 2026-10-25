@@ -1,5 +1,6 @@
 # v6.9.0
 ## New
+- Added support for custom text and image generation models via `GEN_AI_MODEL` and `GEN_AI_IMAGE_MODEL`
 - Added last updated at timestamp to menu
 - Origin bar filter now uses pipe `|` as a separator for multiple values
 - Author filter now uses pipe `|` as a separator for multiple values

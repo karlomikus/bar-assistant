@@ -93,6 +93,8 @@ Here's a list of interesting environment variables you can set to configure Bar 
 |MAIL_PASSWORD||The mail password.|
 |GEN_AI_PROVIDER||Identifier of LLM provider. Supports any provider that PrismPHP supports.|
 |GEN_AI_MODEL||Specific model to use from the provider.|
+|GEN_AI_IMAGE_PROVIDER||Identifier of image generation provider.|
+|GEN_AI_IMAGE_MODEL||Specific image generation model to use from the provider.|
 |GEN_AI_TIMEOUT|60|Timeout for LLM provider requests in seconds.|
 
 ## Managed instance

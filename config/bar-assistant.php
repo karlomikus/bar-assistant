@@ -82,7 +82,9 @@ return [
 
     'ai' => [
         'provider' => env('GEN_AI_PROVIDER', null),
+        'model' => env('GEN_AI_MODEL', null),
         'provider_image' => env('GEN_AI_IMAGE_PROVIDER', null),
+        'model_image' => env('GEN_AI_IMAGE_MODEL', null),
         'timeout' => env('GEN_AI_TIMEOUT', 120),
     ],
 ];

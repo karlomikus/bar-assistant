@@ -9,10 +9,12 @@ use Laravel\Ai\Promptable;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Kami\Cocktail\GenAI\Concerns\UsesConfiguredModel;
 
 class CompleteIngredientAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
+    use UsesConfiguredModel;
 
     public function instructions(): Stringable|string
     {
