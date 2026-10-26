@@ -1,4 +1,13 @@
-# v6.9.2
+# v6.10.0
+## New
+- Scrape endpoint now allows for scraping author and bar of origin
+- Cache the lookup of Bar Assistant version in VersionCheckService
+- Cocktail schema now includes `year`, `author` and `origin_bar` properties
+
+## Changes
+- Migrated from PrismPHP to Laravel AI SDK
+    - I've tried to keep the ENV configuration the same providers require a change. Please check the [Laravel AI documentation](https://laravel.com/framework/docs/ai-sdk) for more information.
+
 ## Fixes
 - Account deletion now revokes all personal access tokens and pending password reset links
 - Anonymized accounts can no longer authenticate, even if an access token still exists
