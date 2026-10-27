@@ -10,6 +10,8 @@ use BarAssistant\Domain\Exception\DomainException;
 
 final readonly class UserEmail implements Stringable, JsonSerializable
 {
+    public const DELETED_PREFIX = 'userdeleted';
+
     private string $value;
 
     private function __construct(string $value)
@@ -28,7 +30,7 @@ final readonly class UserEmail implements Stringable, JsonSerializable
 
     public static function deletedAddress(): self
     {
-        return new self('userdeleted' . bin2hex(random_bytes(4)) . '@deleted.localhost');
+        return new self(self::DELETED_PREFIX . bin2hex(random_bytes(4)) . '@deleted.localhost');
     }
 
     public function toString(): string

@@ -36,6 +36,7 @@ use Kami\Cocktail\Http\Controllers\SubscriptionController;
 use Kami\Cocktail\Http\Controllers\PriceCategoryController;
 use Kami\Cocktail\Http\Middleware\EnsureRequestHasBarQuery;
 use Kami\Cocktail\Http\Controllers\CocktailMethodController;
+use Kami\Cocktail\Http\Middleware\EnsureUserIsNotAnonymized;
 use Kami\Cocktail\Http\Controllers\MemberInventoryController;
 use Kami\Cocktail\Http\Controllers\TasteDescriptorController;
 use Kami\Cocktail\Http\Controllers\IngredientRatingController;
@@ -53,7 +54,7 @@ use Kami\Cocktail\Http\Middleware\AiImageProviderIsConfigured;
 |
 */
 
-$apiMiddleware = ['auth:sanctum'];
+$apiMiddleware = ['auth:sanctum', EnsureUserIsNotAnonymized::class];
 
 // Add middleware for email verification if configured
 if (config('bar-assistant.mail_require_confirmation') === true) {

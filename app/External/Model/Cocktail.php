@@ -163,7 +163,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             $images,
             $ingredients,
             null,
-            null,
+            isset($sourceArray['year']) && is_int($sourceArray['year']) ? $sourceArray['year'] : null,
             isset($sourceArray['author']) && is_string($sourceArray['author']) ? $sourceArray['author'] : null,
             isset($sourceArray['origin_bar']) && is_string($sourceArray['origin_bar']) ? $sourceArray['origin_bar'] : null,
         );
@@ -184,6 +184,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             'method' => $this->method,
             'images' => array_map(fn ($model) => $model->toSchema4Array(), $this->images),
             'ingredients' => array_map(fn ($model) => $model->toSchema4Array(), $this->ingredients),
+            'year' => $this->year,
             'author' => $this->author,
             'origin_bar' => $this->originBar,
         ];

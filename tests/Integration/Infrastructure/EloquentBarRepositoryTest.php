@@ -12,9 +12,11 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as BarModel;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -141,6 +143,36 @@ final class EloquentBarRepositoryTest extends TestCase
         $repository->delete(new BarId(9999));
 
         $this->assertTrue(true); // Should not throw exception
+    }
+
+    public function test_it_preserves_bar_status_when_saving(): void
+    {
+        $repository = new EloquentBarRepository();
+        $bar = $this->createPersistedBar('Deactivated bar');
+        $bar->setStatus(BarStatus::Deactivated);
+
+        $repository->save($bar);
+
+        $this->assertDatabaseHas('bars', [
+            'id' => $bar->getId()->value,
+            'status' => BarStatusEnum::Deactivated->value,
+        ]);
+
+        $foundBar = $repository->findById($bar->getId());
+        $this->assertNotNull($foundBar);
+        $this->assertSame(BarStatus::Deactivated, $foundBar->getStatus());
+
+        $foundBar->updateDetails(
+            Name::fromString('Deactivated bar renamed'),
+            new UserId($foundBar->getAuthors()->getCreatedBy()->value),
+        );
+        $repository->save($foundBar);
+
+        $this->assertDatabaseHas('bars', [
+            'id' => $bar->getId()->value,
+            'name' => 'Deactivated bar renamed',
+            'status' => BarStatusEnum::Deactivated->value,
+        ]);
     }
 
     private function createPersistedBar(string $name = 'Bar name'): Bar

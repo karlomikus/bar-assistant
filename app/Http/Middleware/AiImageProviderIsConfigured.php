@@ -4,7 +4,6 @@ namespace Kami\Cocktail\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Prism\Prism\Enums\Provider;
 use Symfony\Component\HttpFoundation\Response;
 
 class AiImageProviderIsConfigured
@@ -16,7 +15,7 @@ class AiImageProviderIsConfigured
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $provider = Provider::tryFrom(config('bar-assistant.ai.image.provider'));
+        $provider = config('bar-assistant.ai.provider_image');
         if ($provider === null) {
             abort(400, 'Image AI provider not configured or not supported');
         }

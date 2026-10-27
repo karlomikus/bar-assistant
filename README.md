@@ -91,9 +91,10 @@ Here's a list of interesting environment variables you can set to configure Bar 
 |MAIL_ENCRYPTION||The mail encryption method.|
 |MAIL_USERNAME||The mail username.|
 |MAIL_PASSWORD||The mail password.|
-|GEN_AI_PROVIDER||Identifier of LLM provider. Supports any provider that PrismPHP supports.|
-|GEN_AI_MODEL||Specific model to use from the provider.|
-|GEN_AI_TIMEOUT|60|Timeout for LLM provider requests in seconds.|
+|GEN_AI_PROVIDER||Identifier of the LLM provider supported by the Laravel AI SDK (e.g. `openai`, `anthropic`, `ollama`).|
+|GEN_AI_MODEL||Optional specific text model to use from the provider. Required for `openai-compatible` providers.|
+|GEN_AI_IMAGE_PROVIDER||Identifier of an image-capable provider (e.g. `openai`, `gemini`).|
+|GEN_AI_IMAGE_MODEL||Optional specific image generation model to use from the provider.|
 
 ## Managed instance
 

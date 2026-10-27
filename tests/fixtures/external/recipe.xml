@@ -24,6 +24,7 @@
     <note>Ingredient note</note>
     <substitutes/>
   </ingredients>
-  <author></author>
-  <origin_bar></origin_bar>
+  <year>1919</year>
+  <author>John Doe</author>
+  <origin_bar>Caffe Casoni</origin_bar>
 </schema4>

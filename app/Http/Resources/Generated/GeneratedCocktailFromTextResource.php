@@ -16,6 +16,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'garnish', type: 'string', nullable: true, example: 'Orange peel.', description: 'Generated garnish of the cocktail'),
         new OAT\Property(property: 'instructions', type: 'string', example: '1. Muddle mint leaves with sugar and lime juice in a glass.\n2. Add ice cubes and pour in the white rum.\n3. Top up with soda water and stir gently.\n4. Garnish with a sprig of mint and a lime wedge.', description: 'Generated preparation instructions for the cocktail'),
         new OAT\Property(property: 'method', type: 'string', example: 'Shake', description: 'Generated cocktail method'),
+        new OAT\Property(property: 'author', type: 'string', nullable: true, example: 'Donn Beach', description: 'Generated author or creator of the cocktail'),
+        new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 1934, description: 'Year the cocktail was created or first published'),
+        new OAT\Property(property: 'origin_bar', type: 'string', nullable: true, example: 'American Bar, London', description: 'Historical bar or venue where the cocktail was created'),
         new OAT\Property(
             property: 'ingredients',
             type: 'array',

@@ -10,11 +10,13 @@ use SensitiveParameter;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Domain\Common\RecordTimestamps;
-use BarAssistant\Domain\User\Event\UserAnonymized;
 use BarAssistant\Domain\User\Event\UserProfileUpdated;
 
 final class User implements Identity
 {
+    public const ANONYMIZED_NAME = 'Deleted User';
+    public const ANONYMIZED_PASSWORD = 'deleted';
+
     private ?UserId $id = null;
 
     private function __construct(
@@ -163,25 +165,11 @@ final class User implements Identity
             throw new DomainException('Cannot anonymize a transient user');
         }
 
-        $email = $this->email;
-        $this->name = UserName::fromString('Deleted User');
+        $this->name = UserName::fromString(self::ANONYMIZED_NAME);
         $this->email = UserEmail::deletedAddress();
         $this->emailVerifiedAt = null;
-        $this->passwordHash = 'deleted';
+        $this->passwordHash = self::ANONYMIZED_PASSWORD;
         $this->timestamps = $this->timestamps->updatedNow();
-
-        $updatedAt = $this->timestamps->getUpdatedAt();
-
-        $userId = $this->getId();
-        if ($userId === null) {
-            throw new DomainException('User ID must be set before publishing events');
-        }
-
-        DomainEventDispatcher::instance()->publish(new UserAnonymized(
-            userId: $userId->value,
-            originalEmail: $email->toString(),
-            anonymizedAt: $updatedAt ?? new DateTimeImmutable(),
-        ));
 
         return $this;
     }
@@ -193,8 +181,8 @@ final class User implements Identity
 
     public function isAnonymous(): bool
     {
-        return $this->name->toString() === 'Deleted User'
-            && str_starts_with($this->email->toString(), 'userdeleted')
-            && $this->passwordHash === 'deleted';
+        return $this->name->toString() === self::ANONYMIZED_NAME
+            && str_starts_with($this->email->toString(), UserEmail::DELETED_PREFIX)
+            && $this->passwordHash === self::ANONYMIZED_PASSWORD;
     }
 }

@@ -7,8 +7,11 @@ namespace Tests\Integration\Infrastructure\DomainEventSubscriber;
 use Tests\TestCase;
 use DateTimeImmutable;
 use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Kami\Cocktail\Mail\AccountDeleted;
 use BarAssistant\Domain\Event\DomainEvent;
+use BarAssistant\Domain\User\Event\UserAnonymized;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Infrastructure\DomainEventSubscriber\CleanupUserAnonymizedSubscriber;
 
@@ -36,6 +39,31 @@ final class CleanupUserAnonymizedSubscriberTest extends TestCase
         $subscriber = new CleanupUserAnonymizedSubscriber();
 
         $this->assertSame(['userAnonymized'], $subscriber->subscribedTo());
+    }
+
+    public function test_it_revokes_access_tokens_and_password_reset_tokens(): void
+    {
+        Mail::fake();
+        $user = User::factory()->create(['email' => 'deleted@example.com']);
+        $user->createToken('login');
+        $user->createToken('personal', ['bars.write']);
+
+        DB::table('password_resets')->insert([
+            'email' => 'deleted@example.com',
+            'token' => 'reset-token',
+            'created_at' => now(),
+        ]);
+
+        $subscriber = new CleanupUserAnonymizedSubscriber();
+        $subscriber->handle(new UserAnonymized(
+            userId: $user->id,
+            originalEmail: 'deleted@example.com',
+            anonymizedAt: new DateTimeImmutable(),
+        ));
+
+        $this->assertDatabaseMissing('personal_access_tokens', ['tokenable_id' => $user->id]);
+        $this->assertDatabaseMissing('password_resets', ['email' => 'deleted@example.com']);
+        Mail::assertQueued(AccountDeleted::class);
     }
 
     private function dummyEvent(): DomainEvent

@@ -1,5 +1,25 @@
+# v6.10.0
+## New
+- Scrape endpoint now allows for scraping author and bar of origin
+- Cache the lookup of Bar Assistant version in VersionCheckService
+- Cocktail schema now includes `year`, `author` and `origin_bar` properties
+
+## Changes
+- Migrated from PrismPHP to Laravel AI SDK
+    - I've tried to keep the ENV configuration the same providers require a change. Please check the [Laravel AI documentation](https://laravel.com/framework/docs/ai-sdk) for more information.
+
+## Fixes
+- Account deletion now revokes all personal access tokens and pending password reset links
+- Anonymized accounts can no longer authenticate, even if an access token still exists
+- Updating a deactivated bar no longer reactivates it
+
+# v6.9.1
+## Fixes
+- Update PHP version in docker build (CVE-2026-109618, CVE-2026-109619)
+
 # v6.9.0
 ## New
+- Added support for custom text and image generation models via `GEN_AI_MODEL` and `GEN_AI_IMAGE_MODEL`
 - Added last updated at timestamp to menu
 - Origin bar filter now uses pipe `|` as a separator for multiple values
 - Author filter now uses pipe `|` as a separator for multiple values

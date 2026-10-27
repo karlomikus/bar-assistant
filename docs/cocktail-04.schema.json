@@ -76,6 +76,23 @@
             "minLength": 1,
             "examples": ["Shake"]
         },
+        "year": {
+            "description": "Year the cocktail was created",
+            "type": ["integer", "null"],
+            "examples": [1919]
+        },
+        "author": {
+            "description": "Author of the recipe",
+            "type": ["string", "null"],
+            "minLength": 1,
+            "examples": ["John Doe"]
+        },
+        "origin_bar": {
+            "description": "Bar where the cocktail originated",
+            "type": ["string", "null"],
+            "minLength": 1,
+            "examples": ["Death&Co"]
+        },
         "images": {
             "description": "List of cocktail images",
             "type": "array",

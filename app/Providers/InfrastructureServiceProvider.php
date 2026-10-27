@@ -21,6 +21,7 @@ use BarAssistant\Domain\Bar\BarInventoryRepository;
 use BarAssistant\Domain\Cocktail\UtensilRepository;
 use BarAssistant\Domain\Cocktail\CocktailRepository;
 use BarAssistant\Domain\Bar\MemberInventoryRepository;
+use BarAssistant\Application\Common\TransactionManager;
 use Kami\Cocktail\Infrastructure\EloquentBarRepository;
 use BarAssistant\Domain\Calculator\CalculatorRepository;
 use BarAssistant\Domain\Ingredient\IngredientRepository;
@@ -39,6 +40,7 @@ use Kami\Cocktail\Infrastructure\EloquentReviewRepository;
 use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
+use Kami\Cocktail\Infrastructure\EloquentTransactionManager;
 use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
@@ -84,6 +86,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(CalculatorRepository::class, EloquentCalculatorRepository::class);
         $this->app->bind(RecommendationRepository::class, EloquentRecommendationRepository::class);
         $this->app->bind(ExportRepository::class, EloquentExportRepository::class);
+        $this->app->bind(TransactionManager::class, EloquentTransactionManager::class);
         $this->app->bind(FileTokenService::class, fn () => new FileTokenService(config('app.key')));
         $this->app->bind(ExportService::class);
     }

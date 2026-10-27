@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace BarAssistant\Application\User;
 
+use DateTimeImmutable;
 use BarAssistant\Domain\User\User;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\User\UserName;
 use BarAssistant\Domain\User\UserEmail;
 use BarAssistant\Domain\User\UserSettings;
 use BarAssistant\Domain\User\UserRepository;
+use BarAssistant\Domain\DomainEventDispatcher;
 use BarAssistant\Application\User\DTO\UserResult;
+use BarAssistant\Domain\User\Event\UserAnonymized;
+use BarAssistant\Application\Common\TransactionManager;
 use BarAssistant\Application\User\DTO\UpdateUserProfile;
 use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\RegisterUserRequest;
@@ -23,6 +27,7 @@ final readonly class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
+        private TransactionManager $transactionManager,
     ) {
     }
 
@@ -78,8 +83,19 @@ final readonly class UserService
             throw new EntityNotFoundException('User not found');
         }
 
+        $originalEmail = $user->getEmail()->toString();
         $user->makeAnonymous();
-        $this->userRepository->save($user);
+
+        $this->transactionManager->transaction(function () use ($user, $request, $originalEmail): void {
+            $savedUser = $this->userRepository->save($user);
+
+            // Published after persistence so subscribers never observe a partially anonymized account
+            DomainEventDispatcher::instance()->publish(new UserAnonymized(
+                userId: $request->userId,
+                originalEmail: $originalEmail,
+                anonymizedAt: $savedUser->getUpdatedAt() ?? new DateTimeImmutable(),
+            ));
+        });
     }
 
     public function changePassword(ChangePasswordRequest $request): void

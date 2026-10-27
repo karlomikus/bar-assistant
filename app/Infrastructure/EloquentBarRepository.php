@@ -18,6 +18,7 @@ use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
+use Kami\Cocktail\Models\Enums\BarStatusEnum;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Bar\StandardDrinkRegion;
 use BarAssistant\Domain\Common\RecordTimestamps;
@@ -121,6 +122,12 @@ final class EloquentBarRepository implements BarRepository
             subtitle: $model->subtitle,
             description: $model->description,
         )->setId(new BarId($model->id));
+
+        $bar->setStatus(match ($model->status) {
+            BarStatusEnum::Provisioning->value => BarStatus::Provisioning,
+            BarStatusEnum::Deactivated->value => BarStatus::Deactivated,
+            default => BarStatus::Active,
+        });
 
         if ($model->is_public) {
             $bar->makePublic();
