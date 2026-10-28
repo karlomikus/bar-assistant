@@ -15,4 +15,5 @@ return RectorConfig::configure()
     ->withPhpSets()
     ->withComposerBased(
         laravel: true,
+        phpunit: true,
     );
