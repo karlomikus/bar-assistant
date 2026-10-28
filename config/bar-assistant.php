@@ -86,5 +86,6 @@ return [
         'provider_image' => env('GEN_AI_IMAGE_PROVIDER', null),
         'model_image' => env('GEN_AI_IMAGE_MODEL', null),
         'timeout' => env('GEN_AI_TIMEOUT', 120),
+        'image_supports_reference' => env('GEN_AI_IMAGE_SUPPORTS_REFERENCE', true),
     ],
 ];
