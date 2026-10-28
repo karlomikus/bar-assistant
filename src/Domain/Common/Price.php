@@ -20,7 +20,7 @@ final readonly class Price
 
     public static function createFromFloat(float $decimalAmount, string $currency): self
     {
-        return new self(Money::of($decimalAmount, $currency, roundingMode: RoundingMode::UP));
+        return new self(Money::of(number_format($decimalAmount, 2, '.', ''), $currency, roundingMode: RoundingMode::Up));
     }
 
     public function getMoney(): Money
