@@ -216,7 +216,7 @@ class ImageUploadServiceTest extends TestCase
         ]);
         $filesystem->put('temp/new-image.webp', 'new image content');
 
-        $result = (new ImageUploadService($filesystem, new NullLogger(), new ImageStorageService()))->changeImage(
+        $result = new ImageUploadService($filesystem, new NullLogger(), new ImageStorageService())->changeImage(
             $image->id,
             new ImageUploadResult(path: 'temp/new-image.webp', extension: 'webp', placeholderHash: 'new-hash'),
         );

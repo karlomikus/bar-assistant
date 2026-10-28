@@ -39,7 +39,7 @@ class CollectionController extends Controller
     ])]
     public function index(): JsonResource
     {
-        $collections = (new CollectionQueryFilter())->get();
+        $collections = new CollectionQueryFilter()->get();
 
         return CollectionResource::collection($collections);
     }

@@ -83,7 +83,7 @@ final class EloquentIngredientHierarchyRepository implements IngredientHierarchy
     public function saveHierarchyMove(IngredientHierarchyNode $movedNode, array $descendants): void
     {
         $nodes = [$movedNode, ...$descendants];
-        $table = (new ModelIngredient())->getTable();
+        $table = new ModelIngredient()->getTable();
 
         $materializedPathCase = 'CASE id';
         $parentIdCase = 'CASE id';

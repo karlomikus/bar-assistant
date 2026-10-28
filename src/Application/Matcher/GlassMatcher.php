@@ -15,7 +15,7 @@ final class GlassMatcher
     private array $matchedGlasses = [];
 
     public function __construct(
-        private GlassRepository $glassRepository,
+        private readonly GlassRepository $glassRepository,
     ) {
     }
 

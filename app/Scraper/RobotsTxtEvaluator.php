@@ -11,7 +11,7 @@ namespace Kami\Cocktail\Scraper;
  * - No percent-encoding normalization of URLs
  * - No sitemap:, crawl-delay:, or mime: rules are handled
  */
-final class RobotsTxtEvaluator
+final readonly class RobotsTxtEvaluator
 {
     /**
      * Parsed rule groups.
@@ -21,9 +21,9 @@ final class RobotsTxtEvaluator
      *     rules: list<array{regex: string, allow: bool}>
      * }>
      */
-    private readonly array $groups;
+    private array $groups;
 
-    public function __construct(private readonly string $content)
+    public function __construct(private string $content)
     {
         $this->groups = $this->parse($content);
     }

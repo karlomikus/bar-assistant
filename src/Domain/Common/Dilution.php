@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BarAssistant\Domain\Common;
 
-final readonly class Dilution
+final readonly class Dilution implements \Stringable
 {
     private function __construct(private float $value)
     {

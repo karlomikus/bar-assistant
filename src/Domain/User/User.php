@@ -14,8 +14,8 @@ use BarAssistant\Domain\User\Event\UserProfileUpdated;
 
 final class User implements Identity
 {
-    public const ANONYMIZED_NAME = 'Deleted User';
-    public const ANONYMIZED_PASSWORD = 'deleted';
+    public const string ANONYMIZED_NAME = 'Deleted User';
+    public const string ANONYMIZED_PASSWORD = 'deleted';
 
     private ?UserId $id = null;
 

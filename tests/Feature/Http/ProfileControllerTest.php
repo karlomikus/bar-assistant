@@ -140,7 +140,7 @@ class ProfileControllerTest extends TestCase
             'subscriptions*' => [
                 'data' => [
                     'status' => 'active',
-                    'canceled_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
+                    'canceled_at' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
                     'management_urls' => [
                         'update_payment_method' => 'https://localhost/test-update',
                         'cancel' => 'https://localhost/test-cancel',

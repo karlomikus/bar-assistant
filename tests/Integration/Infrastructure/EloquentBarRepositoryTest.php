@@ -192,6 +192,6 @@ final class EloquentBarRepositoryTest extends TestCase
             ),
         );
 
-        return (new EloquentBarRepository())->save($bar);
+        return new EloquentBarRepository()->save($bar);
     }
 }

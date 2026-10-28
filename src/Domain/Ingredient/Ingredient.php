@@ -93,7 +93,7 @@ final class Ingredient implements Identity
         ?IngredientId $parentIngredientId = null,
         ?MaterializedPath $materializedPath = null,
     ): self {
-        $materializedPath = $materializedPath ?? MaterializedPath::root();
+        $materializedPath ??= MaterializedPath::root();
 
         self::guardHierarchyState(
             parentIngredientId: $parentIngredientId,

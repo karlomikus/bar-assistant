@@ -15,7 +15,7 @@ final class MethodMatcher
     private array $matchedMethods = [];
 
     public function __construct(
-        private CocktailMethodRepository $methodRepository,
+        private readonly CocktailMethodRepository $methodRepository,
     ) {
     }
 

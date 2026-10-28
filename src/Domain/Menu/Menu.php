@@ -14,10 +14,10 @@ final class Menu implements Identity
      * @param MenuCategory[] $categories
      */
     private function __construct(
-        private MenuId $id,
-        private BarId $barId,
+        private readonly MenuId $id,
+        private readonly BarId $barId,
         private array $categories,
-        private RecordTimestamps $recordTimestamps,
+        private readonly RecordTimestamps $recordTimestamps,
         private bool $enabled = false,
     ) {
     }

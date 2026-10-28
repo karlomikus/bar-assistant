@@ -72,7 +72,7 @@ class IngredientController extends Controller
     public function index(\Kami\Cocktail\Services\IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->input('per_page', 50));
+            $ingredients = new IngredientQueryFilter($ingredientQuery)->paginate($request->input('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }

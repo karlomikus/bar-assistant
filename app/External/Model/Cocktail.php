@@ -219,7 +219,7 @@ readonly class Cocktail implements SupportsDataPack, SupportsSchema4, SupportsJS
             "recipeCategory" => "Drink",
             "recipeCuisine" => "Cocktail",
             "keywords" => implode(', ', $this->tags),
-            "recipeIngredient" => array_map(fn (CocktailIngredient $ci) => (new CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional))->format(), $this->ingredients),
+            "recipeIngredient" => array_map(fn (CocktailIngredient $ci) => new CocktailIngredientFormatter($ci->amount, $ci->ingredient->name, $ci->optional)->format(), $this->ingredients),
         ], ['image' => $image]);
 
         if ($data = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) {

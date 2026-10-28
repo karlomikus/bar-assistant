@@ -75,7 +75,7 @@ class BarResource extends JsonResource
     public function toArray($request)
     {
         $settings = is_array($this->settings) ? $this->settings : [];
-        $settings['standard_drink_region'] = $settings['standard_drink_region'] ?? 'uk';
+        $settings['standard_drink_region'] ??= 'uk';
 
         return [
             'id' => $this->id,

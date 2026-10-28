@@ -164,6 +164,6 @@ class IngredientReviewController extends Controller
     {
         $descriptors = $request->input('taste_descriptors', []);
 
-        return is_array($descriptors) ? array_values(array_map('strval', $descriptors)) : [];
+        return is_array($descriptors) ? array_values(array_map(strval(...), $descriptors)) : [];
     }
 }

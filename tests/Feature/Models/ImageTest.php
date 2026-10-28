@@ -81,7 +81,7 @@ class ImageTest extends TestCase
         Image::factory()->for($ingredient, 'imageable')->create(['file_path' => 'ingredients/' . $bar->id . '/i.png']);
         Image::factory()->for($glass, 'imageable')->create(['file_path' => 'glasses/' . $bar->id . '/g.jpg']);
 
-        $images = (new Image())->getAllBarImages($bar->id);
+        $images = new Image()->getAllBarImages($bar->id);
 
         $this->assertCount(3, $images);
         $types = $images->pluck('imageable_type')->unique()->values()->all();

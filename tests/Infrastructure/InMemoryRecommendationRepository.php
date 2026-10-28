@@ -13,7 +13,7 @@ use BarAssistant\Domain\Recommendation\WeightedIngredient;
 use BarAssistant\Domain\Recommendation\CocktailWithDetails;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
 
-final class InMemoryRecommendationRepository implements RecommendationRepository
+final readonly class InMemoryRecommendationRepository implements RecommendationRepository
 {
     /**
      * @param CocktailWithDetails[] $cocktails
@@ -39,7 +39,7 @@ final class InMemoryRecommendationRepository implements RecommendationRepository
      * @param CocktailId[] $excludeIds
      * @return CocktailWithDetails[]
      */
-    public function getApplicableCocktails(BarId $barId, array $excludeIds): array
+    public function getApplicableCocktails(BarId $barId, ?array $excludeIds = null): array
     {
         $excludeValues = array_map(
             fn (CocktailId $id) => $id->value,

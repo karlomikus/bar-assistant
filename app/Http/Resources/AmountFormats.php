@@ -53,7 +53,7 @@ final readonly class AmountFormats implements JsonSerializable
                 'amount' => $convertedAmount->amountMin,
                 'amount_max' => $convertedAmount->amountMax,
                 'units' => $convertedAmount->units->value,
-                'full_text' => (new CocktailIngredientFormatter($convertedAmount, $this->cocktailIngredient->ingredient->name, $this->cocktailIngredient->optional))->format(),
+                'full_text' => new CocktailIngredientFormatter($convertedAmount, $this->cocktailIngredient->ingredient->name, $this->cocktailIngredient->optional)->format(),
             ];
         }
 

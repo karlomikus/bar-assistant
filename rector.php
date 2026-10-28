@@ -12,6 +12,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
         __DIR__ . '/src',
     ])
+    ->withPhpSets()
     ->withComposerBased(
         laravel: true,
     );

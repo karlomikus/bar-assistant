@@ -33,7 +33,7 @@ class NoteController extends Controller
     ])]
     public function index(Request $request): JsonResource
     {
-        $notes = (new NoteQueryFilter())->paginate($request->query('per_page', 100));
+        $notes = new NoteQueryFilter()->paginate($request->query('per_page', 100));
 
         return NoteResource::collection($notes->withQueryString());
     }

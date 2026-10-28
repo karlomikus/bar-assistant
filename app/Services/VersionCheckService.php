@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 final class VersionCheckService
 {
-    private const CACHE_KEY = 'ba:latest_version';
+    private const string CACHE_KEY = 'ba:latest_version';
     private const CACHE_TTL = 60 * 60;
     private const CACHE_TTL_ON_FAILURE = 60 * 15;
 

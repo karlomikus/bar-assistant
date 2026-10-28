@@ -37,7 +37,7 @@ class BarImportRecipes extends Command
      */
     protected $description = 'Import recipes exported as a Bar Assistant datapack';
 
-    public function __construct(private readonly FromDataPack $importer, private BarService $barService, private MemberService $memberService)
+    public function __construct(private readonly FromDataPack $importer, private readonly BarService $barService, private readonly MemberService $memberService)
     {
         parent::__construct();
     }

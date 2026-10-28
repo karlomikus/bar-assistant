@@ -32,7 +32,7 @@ final class EloquentNoteRepositoryTest extends TestCase
             recordTimestamps: RecordTimestamps::createdAt(new DateTimeImmutable('2025-01-01 12:00:00')),
         );
 
-        return (new EloquentNoteRepository())->save($note);
+        return new EloquentNoteRepository()->save($note);
     }
 
     public function test_it_saves_note(): void
