@@ -497,7 +497,8 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
      * @param int $userId
      * @return Builder<self>
      */
-    public function scopeWithRatings(Builder $query, int $userId): Builder
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function withRatings(Builder $query, int $userId): Builder
     {
         $this->loadMissing('ratings');
 
@@ -516,7 +517,8 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     /**
      * @param Builder<self> $query
      */
-    public function scopeWithInBarShelfColumn(Builder $query): void
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function withInBarShelfColumn(Builder $query): void
     {
         $query
             ->leftJoin('bar_ingredients AS bi', function ($join) {

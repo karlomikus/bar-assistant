@@ -143,7 +143,7 @@ class ShoppingListController extends Controller
         }
 
         $barMembership = $user->getBarMembership(bar()->id);
-        $type = $request->get('type', 'markdown');
+        $type = $request->input('type', 'markdown');
 
         $shoppingListIngredients = $barMembership
             ->shoppingListIngredients

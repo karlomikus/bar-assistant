@@ -18,13 +18,6 @@ class CocktailIngredient extends BaseModel
 
     public $timestamps = false;
 
-    protected $casts = [
-        'is_specified' => 'boolean',
-        'optional' => 'boolean',
-        'amount' => 'float',
-        'amount_max' => 'float',
-    ];
-
     /**
      * @return BelongsTo<Ingredient, $this>
      */
@@ -111,5 +104,14 @@ class CocktailIngredient extends BaseModel
             ->where('price_category_id', $priceCategory->id)
             ->where('units', $this->units)
             ->first();
+    }
+    protected function casts(): array
+    {
+        return [
+            'is_specified' => 'boolean',
+            'optional' => 'boolean',
+            'amount' => 'float',
+            'amount_max' => 'float',
+        ];
     }
 }

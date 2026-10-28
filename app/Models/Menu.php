@@ -13,10 +13,6 @@ class Menu extends BaseModel
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuFactory> */
     use HasFactory;
 
-    protected $casts = [
-        'is_enabled' => 'boolean',
-    ];
-
     protected $fillable = ['bar_id'];
 
     protected $with = [
@@ -42,5 +38,11 @@ class Menu extends BaseModel
     public function bar(): BelongsTo
     {
         return $this->belongsTo(Bar::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'is_enabled' => 'boolean',
+        ];
     }
 }

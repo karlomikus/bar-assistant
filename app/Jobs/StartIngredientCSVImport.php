@@ -16,10 +16,7 @@ use Kami\Cocktail\External\Import\FromIngredientCSV;
 
 class StartIngredientCSVImport implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     /**
      * Create a new job instance.

@@ -43,11 +43,6 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
     use HasBarAwareScope;
     use HasAuthors;
 
-    protected $casts = [
-        'public_at' => 'datetime',
-        'public_expires_at' => 'datetime',
-    ];
-
     public function getUploadPath(): string
     {
         return 'cocktails/' . $this->bar_id . '/';
@@ -272,7 +267,8 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
      * @param array<int> $barMembershipIds
      * @return Builder<Cocktail>
      */
-    public function scopeUserFavorites(Builder $baseQuery, array $barMembershipIds): Builder
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function userFavorites(Builder $baseQuery, array $barMembershipIds): Builder
     {
         return $baseQuery->whereIn('cocktails.id', function (\Illuminate\Database\Query\Builder $query) use ($barMembershipIds) {
             $query->select('cocktail_id')
@@ -288,7 +284,8 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
      * @param int $userId
      * @return Builder<Cocktail>
      */
-    public function scopeWithRatings(Builder $query, int $userId): Builder
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function withRatings(Builder $query, int $userId): Builder
     {
         $this->loadMissing('ratings');
 
@@ -438,5 +435,12 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
         ]);
 
         return $this;
+    }
+    protected function casts(): array
+    {
+        return [
+            'public_at' => 'datetime',
+            'public_expires_at' => 'datetime',
+        ];
     }
 }

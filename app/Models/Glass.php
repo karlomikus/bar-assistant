@@ -32,9 +32,11 @@ class Glass extends BaseModel implements IsExternalized
         return Str::slug($this->name) . '_' . $this->id;
     }
 
-    public function getSlugAttribute(): string
+    protected function slug(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        return Str::slug($this->name);
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
+            return Str::slug($this->name);
+        });
     }
 
     /**

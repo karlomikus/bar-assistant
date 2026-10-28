@@ -506,7 +506,7 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $request->get('limit', 5));
+        $relatedCocktailIds = $cocktailRepo->getSimilarCocktails($cocktail, $request->input('limit', 5));
         $relatedCocktails = Cocktail::whereIn('id', $relatedCocktailIds)
             ->with(
                 'images',

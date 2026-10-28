@@ -15,10 +15,7 @@ use BarAssistant\Application\Export\ExportService;
 
 class StartTypedExport implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     public function __construct(
         private readonly int $barId,

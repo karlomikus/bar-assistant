@@ -16,10 +16,7 @@ use Kami\Cocktail\External\Import\DataPackMediaMode;
 
 class SetupBar implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     public function __construct(
         private readonly int $barId,

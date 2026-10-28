@@ -19,10 +19,7 @@ use Kami\Cocktail\External\Import\DataPackMediaMode;
 
 class SyncBarRecipes implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use \Illuminate\Foundation\Queue\Queueable;
 
     public function __construct(
         #[WithoutRelations]
