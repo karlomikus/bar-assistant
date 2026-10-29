@@ -76,7 +76,7 @@ final readonly class RatingService
         $ratingId = $rating->getId();
 
         return new RatingResult(
-            id: $ratingId?->value ?? 0,
+            id: $ratingId->value ?? 0,
             rateableId: $rating->getRateableId()->value,
             barMembershipId: $rating->getMemberId()->value,
             value: $rating->getValue()->value,
