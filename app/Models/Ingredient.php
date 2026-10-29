@@ -208,10 +208,8 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
 
         return $descriptors
             ->unique('id')
-            ->sort(function (TasteDescriptor $a, TasteDescriptor $b) use ($usageCounts): int {
-                return ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
-                    ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name));
-            })
+            ->sort(fn (TasteDescriptor $a, TasteDescriptor $b): int => ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
+                ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name)))
             ->take(7)
             ->values();
     }
@@ -497,7 +495,8 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
      * @param int $userId
      * @return Builder<self>
      */
-    public function scopeWithRatings(Builder $query, int $userId): Builder
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function withRatings(Builder $query, int $userId): Builder
     {
         $this->loadMissing('ratings');
 
@@ -516,7 +515,8 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     /**
      * @param Builder<self> $query
      */
-    public function scopeWithInBarShelfColumn(Builder $query): void
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function withInBarShelfColumn(Builder $query): void
     {
         $query
             ->leftJoin('bar_ingredients AS bi', function ($join) {

@@ -72,7 +72,7 @@ class IngredientController extends Controller
     public function index(\Kami\Cocktail\Services\IngredientService $ingredientQuery, Request $request): JsonResource
     {
         try {
-            $ingredients = (new IngredientQueryFilter($ingredientQuery))->paginate($request->input('per_page', 50));
+            $ingredients = new IngredientQueryFilter($ingredientQuery)->paginate($request->input('per_page', 50));
         } catch (InvalidFilterQuery $e) {
             abort(400, $e->getMessage());
         }
@@ -337,7 +337,7 @@ class IngredientController extends Controller
             )
             ->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->orderBy('name')->paginate($request->get('per_page', 100));
+        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->orderBy('name')->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails);
     }
@@ -369,7 +369,7 @@ class IngredientController extends Controller
             ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
             ->pluck('cocktail_ingredient_substitutes.ingredient_id');
 
-        $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->get('per_page', 100));
+        $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->input('per_page', 100));
 
         return IngredientBasicResource::collection($cocktails);
     }

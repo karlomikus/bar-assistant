@@ -79,17 +79,15 @@ class CalculatorController extends Controller
             barId: bar()->id,
             name: $requestSchema->name,
             description: $requestSchema->description,
-            blocks: array_map(static function (CalculatorBlockRequest $block) {
-                return new CreateCalculatorBlock(
-                    label: $block->label,
-                    variableName: $block->variableName,
-                    value: $block->value,
-                    type: $block->type->value,
-                    settings: $block->settings->toArray(),
-                    description: $block->description,
-                    sort: $block->sort,
-                );
-            }, $requestSchema->blocks),
+            blocks: array_map(static fn (CalculatorBlockRequest $block) => new CreateCalculatorBlock(
+                label: $block->label,
+                variableName: $block->variableName,
+                value: $block->value,
+                type: $block->type->value,
+                settings: $block->settings->toArray(),
+                description: $block->description,
+                sort: $block->sort,
+            ), $requestSchema->blocks),
         ));
 
         return new Response(status: 201, headers: ['Location' => route('calculators.show', $calculatorResult->id, false)]);
@@ -120,17 +118,15 @@ class CalculatorController extends Controller
             calculatorId: $id,
             name: $requestSchema->name,
             description: $requestSchema->description,
-            blocks: array_map(static function (CalculatorBlockRequest $block) {
-                return new CreateCalculatorBlock(
-                    label: $block->label,
-                    variableName: $block->variableName,
-                    value: $block->value,
-                    type: $block->type->value,
-                    settings: $block->settings->toArray(),
-                    description: $block->description,
-                    sort: $block->sort,
-                );
-            }, $requestSchema->blocks),
+            blocks: array_map(static fn (CalculatorBlockRequest $block) => new CreateCalculatorBlock(
+                label: $block->label,
+                variableName: $block->variableName,
+                value: $block->value,
+                type: $block->type->value,
+                settings: $block->settings->toArray(),
+                description: $block->description,
+                sort: $block->sort,
+            ), $requestSchema->blocks),
         ));
 
         return new Response(status: 204);

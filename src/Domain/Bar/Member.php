@@ -19,8 +19,8 @@ final class Member implements Identity
      * @param CocktailFavorite[] $cocktailFavorites
      */
     private function __construct(
-        private UserId $userId,
-        private BarId $barId,
+        private readonly UserId $userId,
+        private readonly BarId $barId,
         private MemberRole $role,
         private array $shoppingListIngredients = [],
         private array $cocktailFavorites = [],

@@ -15,7 +15,7 @@ final class CocktailMatcher
     private array $matchedCocktails = [];
 
     public function __construct(
-        private CocktailMatchRepository $repository,
+        private readonly CocktailMatchRepository $repository,
     ) {
     }
 

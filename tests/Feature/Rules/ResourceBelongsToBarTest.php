@@ -22,7 +22,7 @@ class ResourceBelongsToBarTest extends TestCase
         $hasFailed = false;
         $failed = function () use (&$hasFailed): PotentiallyTranslatedString {
             $hasFailed = true;
-            $translator = $this->getMockBuilder(Translator::class)->getMock();
+            $translator = $this->createMock(Translator::class);
 
             return new PotentiallyTranslatedString('', $translator);
         };

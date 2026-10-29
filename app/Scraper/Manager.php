@@ -55,7 +55,7 @@ final class Manager
             throw new ScraperMissingException('By request, Difford\'s Guide is not supported for scraping.');
         }
 
-        return (new self($url))->matchFirst($content);
+        return new self($url)->matchFirst($content);
     }
 
     private function matchFirst(?string $content = null): AbstractSite
@@ -129,7 +129,7 @@ final class Manager
             }
         });
 
-        return (new RobotsTxtEvaluator($robotsTxt))->allows($this->url, self::PRODUCT_TOKEN);
+        return new RobotsTxtEvaluator($robotsTxt)->allows($this->url, self::PRODUCT_TOKEN);
     }
 
     private function robotsUrl(): ?string

@@ -66,7 +66,8 @@ class ExportTypesTest extends TestCase
 
         $result = file_get_contents(base_path('tests/fixtures/external/recipe.xml'));
 
-        $this->assertSame($result, $external->toXML());
+        // Compared canonically since libxml2 >= 2.14 serializes empty elements differently
+        $this->assertXmlStringEqualsXmlString((string) $result, $external->toXML());
     }
 
     private function setupCocktail(): Cocktail

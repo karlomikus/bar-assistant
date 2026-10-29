@@ -9,6 +9,7 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
+use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\External\Model\Schema;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\GenAI\CocktailTagsAgent;
@@ -20,7 +21,9 @@ use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
 use Kami\Cocktail\Http\Requests\GenerateCocktailImageRequest;
 use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
+use Kami\Cocktail\Http\Requests\GenerateIngredientImageRequest;
 use Kami\Cocktail\Services\Image\CocktailImageGenerationService;
+use Kami\Cocktail\Services\Image\IngredientImageGenerationService;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
@@ -222,6 +225,51 @@ class GenerateController extends Controller
         );
 
         $cocktail->attachImages(collect([$image]));
+
+        return new ImageResource($image);
+    }
+
+    #[OAT\Post(path: '/generate/ingredient-image', tags: ['Generation'], operationId: 'generateIngredientImage', description: 'Generate an ingredient image using an image model and return it as an unassigned image. Bottled ingredients are rendered in a consistent bottle design; the image has a transparent background.', summary: 'Ingredient image', parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\JsonContent(
+                type: 'object',
+                properties: [
+                    new OAT\Property(property: 'ingredient_id', type: 'string', example: 'vodka', description: 'Id or slug of the ingredient to generate an image for'),
+                    new OAT\Property(property: 'style', type: 'string', nullable: true, example: 'editorial studio photo', description: 'Optional visual style hint for the generated image'),
+                ],
+                required: ['ingredient_id'],
+            ),
+        ]
+    ))]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(ImageResource::class),
+    ])]
+    public function generateIngredientImage(GenerateIngredientImageRequest $request, IngredientImageGenerationService $ingredientImageGenerationService): ImageResource
+    {
+        $ingredientId = $request->string('ingredient_id')->toString();
+
+        $ingredient = Ingredient::query()
+            ->where('bar_id', bar()->id)
+            ->where(function ($query) use ($ingredientId) {
+                $query->where('slug', $ingredientId)
+                    ->orWhere('id', $ingredientId);
+            })
+            ->firstOrFail();
+
+        if ($request->user()->cannot('edit', $ingredient)) {
+            abort(403);
+        }
+
+        $image = $ingredientImageGenerationService->generateImage(
+            ingredient: $ingredient,
+            userId: $request->user()->id,
+            style: $request->input('style'),
+        );
+
+        $ingredient->attachImages(collect([$image]));
 
         return new ImageResource($image);
     }

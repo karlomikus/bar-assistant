@@ -28,12 +28,10 @@ final readonly class MenuService
     public function updateOrCreateMenu(CreateMenuRequest $request): Menu
     {
         $menu = $this->menuRepository->findByBarId(new BarId($request->barId));
-        if ($menu === null) {
-            $menu = Menu::create(
-                id: new MenuId($request->menuId),
-                barId: new BarId($request->barId),
-            );
-        }
+        $menu ??= Menu::create(
+            id: new MenuId($request->menuId),
+            barId: new BarId($request->barId),
+        );
 
         if ($request->isEnabled) {
             $menu->enable();

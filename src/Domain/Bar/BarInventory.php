@@ -12,7 +12,7 @@ final class BarInventory
      * @param IngredientInventoryItem[] $ingredients
      */
     private function __construct(
-        private BarId $barId,
+        private readonly BarId $barId,
         private array $ingredients = [],
     ) {
     }

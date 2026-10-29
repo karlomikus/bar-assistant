@@ -26,7 +26,7 @@ final class CocktailQueryFilter extends QueryBuilder
      *
      * @var array<int, string>
      */
-    private const PIPE_DELIMITED_FILTERS = ['author', 'origin_bar'];
+    private const array PIPE_DELIMITED_FILTERS = ['author', 'origin_bar'];
 
     public function __construct(CocktailService $cocktailRepo)
     {

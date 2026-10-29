@@ -74,7 +74,7 @@ final class IngredientServiceTest extends TestCase
         ]);
 
         $this->priceCategoryRepository = new InMemoryPriceCategoryRepository([
-            301 => (new PriceCategory(barId: new BarId(65), name: Name::fromString('Amazon EU'), currency: Currency::of('EUR')))->setId(new PriceCategoryId(301)),
+            301 => new PriceCategory(barId: new BarId(65), name: Name::fromString('Amazon EU'), currency: Currency::of('EUR'))->setId(new PriceCategoryId(301)),
         ]);
     }
 

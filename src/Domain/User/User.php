@@ -14,8 +14,8 @@ use BarAssistant\Domain\User\Event\UserProfileUpdated;
 
 final class User implements Identity
 {
-    public const ANONYMIZED_NAME = 'Deleted User';
-    public const ANONYMIZED_PASSWORD = 'deleted';
+    public const string ANONYMIZED_NAME = 'Deleted User';
+    public const string ANONYMIZED_PASSWORD = 'deleted';
 
     private ?UserId $id = null;
 
@@ -47,6 +47,33 @@ final class User implements Identity
             settings: $settings ?? UserSettings::default(),
             timestamps: RecordTimestamps::createdNow(),
         );
+    }
+
+    /**
+     * @internal Used by the repository adapter when hydrating from persistence
+     */
+    public static function fromPersistence(
+        UserId $id,
+        UserName $name,
+        #[SensitiveParameter]
+        UserEmail $email,
+        #[SensitiveParameter]
+        string $passwordHash,
+        ?DateTimeImmutable $emailVerifiedAt,
+        UserSettings $settings,
+        RecordTimestamps $timestamps,
+    ): self {
+        $user = new self(
+            name: $name,
+            email: $email,
+            passwordHash: $passwordHash,
+            emailVerifiedAt: $emailVerifiedAt,
+            settings: $settings,
+            timestamps: $timestamps,
+        );
+        $user->id = $id;
+
+        return $user;
     }
 
     public function getId(): ?UserId

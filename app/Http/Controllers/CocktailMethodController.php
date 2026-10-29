@@ -30,7 +30,7 @@ class CocktailMethodController extends Controller
     ])]
     public function index(): JsonResource
     {
-        $methods = (new CocktailMethodQueryFilter())->get();
+        $methods = new CocktailMethodQueryFilter()->get();
 
         return CocktailMethodResource::collection($methods);
     }

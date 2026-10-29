@@ -18,7 +18,7 @@ final class MemberInventory implements Identity
      * @param IngredientInventoryItem[] $ingredients
      */
     private function __construct(
-        private MemberId $memberId,
+        private readonly MemberId $memberId,
         private Name $name,
         private array $ingredients = [],
     ) {

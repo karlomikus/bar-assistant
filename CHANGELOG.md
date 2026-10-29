@@ -1,3 +1,8 @@
+# v6.10.1
+## Fixes
+- Fixed user changes removing verified status
+- Fixed missing password parsing on change password request
+
 # v6.10.0
 ## New
 - Scrape endpoint now allows for scraping author and bar of origin

@@ -10,7 +10,7 @@ use BarAssistant\Domain\Exception\DomainException;
 
 final readonly class UserEmail implements Stringable, JsonSerializable
 {
-    public const DELETED_PREFIX = 'userdeleted';
+    public const string DELETED_PREFIX = 'userdeleted';
 
     private string $value;
 

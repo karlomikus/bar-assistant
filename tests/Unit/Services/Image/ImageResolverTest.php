@@ -16,7 +16,7 @@ class ImageResolverTest extends TestCase
         $content = $this->getFakeImageContent('png');
         $image = UploadedFile::fake()->createWithContent('image.png', $content);
 
-        $source = (new ImageResolver())->resolveImageSource($image);
+        $source = new ImageResolver()->resolveImageSource($image);
 
         $this->assertSame($content, $source);
     }
@@ -27,7 +27,7 @@ class ImageResolverTest extends TestCase
         $temporaryFilesBefore = $this->temporaryImageFiles();
         $source = 'data:image/png;base64,' . base64_encode($content);
 
-        $resolvedSource = (new ImageResolver())->resolveImageSource($source);
+        $resolvedSource = new ImageResolver()->resolveImageSource($source);
 
         $this->assertSame($content, $resolvedSource);
         $this->assertSame($temporaryFilesBefore, $this->temporaryImageFiles());
@@ -37,7 +37,7 @@ class ImageResolverTest extends TestCase
     {
         $temporaryFilesBefore = $this->temporaryImageFiles();
 
-        $resolvedSource = (new ImageResolver())->resolveImageSource('https://barassistant.app/public/img/recipe-details.png');
+        $resolvedSource = new ImageResolver()->resolveImageSource('https://barassistant.app/public/img/recipe-details.png');
 
         $this->assertNotNull($resolvedSource);
         $this->assertSame($temporaryFilesBefore, $this->temporaryImageFiles());
@@ -48,7 +48,7 @@ class ImageResolverTest extends TestCase
         $temporaryFilesBefore = $this->temporaryImageFiles();
 
         try {
-            (new ImageResolver())->resolveImageSource('data:image/png;base64,' . base64_encode('not an image'));
+            new ImageResolver()->resolveImageSource('data:image/png;base64,' . base64_encode('not an image'));
             $this->fail('An invalid image data URI must fail validation.');
         } catch (ValidationException) {
         }
@@ -60,14 +60,14 @@ class ImageResolverTest extends TestCase
     {
         $this->expectException(ValidationException::class);
 
-        (new ImageResolver())->resolveImageSource('file://my.local');
+        new ImageResolver()->resolveImageSource('file://my.local');
     }
 
     public function test_rejects_unsupported_image_source(): void
     {
         $this->expectException(ValidationException::class);
 
-        (new ImageResolver())->resolveImageSource('not-an-image-source');
+        new ImageResolver()->resolveImageSource('not-an-image-source');
     }
 
     public function test_rejects_uploaded_file_that_is_not_an_image(): void
@@ -76,7 +76,7 @@ class ImageResolverTest extends TestCase
 
         $this->expectException(ValidationException::class);
 
-        (new ImageResolver())->resolveImageSource($image);
+        new ImageResolver()->resolveImageSource($image);
     }
 
     /**

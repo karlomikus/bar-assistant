@@ -11,6 +11,7 @@ use BarAssistant\Domain\User\UserEmail;
 use BarAssistant\Domain\User\UserSettings;
 use Kami\Cocktail\Models\User as UserModel;
 use BarAssistant\Domain\User\UserRepository;
+use BarAssistant\Domain\Common\RecordTimestamps;
 
 final class EloquentUserRepository implements UserRepository
 {
@@ -57,13 +58,19 @@ final class EloquentUserRepository implements UserRepository
 
     private static function map(UserModel $model): User
     {
-        $user = User::create(
+        $timestamps = RecordTimestamps::createdAt(($model->created_at ?? now())->toImmutable());
+        if ($model->updated_at !== null) {
+            $timestamps = $timestamps->updatedAt($model->updated_at->toImmutable());
+        }
+
+        return User::fromPersistence(
+            id: new UserId($model->id),
             name: UserName::fromString($model->name),
             email: UserEmail::fromString($model->email),
-            settings: UserSettings::fromArray($model->settings?->toArray() ?? []),
             passwordHash: $model->password,
-        )->setId(new UserId($model->id));
-
-        return $user;
+            emailVerifiedAt: $model->email_verified_at?->toImmutable(),
+            settings: UserSettings::fromArray($model->settings?->toArray() ?? []),
+            timestamps: $timestamps,
+        );
     }
 }

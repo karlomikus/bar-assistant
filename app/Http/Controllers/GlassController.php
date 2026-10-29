@@ -31,7 +31,7 @@ class GlassController extends Controller
     ])]
     public function index(): JsonResource
     {
-        $glasses = (new GlassQueryFilter())->get();
+        $glasses = new GlassQueryFilter()->get();
 
         return GlassResource::collection($glasses);
     }

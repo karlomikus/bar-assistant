@@ -2,7 +2,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4.0",
-        "brick/money": "^0.9.0",
+        "brick/money": "^0.11.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "jcupitt/vips": "^2.4",

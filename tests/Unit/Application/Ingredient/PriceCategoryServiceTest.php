@@ -27,17 +27,17 @@ final class PriceCategoryServiceTest extends TestCase
         parent::setUp();
 
         $this->priceCategoryRepository = new InMemoryPriceCategoryRepository([
-            101 => (new PriceCategory(
+            101 => new PriceCategory(
                 barId: new BarId(10),
                 name: Name::fromString('Amazon EU'),
                 currency: Currency::of('EUR'),
                 description: 'European online prices',
-            ))->setId(new PriceCategoryId(101)),
-            102 => (new PriceCategory(
+            )->setId(new PriceCategoryId(101)),
+            102 => new PriceCategory(
                 barId: new BarId(10),
                 name: Name::fromString('Local store'),
                 currency: Currency::of('USD'),
-            ))->setId(new PriceCategoryId(102)),
+            )->setId(new PriceCategoryId(102)),
         ]);
     }
 

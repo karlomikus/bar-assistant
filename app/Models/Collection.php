@@ -13,10 +13,6 @@ class Collection extends BaseModel
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CollectionFactory> */
     use HasFactory;
 
-    protected $casts = [
-        'is_bar_shared' => 'boolean',
-    ];
-
     /**
      * @return BelongsToMany<Cocktail, $this>
      */
@@ -31,5 +27,11 @@ class Collection extends BaseModel
     public function barMembership(): BelongsTo
     {
         return $this->belongsTo(BarMembership::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'is_bar_shared' => 'boolean',
+        ];
     }
 }

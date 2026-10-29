@@ -16,11 +16,6 @@ class CocktailIngredientSubstitute extends BaseModel
 
     public $timestamps = false;
 
-    protected $casts = [
-        'amount' => 'float',
-        'amount_max' => 'float',
-    ];
-
     /**
      * @return BelongsTo<CocktailIngredient, $this>
      */
@@ -49,5 +44,12 @@ class CocktailIngredientSubstitute extends BaseModel
     public function barHasInShelf(): bool
     {
         return $this->ingredient->bar->shelfIngredients->contains('ingredient_id', $this->ingredient_id);
+    }
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'float',
+            'amount_max' => 'float',
+        ];
     }
 }

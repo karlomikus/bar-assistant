@@ -17,7 +17,7 @@ final class Export implements Identity
     private function __construct(
         private readonly BarId $barId,
         private readonly UserId $createdUserId,
-        private string $filename,
+        private readonly string $filename,
         private bool $isDone,
         private RecordTimestamps $recordTimestamps,
     ) {

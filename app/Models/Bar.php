@@ -27,11 +27,6 @@ class Bar extends BaseModel implements UploadableInterface
     use HasSlug;
     use HasImages;
 
-    protected $casts = [
-        'settings' => 'array',
-        'is_public' => 'boolean',
-    ];
-
     public function getUploadPath(): string
     {
         return 'logos/';
@@ -216,5 +211,12 @@ class Bar extends BaseModel implements UploadableInterface
                 barId: $this->id,
             )->values()->toArray();
         });
+    }
+    protected function casts(): array
+    {
+        return [
+            'settings' => 'array',
+            'is_public' => 'boolean',
+        ];
     }
 }

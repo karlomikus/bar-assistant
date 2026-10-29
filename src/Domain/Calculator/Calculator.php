@@ -15,21 +15,10 @@ final class Calculator implements Identity
     private ?CalculatorId $id = null;
 
     /**
-     * @var CalculatorBlock[]
-     */
-    private array $blocks = [];
-
-    /**
      * @param CalculatorBlock[] $blocks
      */
-    private function __construct(
-        private readonly BarId $barId,
-        private string $name,
-        private ?string $description,
-        private RecordTimestamps $recordTimestamps,
-        array $blocks = [],
-    ) {
-        $this->blocks = $blocks;
+    private function __construct(private readonly BarId $barId, private string $name, private ?string $description, private readonly RecordTimestamps $recordTimestamps, private array $blocks = [])
+    {
     }
 
     /**

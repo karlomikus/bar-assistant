@@ -31,7 +31,7 @@ final class CleanupUserAnonymizedSubscriber implements EventSubscriber
             $passwordResetTable = (string) config('auth.passwords.users.table', 'password_resets');
             DB::table($passwordResetTable)->where('email', $event->originalEmail)->delete();
 
-            Mail::to($event->originalEmail)->queue((new AccountDeleted())->afterCommit());
+            Mail::to($event->originalEmail)->queue(new AccountDeleted()->afterCommit());
         }
     }
 

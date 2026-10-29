@@ -3610,6 +3610,58 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
+  /generate/ingredient-image:
+    post:
+      tags:
+        - Generation
+      summary: 'Ingredient image'
+      description: 'Generate an ingredient image using an image model and return it as an unassigned image. Bottled ingredients are rendered in a consistent bottle design; the image has a transparent background.'
+      operationId: generateIngredientImage
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - ingredient_id
+              properties:
+                ingredient_id:
+                  description: 'Id or slug of the ingredient to generate an image for'
+                  type: string
+                  example: vodka
+                style:
+                  description: 'Optional visual style hint for the generated image'
+                  type: [string, 'null']
+                  example: 'editorial studio photo'
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/Image' }
+                type: object
   /glasses:
     get:
       tags:
@@ -10349,6 +10401,24 @@ components:
           description: 'Generated cocktail method'
           type: string
           example: Shake
+        author:
+          description: 'Generated author or creator of the cocktail'
+          type:
+            - string
+            - 'null'
+          example: 'Donn Beach'
+        year:
+          description: 'Year the cocktail was created or first published'
+          type:
+            - integer
+            - 'null'
+          example: 1934
+        origin_bar:
+          description: 'Historical bar or venue where the cocktail was created'
+          type:
+            - string
+            - 'null'
+          example: 'American Bar, London'
         ingredients:
           description: 'List of ingredients required for the cocktail'
           type: array
@@ -12107,9 +12177,9 @@ components:
     ChangePasswordRequest:
       required:
         - current_password
-        - password
+        - new_password
       properties:
-        password:
+        new_password:
           type:
             - string
             - 'null'

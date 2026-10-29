@@ -61,7 +61,7 @@ final class ImageStorageService
      */
     public function deleteBarOwnedImages(Bar $bar): void
     {
-        $barImages = (new Image())->getAllBarImages($bar->id)->merge($bar->images);
+        $barImages = new Image()->getAllBarImages($bar->id)->merge($bar->images);
 
         DB::transaction(function () use ($barImages): void {
             foreach ($barImages as $image) {

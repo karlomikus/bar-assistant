@@ -19,7 +19,7 @@ final class Rating implements Identity
         private readonly RateableType $type,
         private readonly MemberId $memberId,
         private RatingValue $value,
-        private DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $createdAt,
         private DateTimeImmutable $updatedAt,
     ) {
     }
