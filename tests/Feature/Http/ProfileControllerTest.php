@@ -66,14 +66,66 @@ class ProfileControllerTest extends TestCase
         $oldPassword = $user->password;
         $response = $this->postJson('/api/profile/change-password', [
             'current_password' => 'my-test-password',
-            'password' => '12345',
-            'password_confirmation' => '12345',
+            'new_password' => '12345',
+            'new_password_confirmation' => '12345',
         ]);
 
         $response->assertNoContent();
         $user->refresh();
 
         $this->assertNotSame($oldPassword, $user->password);
+        $this->assertTrue(Hash::check('12345', $user->password));
+    }
+
+    public function test_change_password_sets_the_new_password_not_an_empty_string(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
+        $this->actingAs($user);
+
+        $this->postJson('/api/profile/change-password', [
+            'current_password' => 'my-test-password',
+            'new_password' => 'my-new-password',
+            'new_password_confirmation' => 'my-new-password',
+        ])->assertNoContent();
+
+        $user->refresh();
+
+        // Regression: the request body was previously parsed from the
+        // "password" field, hashing an empty string instead of the new password
+        $this->assertTrue(Hash::check('my-new-password', $user->password));
+        $this->assertFalse(Hash::check('', $user->password));
+    }
+
+    public function test_change_password_requires_new_password(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/profile/change-password', [
+            'current_password' => 'my-test-password',
+        ]);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_change_password_with_wrong_current_password_response(): void
+    {
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/profile/change-password', [
+            'current_password' => 'wrong-password',
+            'new_password' => '12345',
+            'new_password_confirmation' => '12345',
+        ]);
+
+        $response->assertForbidden();
     }
 
     public function test_change_password_preserves_email_verification(): void
@@ -87,8 +139,8 @@ class ProfileControllerTest extends TestCase
 
         $this->postJson('/api/profile/change-password', [
             'current_password' => 'my-test-password',
-            'password' => '12345',
-            'password_confirmation' => '12345',
+            'new_password' => '12345',
+            'new_password_confirmation' => '12345',
         ])->assertNoContent();
 
         $user->refresh();
@@ -126,8 +178,8 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->postJson('/api/profile/change-password', [
             'current_password' => 'my-test-password',
-            'password' => '12345',
-            'password_confirmation' => '123451',
+            'new_password' => '12345',
+            'new_password_confirmation' => '123451',
         ]);
 
         $response->assertUnprocessable();

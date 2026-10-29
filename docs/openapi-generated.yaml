@@ -12177,9 +12177,9 @@ components:
     ChangePasswordRequest:
       required:
         - current_password
-        - password
+        - new_password
       properties:
-        password:
+        new_password:
           type:
             - string
             - 'null'
