@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 use Kami\Cocktail\Mail\AccountDeleted;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -73,6 +74,47 @@ class ProfileControllerTest extends TestCase
         $user->refresh();
 
         $this->assertNotSame($oldPassword, $user->password);
+    }
+
+    public function test_change_password_preserves_email_verification(): void
+    {
+        Config::set('bar-assistant.mail_require_confirmation', true);
+
+        $user = User::factory()->create([
+            'password' => Hash::make('my-test-password'),
+        ]);
+        $this->actingAs($user);
+
+        $this->postJson('/api/profile/change-password', [
+            'current_password' => 'my-test-password',
+            'password' => '12345',
+            'password_confirmation' => '12345',
+        ])->assertNoContent();
+
+        $user->refresh();
+        $this->assertNotNull($user->email_verified_at);
+
+        Auth::forgetGuards();
+
+        $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => '12345',
+        ])->assertOk();
+    }
+
+    public function test_update_profile_preserves_email_verification(): void
+    {
+        Config::set('bar-assistant.mail_require_confirmation', true);
+
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->postJson('/api/profile', [
+            'email' => $user->email,
+            'name' => 'New Name',
+        ])->assertNoContent();
+
+        $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
     public function test_update_current_user_with_password_fail_response(): void

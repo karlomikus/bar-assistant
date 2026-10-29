@@ -160,6 +160,35 @@ class AuthControllerTest extends TestCase
         $response->assertBadRequest();
     }
 
+    public function test_reset_password_preserves_email_verification_and_allows_login(): void
+    {
+        Config::set('bar-assistant.mail_require_confirmation', true);
+        Mail::fake();
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+        $token = Password::createToken($user);
+
+        $response = $this->postJson('/api/auth/reset-password', [
+            'token' => $token,
+            'email' => 'test@test.com',
+            'password' => 'new_password_1234',
+            'password_confirmation' => 'new_password_1234'
+        ]);
+
+        $response->assertNoContent();
+
+        $user->refresh();
+        $this->assertNotNull($user->email_verified_at);
+
+        $this->postJson('/api/auth/login', [
+            'email' => 'test@test.com',
+            'password' => 'new_password_1234',
+        ])->assertOk();
+    }
+
     public function test_confirm_account_response(): void
     {
         Config::set('bar-assistant.mail_require_confirmation', true);

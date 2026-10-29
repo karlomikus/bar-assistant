@@ -6,6 +6,7 @@ namespace Tests\Integration\Infrastructure;
 
 use Tests\TestCase;
 use BarAssistant\Domain\User\User;
+use BarAssistant\Domain\User\UserId;
 use Illuminate\Support\Facades\Hash;
 use BarAssistant\Domain\User\UserName;
 use BarAssistant\Domain\User\UserEmail;
@@ -65,5 +66,57 @@ final class EloquentUserRepositoryTest extends TestCase
 
         $model = ModelsUser::find($savedUser->getId()->value);
         $this->assertNull($model->email_verified_at);
+    }
+
+    public function test_it_preserves_email_verification_on_load_save_round_trip(): void
+    {
+        $createdAt = now()->subDays(10);
+        $verifiedAt = now()->subDays(5);
+        $model = ModelsUser::factory()->create([
+            'email' => 'test@test.localhost',
+            'email_verified_at' => $verifiedAt,
+            'created_at' => $createdAt,
+        ]);
+
+        $repository = new EloquentUserRepository();
+        $user = $repository->findById(new UserId($model->id));
+
+        $this->assertNotNull($user);
+        $this->assertTrue($user->isEmailVerified());
+        $this->assertSame(
+            $verifiedAt->format('Y-m-d H:i:s'),
+            $user->getEmailVerifiedAt()?->format('Y-m-d H:i:s')
+        );
+
+        $repository->save($user);
+
+        $model->refresh();
+        $this->assertNotNull($model->email_verified_at);
+        $this->assertSame(
+            $verifiedAt->format('Y-m-d H:i:s'),
+            $model->email_verified_at->format('Y-m-d H:i:s')
+        );
+        $this->assertSame(
+            $createdAt->format('Y-m-d H:i:s'),
+            $model->created_at?->format('Y-m-d H:i:s')
+        );
+    }
+
+    public function test_it_preserves_unverified_status_on_load_save_round_trip(): void
+    {
+        $model = ModelsUser::factory()->create([
+            'email' => 'test@test.localhost',
+            'email_verified_at' => null,
+        ]);
+
+        $repository = new EloquentUserRepository();
+        $user = $repository->findById(new UserId($model->id));
+
+        $this->assertNotNull($user);
+        $this->assertFalse($user->isEmailVerified());
+
+        $repository->save($user);
+
+        $this->assertNull($model->refresh()->email_verified_at);
     }
 }

@@ -49,6 +49,33 @@ final class User implements Identity
         );
     }
 
+    /**
+     * @internal Used by the repository adapter when hydrating from persistence
+     */
+    public static function fromPersistence(
+        UserId $id,
+        UserName $name,
+        #[SensitiveParameter]
+        UserEmail $email,
+        #[SensitiveParameter]
+        string $passwordHash,
+        ?DateTimeImmutable $emailVerifiedAt,
+        UserSettings $settings,
+        RecordTimestamps $timestamps,
+    ): self {
+        $user = new self(
+            name: $name,
+            email: $email,
+            passwordHash: $passwordHash,
+            emailVerifiedAt: $emailVerifiedAt,
+            settings: $settings,
+            timestamps: $timestamps,
+        );
+        $user->id = $id;
+
+        return $user;
+    }
+
     public function getId(): ?UserId
     {
         return $this->id;
