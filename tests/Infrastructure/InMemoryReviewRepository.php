@@ -41,7 +41,7 @@ final class InMemoryReviewRepository implements ReviewRepository
 
     public function existsForMemberAndCocktail(MemberId $memberId, int $cocktailId): bool
     {
-        return array_any($this->reviews, fn($review) => $review->getCocktailId() === $cocktailId && $review->getMemberId()->equals($memberId));
+        return array_any($this->reviews, fn ($review) => $review->getCocktailId() === $cocktailId && $review->getMemberId()->equals($memberId));
     }
 
     /**

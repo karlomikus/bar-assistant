@@ -49,7 +49,7 @@ class MenuCategory extends BaseModel
 
         if ($onlyBarInventoryAvailable) {
             return $menuItems
-                ->reject(static fn(MenuItem $menuItem) => $menuItem->isBarInventoryAware && !$menuItem->inShelf)
+                ->reject(static fn (MenuItem $menuItem) => $menuItem->isBarInventoryAware && !$menuItem->inShelf)
                 ->values();
         }
 

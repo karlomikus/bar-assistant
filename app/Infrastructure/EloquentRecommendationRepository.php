@@ -47,7 +47,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
             ->where('cocktails.bar_id', $barMembership->bar_id)
             ->with('tags', 'ingredients')
             ->get()
-            ->map(static fn(Cocktail $cocktail): CocktailWithDetails => new CocktailWithDetails(
+            ->map(static fn (Cocktail $cocktail): CocktailWithDetails => new CocktailWithDetails(
                 cocktailId: new CocktailId($cocktail->id),
                 tags: $cocktail->tags->pluck('name')->toArray(),
                 ingredientIds: $cocktail->ingredients->pluck('ingredient_id')->map(static fn ($id): IngredientId => new IngredientId(($id)))->toArray(),
@@ -92,7 +92,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         $maxWeight = (int) $tags->max('weight');
 
-        return $tags->map(static fn($res) => new WeightedTag($res->name, $res->weight / $maxWeight))->sortByDesc('weight')->values()->toArray();
+        return $tags->map(static fn ($res) => new WeightedTag($res->name, $res->weight / $maxWeight))->sortByDesc('weight')->values()->toArray();
     }
 
     public function getNegativeTags(MemberId $memberId, int $limit = 2000): array
@@ -125,7 +125,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         $maxWeight = (int) $tags->max('weight');
 
-        return $tags->map(static fn($res) => new WeightedTag($res->name, $res->weight / $maxWeight))->sortByDesc('weight')->values()->toArray();
+        return $tags->map(static fn ($res) => new WeightedTag($res->name, $res->weight / $maxWeight))->sortByDesc('weight')->values()->toArray();
     }
 
     public function getFavoriteIngredients(MemberId $memberId, int $limit = 2000): array
@@ -164,7 +164,7 @@ final class EloquentRecommendationRepository implements RecommendationRepository
 
         $maxIngredients = (int) $favoriteIngredients->max('total');
 
-        return $favoriteIngredients->map(static fn($res): WeightedIngredient => new WeightedIngredient(new IngredientId($res->id), Name::fromString($res->name), $res->total / $maxIngredients))->sortByDesc('weight')->values()->toArray();
+        return $favoriteIngredients->map(static fn ($res): WeightedIngredient => new WeightedIngredient(new IngredientId($res->id), Name::fromString($res->name), $res->total / $maxIngredients))->sortByDesc('weight')->values()->toArray();
     }
 
     public function getAbvPreference(MemberId $memberId): UserAbvPreference

@@ -79,7 +79,7 @@ class CalculatorController extends Controller
             barId: bar()->id,
             name: $requestSchema->name,
             description: $requestSchema->description,
-            blocks: array_map(static fn(CalculatorBlockRequest $block) => new CreateCalculatorBlock(
+            blocks: array_map(static fn (CalculatorBlockRequest $block) => new CreateCalculatorBlock(
                 label: $block->label,
                 variableName: $block->variableName,
                 value: $block->value,
@@ -118,7 +118,7 @@ class CalculatorController extends Controller
             calculatorId: $id,
             name: $requestSchema->name,
             description: $requestSchema->description,
-            blocks: array_map(static fn(CalculatorBlockRequest $block) => new CreateCalculatorBlock(
+            blocks: array_map(static fn (CalculatorBlockRequest $block) => new CreateCalculatorBlock(
                 label: $block->label,
                 variableName: $block->variableName,
                 value: $block->value,

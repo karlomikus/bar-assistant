@@ -2,12 +2,8 @@
 
 namespace Kami\Cocktail\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Kami\Cocktail\External\ExportTypeEnum;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ForceUnitConvertEnum;

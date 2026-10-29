@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Jobs;
 
-use Illuminate\Bus\Queueable;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
 
 class RefreshSearchIndex implements ShouldQueue
 {

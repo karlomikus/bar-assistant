@@ -208,7 +208,7 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
 
         return $descriptors
             ->unique('id')
-            ->sort(fn(TasteDescriptor $a, TasteDescriptor $b): int => ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
+            ->sort(fn (TasteDescriptor $a, TasteDescriptor $b): int => ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
                 ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name)))
             ->take(7)
             ->values();
