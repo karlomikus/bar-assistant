@@ -1,3 +1,8 @@
+# v6.10.1
+## Fixes
+- Fixed user changes removing verified status
+- Fixed missing password parsing on change password request
+
 # v6.10.0
 ## New
 - Scrape endpoint now allows for scraping author and bar of origin
@@ -12,8 +17,6 @@
 - Account deletion now revokes all personal access tokens and pending password reset links
 - Anonymized accounts can no longer authenticate, even if an access token still exists
 - Updating a deactivated bar no longer reactivates it
-- Fixed user changes removing verified status
-- Fixed missing password parsing on change password request
 
 # v6.9.1
 ## Fixes
