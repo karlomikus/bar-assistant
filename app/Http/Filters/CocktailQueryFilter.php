@@ -193,34 +193,49 @@ final class CocktailQueryFilter extends QueryBuilder
                         $query->having('missing_bar_ingredients', (int) $value);
                     }
                 }),
-                AllowedFilter::callback('specific_ingredients', function ($query, $value) use ($barMembership) {
+                AllowedFilter::callback('specific_ingredients', function ($query, $value) use ($barMembership, $cocktailRepo) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
-                    $query->whereIn('cocktails.id', function ($query) use ($barMembership, $value) {
+                    $valueCount = count($value);
+                    $expandedValues = $cocktailRepo->expandWithDescendants($value, $barMembership->bar_id);
+
+                    $query->whereIn('cocktails.id', function ($query) use ($barMembership, $expandedValues, $valueCount) {
                         $query
                             ->select('cocktails.id')
                             ->from('cocktails')
                             ->where('cocktails.bar_id', $barMembership->bar_id)
                             ->join('cocktail_ingredients', 'cocktail_ingredients.cocktail_id', '=', 'cocktails.id')
-                            ->whereIn('cocktail_ingredients.ingredient_id', $value)
+                            ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
+                            ->where(function ($query) use ($expandedValues) {
+                                $query
+                                    ->whereIn('cocktail_ingredients.ingredient_id', $expandedValues)
+                                    ->orWhereIn('cocktail_ingredient_substitutes.ingredient_id', $expandedValues);
+                            })
                             ->groupBy('cocktails.id')
-                            ->havingRaw('COUNT(DISTINCT cocktail_ingredients.ingredient_id) >= ?', [count($value)]);
+                            ->havingRaw('COUNT(DISTINCT cocktail_ingredients.ingredient_id) >= ?', [$valueCount]);
                     });
                 }),
-                AllowedFilter::callback('ignore_ingredients', function ($query, $value) use ($barMembership) {
+                AllowedFilter::callback('ignore_ingredients', function ($query, $value) use ($barMembership, $cocktailRepo) {
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
-                    $query->whereNotIn('cocktails.id', function ($query) use ($barMembership, $value) {
+                    $expandedValues = $cocktailRepo->expandWithDescendants($value, $barMembership->bar_id);
+
+                    $query->whereNotIn('cocktails.id', function ($query) use ($barMembership, $expandedValues) {
                         $query
                             ->select('cocktails.id')
                             ->from('cocktails')
                             ->where('cocktails.bar_id', $barMembership->bar_id)
                             ->join('cocktail_ingredients', 'cocktail_ingredients.cocktail_id', '=', 'cocktails.id')
-                            ->whereIn('cocktail_ingredients.ingredient_id', $value);
+                            ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
+                            ->where(function ($query) use ($expandedValues) {
+                                $query
+                                    ->whereIn('cocktail_ingredients.ingredient_id', $expandedValues)
+                                    ->orWhereIn('cocktail_ingredient_substitutes.ingredient_id', $expandedValues);
+                            });
                     });
                 }),
                 AllowedFilter::exact('parent_cocktail_id'),
@@ -278,7 +293,7 @@ final class CocktailQueryFilter extends QueryBuilder
             })
             ->groupBy('cocktails.id')
             ->filterByBar('cocktails')
-            ->with(['bar.shelfIngredients', 'ingredients.ingredient.bar'])
+            ->with(['bar.shelfIngredients', 'ingredients.ingredient.bar', 'method'])
             ->withRatings($this->request->user()->id);
     }
 

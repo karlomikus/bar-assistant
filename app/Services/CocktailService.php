@@ -7,13 +7,26 @@ namespace Kami\Cocktail\Services;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use BarAssistant\Application\Ingredient\IngredientService as IngredientApplicationService;
 
 final readonly class CocktailService
 {
     public function __construct(
         private DatabaseManager $db,
         private IngredientService $ingredientService,
+        private IngredientApplicationService $ingredientApplicationService,
     ) {
+    }
+
+    /**
+     * Expand a list of ingredient IDs with their bar-scoped descendants.
+     *
+     * @param array<int> $ingredientIds
+     * @return array<int>
+     */
+    public function expandWithDescendants(array $ingredientIds, int $barId): array
+    {
+        return $this->ingredientApplicationService->expandWithDescendants($ingredientIds, $barId);
     }
 
     /**

@@ -31,6 +31,7 @@ use Kami\Cocktail\Models\CocktailIngredient;
 use Kami\Cocktail\Models\Enums\UserRoleEnum;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Kami\Cocktail\Models\CocktailIngredientSubstitute;
 
 class CocktailControllerTest extends TestCase
 {
@@ -90,10 +91,9 @@ class CocktailControllerTest extends TestCase
                 ['name' => 'Army & Navy', 'abv' => 10],
             ]);
         Cocktail::factory()->recycle($membership->bar)->hasTags(1)->create(['name' => 'test 1', 'abv' => 10]);
+        $absinthe = Ingredient::factory()->for($membership->bar)->create(['name' => 'absinthe']);
         $cocktail1 = Cocktail::factory()->recycle($membership->bar)->has(
-            CocktailIngredient::factory()->for(
-                Ingredient::factory()->state(['name' => 'absinthe'])->create()
-            ),
+            CocktailIngredient::factory()->for($absinthe),
             'ingredients'
         )->create([
             'name' => 'a test',
@@ -160,6 +160,181 @@ class CocktailControllerTest extends TestCase
         $response->assertJsonCount(1, 'data');
         $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $cocktail1->ingredients->first()->id);
         $response->assertJsonCount(8, 'data');
+
+        // Make the hierarchy-aware matching visible: give absinthe a parent
+        // "Spirits". Searching by the parent now matches the cocktail using
+        // its descendant, and ignoring the parent excludes it. Without the
+        // hierarchy expansion these two assertions would be 0 and 9.
+        $spirits = Ingredient::factory()->for($membership->bar)->create(['name' => 'Spirits']);
+        $absinthe->parent_ingredient_id = $spirits->id;
+        $absinthe->materialized_path = $spirits->id . '/';
+        $absinthe->save();
+
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $spirits->id);
+        $response->assertJsonCount(1, 'data');
+        $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $spirits->id);
+        $response->assertJsonCount(8, 'data');
+    }
+
+    public function test_specific_ingredients_filter_matches_hierarchy_descendants_and_substitutes(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $gin = Ingredient::factory()->for($membership->bar)->create(['name' => 'Gin']);
+        $londonDry = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'London Dry Gin',
+            'parent_ingredient_id' => $gin->id,
+            'materialized_path' => $gin->id . '/',
+        ]);
+        $oldTom = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'Old Tom Gin',
+            'parent_ingredient_id' => $gin->id,
+            'materialized_path' => $gin->id . '/',
+        ]);
+        $vodka = Ingredient::factory()->for($membership->bar)->create(['name' => 'Vodka']);
+        $limeJuice = Ingredient::factory()->for($membership->bar)->create(['name' => 'Lime Juice']);
+        $orangeBitters = Ingredient::factory()->for($membership->bar)->create(['name' => 'Orange Bitters']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($londonDry)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Gin Fizz']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($oldTom)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Old Tom Fizz']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($vodka)
+                    ->has(CocktailIngredientSubstitute::factory()->for($gin), 'substitutes')
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Vodka Martini']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($londonDry)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($limeJuice)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Gimlet']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Ancestor search matches cocktails using its descendants (and a substitute)
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $gin->id);
+        $response->assertJsonCount(4, 'data');
+        $response->assertJsonFragment(['name' => 'Gin Fizz']);
+        $response->assertJsonFragment(['name' => 'Old Tom Fizz']);
+        $response->assertJsonFragment(['name' => 'Gimlet']);
+        $response->assertJsonFragment(['name' => 'Vodka Martini']);
+
+        // Sibling search does not match cocktails using a different descendant
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $oldTom->id);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment(['name' => 'Old Tom Fizz']);
+        $response->assertJsonMissing(['name' => 'Gin Fizz']);
+
+        // Substitute-only match includes the cocktail...
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $vodka->id);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment(['name' => 'Vodka Martini']);
+
+        // ...but a substitute does not satisfy a second supplied ingredient
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $vodka->id . ',' . $limeJuice->id);
+        $response->assertJsonCount(0, 'data');
+
+        // Multi-value: all supplied ingredients present
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $gin->id . ',' . $limeJuice->id);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment(['name' => 'Gimlet']);
+
+        // Multi-value: one supplied ingredient missing excludes the cocktail
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $gin->id . ',' . $orangeBitters->id);
+        $response->assertJsonCount(0, 'data');
+
+        // A single slot satisfying two supplied ingredients counts once
+        $response = $this->getJson('/api/cocktails?filter[specific_ingredients]=' . $vodka->id . ',' . $gin->id);
+        $response->assertJsonCount(0, 'data');
+    }
+
+    public function test_ignore_ingredients_filter_excludes_hierarchy_descendants_and_substitutes(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $gin = Ingredient::factory()->for($membership->bar)->create(['name' => 'Gin']);
+        $londonDry = Ingredient::factory()->for($membership->bar)->create([
+            'name' => 'London Dry Gin',
+            'parent_ingredient_id' => $gin->id,
+            'materialized_path' => $gin->id . '/',
+        ]);
+        $vodka = Ingredient::factory()->for($membership->bar)->create(['name' => 'Vodka']);
+        $rum = Ingredient::factory()->for($membership->bar)->create(['name' => 'Rum']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($londonDry)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Gin Fizz']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()
+                    ->state(['optional' => false])
+                    ->for($vodka)
+                    ->has(CocktailIngredientSubstitute::factory()->for($gin), 'substitutes')
+                    ->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Vodka Martini']);
+
+        Cocktail::factory()
+            ->recycle($membership->bar)
+            ->has(
+                CocktailIngredient::factory()->state(['optional' => false])->for($rum)->recycle($membership->bar),
+                'ingredients'
+            )
+            ->create(['name' => 'Rum Punch']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Ignored ancestor excludes cocktails using its descendants and its substitutes
+        $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $gin->id);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonFragment(['name' => 'Rum Punch']);
+        $response->assertJsonMissing(['name' => 'Gin Fizz']);
+        $response->assertJsonMissing(['name' => 'Vodka Martini']);
+
+        // Non-matching ignored ingredient keeps the cocktail
+        $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $rum->id);
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonMissing(['name' => 'Rum Punch']);
+
+        // Literal descendant ID still excludes the cocktail using it
+        $response = $this->getJson('/api/cocktails?filter[ignore_ingredients]=' . $londonDry->id);
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonMissing(['name' => 'Gin Fizz']);
     }
 
     public function test_cocktails_response_with_year_range_filters(): void

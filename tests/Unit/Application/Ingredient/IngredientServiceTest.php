@@ -78,6 +78,68 @@ final class IngredientServiceTest extends TestCase
         ]);
     }
 
+    public function test_expands_ingredient_ids_with_bar_scoped_descendants(): void
+    {
+        $service = $this->createServiceWithHierarchy([
+            600 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(600), parentId: null, materializedPath: MaterializedPath::root()),
+            601 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(601), parentId: new IngredientId(600), materializedPath: MaterializedPath::fromString('600/')),
+            602 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(602), parentId: new IngredientId(601), materializedPath: MaterializedPath::fromString('600/601/')),
+            603 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(603), parentId: new IngredientId(600), materializedPath: MaterializedPath::fromString('600/')),
+        ]);
+
+        $this->assertSame([600, 601, 602, 603], $service->expandWithDescendants([600], 65));
+    }
+
+    public function test_unknown_ingredient_id_passes_through_without_expansion(): void
+    {
+        $service = $this->createServiceWithHierarchy([
+            600 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(600), parentId: null, materializedPath: MaterializedPath::root()),
+        ]);
+
+        $this->assertSame([999], $service->expandWithDescendants([999], 65));
+    }
+
+    public function test_foreign_bar_ingredient_id_passes_through_without_expansion(): void
+    {
+        $service = $this->createServiceWithHierarchy([
+            544 => IngredientHierarchyNode::fromPersistence(barId: new BarId(55), id: new IngredientId(544), parentId: null, materializedPath: MaterializedPath::root()),
+            601 => IngredientHierarchyNode::fromPersistence(barId: new BarId(55), id: new IngredientId(601), parentId: new IngredientId(544), materializedPath: MaterializedPath::fromString('544/')),
+        ]);
+
+        $this->assertSame([544], $service->expandWithDescendants([544], 65));
+    }
+
+    public function test_childless_ingredient_id_expands_to_itself(): void
+    {
+        $service = $this->createServiceWithHierarchy([
+            542 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(542), parentId: null, materializedPath: MaterializedPath::root()),
+        ]);
+
+        $this->assertSame([542], $service->expandWithDescendants([542], 65));
+    }
+
+    public function test_duplicate_values_are_deduplicated(): void
+    {
+        $service = $this->createServiceWithHierarchy([
+            542 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(542), parentId: null, materializedPath: MaterializedPath::root()),
+            601 => IngredientHierarchyNode::fromPersistence(barId: new BarId(65), id: new IngredientId(601), parentId: new IngredientId(542), materializedPath: MaterializedPath::fromString('542/')),
+        ]);
+
+        $this->assertSame([542, 601], $service->expandWithDescendants([542, 542, 601], 65));
+    }
+
+    /**
+     * @param array<IngredientHierarchyNode> $nodes
+     */
+    private function createServiceWithHierarchy(array $nodes): IngredientService
+    {
+        return new IngredientService(
+            $this->ingredientRepository,
+            new InMemoryIngredientHierarchyRepository($nodes),
+            $this->priceCategoryRepository,
+        );
+    }
+
     public function test_creates_ingredient(): void
     {
         $service = new IngredientService($this->ingredientRepository, $this->ingredientHierarchyRepository, $this->priceCategoryRepository);
