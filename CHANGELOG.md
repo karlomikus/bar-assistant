@@ -1,3 +1,8 @@
+# v6.11.0
+## New
+- Filters `specific_ingredients` and `ignore_ingredients` now check for descendants of the specified ingredients as well
+- Added `AUTH_TOKEN_EXPIRATION_DAYS` env variable to set expiration for login tokens
+
 # v6.10.1
 ## Fixes
 - Fixed user changes removing verified status
