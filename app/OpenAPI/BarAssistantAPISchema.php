@@ -24,7 +24,7 @@ use OpenApi\Attributes as OAT;
 
 ## Authentication
 
-To use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Tokens generated via login endpoint expire after 14 days.
+To use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Login tokens expire after a configurable duration, set by the instance operator via the `AUTH_TOKEN_EXPIRATION_DAYS` environment variable (it affects only newly issued tokens). Setting it to `0` or a negative value disables login token expiry entirely.
 
 Treat your token like a password and don't share it with anyone.
 

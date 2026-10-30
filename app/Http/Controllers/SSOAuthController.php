@@ -76,7 +76,10 @@ class SSOAuthController extends Controller
 
         Log::info('Created SSO credentials for user id: ' . $credentials->user->id);
 
-        $token = $credentials->user->createToken('SSO Login via: ' . $validProvider->value, expiresAt: now()->addDays(14));
+        /** @var int $days */
+        $days = config('bar-assistant.auth.token_expiration_days');
+        $expiresAt = $days > 0 ? now()->addDays($days) : null;
+        $token = $credentials->user->createToken('SSO Login via: ' . $validProvider->value, expiresAt: $expiresAt);
 
         return new TokenResource($token);
     }
