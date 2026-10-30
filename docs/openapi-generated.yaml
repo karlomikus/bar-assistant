@@ -11104,12 +11104,21 @@ components:
           description: 'Bar information'
           required:
             - name
+            - is_public
+            - slug
             - subtitle
             - description
           properties:
             name:
               type: string
               example: 'Bar name'
+            is_public:
+              description: 'Whether the bar is publicly accessible'
+              type: boolean
+              example: true
+            slug:
+              type: string
+              example: bar-slug
             subtitle:
               type:
                 - string
@@ -11150,7 +11159,7 @@ components:
                 type: array
                 items:
                   required: [in_bar_shelf, type, sort, price, public_id, name, description]
-                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: [string, 'null'], example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: [string, 'null'] }, image: { description: 'Image URL', type: [string, 'null'] } }
+                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: [string, 'null'], example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: [string, 'null'], example: cocktail-slug }, name: { type: string, example: 'Cocktail name' }, description: { type: [string, 'null'] }, image: { description: 'Image URL', type: [string, 'null'] } }
                   type: object
             type: object
       type: object

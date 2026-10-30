@@ -462,4 +462,87 @@ class MenuControllerTest extends TestCase
                 ->etc()
         );
     }
+
+    public function test_public_menu_exposes_bar_public_state_and_item_slugs_for_public_bar(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar-fields';
+        $bar->is_public = true;
+        $bar->save();
+
+        $cocktail = Cocktail::factory()->recycle($bar, $this->barMembership->user)->create(['name' => 'Gin Tonic']);
+        $ingredient = Ingredient::factory()->recycle($bar)->create(['name' => 'Gin']);
+
+        $menu = Menu::factory()->for($bar)->create(['is_enabled' => true]);
+        $category = MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Category',
+            'is_enabled' => true,
+        ]);
+        MenuCocktail::factory()->for($category)->for($cocktail)->create(['sort' => 1]);
+        MenuIngredient::factory()->for($category)->for($ingredient)->create(['sort' => 2]);
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-fields/menu');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has(
+                    'data.bar',
+                    fn (AssertableJson $json) =>
+                    $json
+                        ->where('is_public', true)
+                        ->where('slug', 'test-public-bar-fields')
+                        ->etc()
+                )
+                ->has('data.categories', 1)
+                ->has(
+                    'data.categories.0',
+                    fn (AssertableJson $json) =>
+                    $json->where('name', 'Category')
+                        ->has('items', 2)
+                        ->where('items.0.type', MenuItemTypeEnum::Cocktail->value)
+                        ->where('items.0.slug', $cocktail->slug)
+                        ->where('items.1.type', MenuItemTypeEnum::Ingredient->value)
+                        ->where('items.1.slug', null)
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
+
+    public function test_public_menu_marks_non_public_bar_as_not_public(): void
+    {
+        $bar = $this->barMembership->bar;
+        $bar->slug = 'test-public-bar-not-public';
+        $bar->is_public = false;
+        $bar->save();
+
+        $menu = Menu::factory()->for($bar)->create(['is_enabled' => true]);
+        $category = MenuCategory::factory()->for($menu)->create([
+            'sort' => 1,
+            'name' => 'Category',
+            'is_enabled' => true,
+        ]);
+        $cocktail = Cocktail::factory()->recycle($bar, $this->barMembership->user)->create(['name' => 'Gin Tonic']);
+        MenuCocktail::factory()->for($category)->for($cocktail)->create(['sort' => 1]);
+
+        $response = $this->getJson('/api/public/bars/test-public-bar-not-public/menu');
+
+        $response->assertSuccessful();
+        $response->assertJson(
+            fn (AssertableJson $json) =>
+            $json
+                ->has(
+                    'data.bar',
+                    fn (AssertableJson $json) =>
+                    $json
+                        ->where('is_public', false)
+                        ->where('slug', 'test-public-bar-not-public')
+                        ->etc()
+                )
+                ->etc()
+        );
+    }
 }
