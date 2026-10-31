@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\OpenAPI as BAO;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Cache;
+use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
@@ -35,17 +37,28 @@ class CocktailController extends Controller
             new OAT\Property(property: 'abv_max', type: 'number', description: 'Filter by maximum ABV, inclusive'),
             new OAT\Property(property: 'average_rating_min', type: 'number', description: 'Filter by minimum average member rating, inclusive'),
             new OAT\Property(property: 'tag_id', type: 'string', description: 'Filter by exact tag ID(s), comma-separated'),
+            new OAT\Property(property: 'glass_id', type: 'string', description: 'Filter by exact glass type ID(s), comma-separated'),
+            new OAT\Property(property: 'cocktail_method_id', type: 'string', description: 'Filter by exact cocktail method ID(s), comma-separated'),
+            new OAT\Property(property: 'total_ingredients', type: 'integer', description: 'Filter by minimum total ingredient count, inclusive'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `abv`, `random`.', schema: new OAT\Schema(type: 'string')),
     ], security: [])]
     #[BAO\SuccessfulResponse(content: [
         new BAO\PaginateData(CocktailResource::class, [
-            new OAT\Property(property: 'filters', type: 'object', required: ['collections', 'tags'], properties: [
+            new OAT\Property(property: 'filters', type: 'object', required: ['collections', 'tags', 'glasses', 'methods'], properties: [
                 new OAT\Property(property: 'collections', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
                     new OAT\Property(property: 'id', type: 'integer'),
                     new OAT\Property(property: 'name', type: 'string'),
                 ])),
                 new OAT\Property(property: 'tags', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'id', type: 'integer'),
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
+                new OAT\Property(property: 'glasses', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
+                    new OAT\Property(property: 'id', type: 'integer'),
+                    new OAT\Property(property: 'name', type: 'string'),
+                ])),
+                new OAT\Property(property: 'methods', type: 'array', required: ['id', 'name'], items: new OAT\Items(type: 'object', properties: [
                     new OAT\Property(property: 'id', type: 'integer'),
                     new OAT\Property(property: 'name', type: 'string'),
                 ])),
@@ -76,7 +89,23 @@ class CocktailController extends Controller
             ->orderBy('tags.name')
             ->get();
 
-        $additionalData = ['meta' => ['filters' => ['collections' => $cocktailCollections, 'tags' => $cocktailTags]]];
+        $cocktailGlasses = Glass::query()
+            ->select('glasses.id', 'glasses.name')
+            ->join('cocktails', 'cocktails.glass_id', '=', 'glasses.id')
+            ->where('cocktails.bar_id', $bar->id)
+            ->distinct()
+            ->orderBy('glasses.name')
+            ->get();
+
+        $cocktailMethods = CocktailMethod::query()
+            ->select('cocktail_methods.id', 'cocktail_methods.name')
+            ->join('cocktails', 'cocktails.cocktail_method_id', '=', 'cocktail_methods.id')
+            ->where('cocktails.bar_id', $bar->id)
+            ->distinct()
+            ->orderBy('cocktail_methods.name')
+            ->get();
+
+        $additionalData = ['meta' => ['filters' => ['collections' => $cocktailCollections, 'tags' => $cocktailTags, 'glasses' => $cocktailGlasses, 'methods' => $cocktailMethods]]];
 
         $queryParams = $request->only(['filter', 'sort', 'page']);
         ksort($queryParams);

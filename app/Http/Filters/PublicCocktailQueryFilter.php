@@ -29,6 +29,18 @@ final class PublicCocktailQueryFilter extends QueryBuilder
                 AllowedFilter::partial('tag', 'tags.name'),
                 AllowedFilter::partial('glass', 'glass.name'),
                 AllowedFilter::partial('method', 'method.name'),
+                AllowedFilter::callback('glass_id', function ($query, $value) {
+                    $query->whereIn('cocktails.glass_id', is_array($value) ? $value : explode(',', $value));
+                }),
+                AllowedFilter::callback('cocktail_method_id', function ($query, $value) {
+                    $query->whereIn('cocktails.cocktail_method_id', is_array($value) ? $value : explode(',', $value));
+                }),
+                AllowedFilter::callback('total_ingredients', function ($query, $value) {
+                    $query->whereRaw(
+                        '(SELECT COUNT(*) FROM cocktail_ingredients WHERE cocktail_ingredients.cocktail_id = cocktails.id) >= ?',
+                        [(int) $value]
+                    );
+                }),
                 AllowedFilter::callback('collection_id', function ($query, $value) use ($bar) {
                     if (!is_array($value)) {
                         $value = [$value];

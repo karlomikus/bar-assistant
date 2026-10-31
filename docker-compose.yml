@@ -46,10 +46,11 @@ services:
     restart: unless-stopped
 
   meilisearch:
-    image: getmeili/meilisearch:v1.50
+    image: getmeili/meilisearch:v1.56
     environment:
       - MEILI_NO_ANALYTICS=true
       - MEILI_MASTER_KEY=masterKeyThatIsReallyReallyLong4Real
+      - MEILI_UPGRADE_DB=true
     restart: unless-stopped
     ports:
       - 7700:7700
