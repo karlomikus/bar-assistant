@@ -155,6 +155,9 @@ final class IngredientMatcher
         }
 
         $matchName = mb_strtolower($request->ingredientName);
+        if (isset($this->matchedIngredients[$matchName])) {
+            return $this->matchedIngredients[$matchName]->getId()->value;
+        }
 
         $newIngredient = Ingredient::create(
             barId: new BarId($request->barId),
