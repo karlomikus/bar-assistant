@@ -9,12 +9,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Ingredient\ComplexIngredientResolver;
 
 final readonly class IngredientService
 {
     public function __construct(
         private LogManager $log,
         private DatabaseManager $db,
+        private ComplexIngredientResolver $complexIngredientResolver,
     ) {
     }
 
@@ -175,22 +178,11 @@ final readonly class IngredientService
      */
     public function resolveComplexIngredients(array $ingredientIds): array
     {
-        return $this->db->table('complex_ingredients AS ci')
-            ->distinct()
-            ->select('ci.main_ingredient_id')
-            ->join('ingredients AS i_main', 'ci.main_ingredient_id', '=', 'i_main.id')
-            ->whereIn('ci.id', function ($query) use ($ingredientIds) {
-                $query->select('ci_inner.id')
-                    ->from('complex_ingredients AS ci_inner')
-                    ->whereNotExists(function ($query) use ($ingredientIds) {
-                        $query->select('i_ingredient.id')
-                            ->from('complex_ingredients AS ci_sub')
-                            ->join('ingredients AS i_ingredient', 'ci_sub.ingredient_id', '=', 'i_ingredient.id')
-                            ->whereColumn('ci_sub.main_ingredient_id', 'ci_inner.main_ingredient_id')
-                            ->whereNotIn('i_ingredient.id', $ingredientIds);
-                    });
-            })
-            ->pluck('main_ingredient_id')
-            ->toArray();
+        return array_map(
+            static fn (IngredientId $ingredientId): int => $ingredientId->value,
+            $this->complexIngredientResolver->findMakeableMainIngredientIds(
+                array_map(static fn (int $ingredientId): IngredientId => new IngredientId($ingredientId), $ingredientIds)
+            )
+        );
     }
 }
