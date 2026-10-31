@@ -3662,6 +3662,73 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
                 type: object
+  /generate/shelf-from-photo:
+    post:
+      tags:
+        - Generation
+      summary: 'Identify shelf photo'
+      description: 'Identify bottles on an uploaded shelf photo using an AI vision model and mark the matching bar ingredients as in stock. Bottle names that match no bar ingredient are reported in the response and are not stocked. No ingredients are created by this endpoint.'
+      operationId: identifyShelfFromPhoto
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - images
+              properties:
+                images:
+                  description: 'One or more photos of the bar shelf'
+                  type: array
+                  items: { type: string, format: binary }
+                  maxItems: 10
+                  minItems: 1
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/ShelfPhotoResultResource' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
   /glasses:
     get:
       tags:
@@ -11701,6 +11768,36 @@ components:
           description: 'Whether the provider is configured and enabled by server'
           type: boolean
           example: true
+      type: object
+    ShelfPhotoResultResource:
+      description: 'Result of identifying bottles on an uploaded shelf photo'
+      required:
+        - stocked
+        - unmatched
+      properties:
+        stocked:
+          description: 'Bar ingredients marked as in stock'
+          type: array
+          items:
+            required:
+              - id
+              - name
+            properties:
+              id:
+                description: 'Ingredient id'
+                type: integer
+                example: 1
+              name:
+                description: 'Ingredient name'
+                type: string
+                example: Cointreau
+            type: object
+        unmatched:
+          description: 'Bottle names read from the photo that match no bar ingredient and were not stocked'
+          type: array
+          items:
+            type: string
+            example: 'Captin Morgon'
       type: object
     Subscription:
       description: 'Subscription resource'

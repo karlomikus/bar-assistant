@@ -334,6 +334,7 @@ Route::middleware($apiMiddleware)->group(function () {
             Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
             Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
             Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
+            Route::post('/shelf-from-photo', [GenerateController::class, 'shelfFromPhoto']);
             Route::post('/cocktail-image', [GenerateController::class, 'generateCocktailImage'])
                 ->middleware(AiImageProviderIsConfigured::class);
             Route::post('/ingredient-image', [GenerateController::class, 'generateIngredientImage'])
