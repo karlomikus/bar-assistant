@@ -323,8 +323,9 @@ class GenerateController extends Controller
 
         try {
             $response = new ShelfPhotoAgent()->prompt(
-                'List the readable bottle names on these shelf photos. The photos may show overlapping parts of the same shelf; return each distinct bottle only once.',
-                $attachments,
+                prompt: 'List the readable bottle names on these shelf photos. The photos may show overlapping parts of the same shelf; return each distinct bottle only once.',
+                attachments: $attachments,
+                timeout: 180,
             );
         } catch (\Throwable $e) {
             Log::error("[LLM] shelfFromPhoto: Structured response error", [$e->getMessage()]);
