@@ -189,7 +189,10 @@ class GenerateController extends Controller
             abort(400, 'Provider did not return a structured response.');
         }
 
-        return new GeneratedCocktailFromTextResource($response->toArray());
+        $recipe = $response->toArray();
+        $recipe['tags'] = $recipe['tags'] ?? [];
+
+        return new GeneratedCocktailFromTextResource($recipe);
     }
 
     #[OAT\Post(path: '/generate/cocktail-image', tags: ['Generation'], operationId: 'generateCocktailImage', description: 'Generate a cocktail image using an image model and return it as an unassigned image.', summary: 'Cocktail image', parameters: [

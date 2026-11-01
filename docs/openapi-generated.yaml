@@ -10495,6 +10495,12 @@ components:
             - string
             - 'null'
           example: 'American Bar, London'
+        tags:
+          description: 'Suggested tags derived from the recipe text'
+          type: array
+          items:
+            type: string
+            example: citrusy
         ingredients:
           description: 'List of ingredients required for the cocktail'
           type: array

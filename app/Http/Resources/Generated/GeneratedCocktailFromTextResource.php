@@ -20,6 +20,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'year', type: 'integer', nullable: true, example: 1934, description: 'Year the cocktail was created or first published'),
         new OAT\Property(property: 'origin_bar', type: 'string', nullable: true, example: 'American Bar, London', description: 'Historical bar or venue where the cocktail was created'),
         new OAT\Property(
+            property: 'tags',
+            type: 'array',
+            description: 'Suggested tags derived from the recipe text',
+            items: new OAT\Items(type: 'string', example: 'citrusy'),
+        ),
+        new OAT\Property(
             property: 'ingredients',
             type: 'array',
             description: 'List of ingredients required for the cocktail',
