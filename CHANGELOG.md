@@ -3,6 +3,12 @@
 - Filters `specific_ingredients` and `ignore_ingredients` now check for descendants of the specified ingredients as well
 - Added `AUTH_TOKEN_EXPIRATION_DAYS` env variable to set expiration for login tokens
 - Added `glass_id`, `cocktail_method_id` and `total_ingredients` to public cocktail filters
+- Added support to mark ingredients as in shelf by processing a photo with configured AI provider
+- Tags are now included in cocktail text AI import
+- Added recipe links to public menu if bar is marked as public
+
+## Fixes
+- Fixed duplicate errors when saving menu item categories
 
 # v6.10.1
 ## Fixes
