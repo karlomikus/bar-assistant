@@ -9,6 +9,7 @@
 
 ## Fixes
 - Fixed duplicate errors when saving menu item categories
+- Fixed bar join allowing null invite code
 
 # v6.10.1
 ## Fixes

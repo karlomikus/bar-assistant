@@ -256,7 +256,7 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('bars')->group(function () {
         Route::get('/', [BarController::class, 'index'])->middleware(['ability:bars.read']);
         Route::post('/', [BarController::class, 'store'])->middleware(['ability:bars.write']);
-        Route::post('/join', [BarController::class, 'join'])->middleware(['ability:*']);
+        Route::post('/join', [BarController::class, 'join'])->middleware(['throttle:bar-join', 'ability:*']);
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show')->middleware(['ability:bars.read']);
         Route::put('/{id}', [BarController::class, 'update'])->middleware(['ability:bars.write']);
         Route::delete('/{id}', [BarController::class, 'delete'])->middleware(['ability:*']);
