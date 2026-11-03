@@ -1113,6 +1113,33 @@ class CocktailControllerTest extends TestCase
         $response->assertHeader('Location');
     }
 
+    public function test_cocktail_copy_denied_for_non_member_of_source_bar(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $otherBar = Bar::factory()->create();
+        $cocktail = Cocktail::factory()->for($otherBar)->create(['name' => 'Secret cocktail']);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $this->postJson('/api/cocktails/' . $cocktail->id . '/copy')->assertForbidden();
+
+        $this->assertDatabaseMissing('cocktails', ['bar_id' => $membership->bar_id]);
+    }
+
+    public function test_cocktail_copy_denied_for_member_without_create_rights(): void
+    {
+        $membership = $this->setupBarMembership(UserRoleEnum::Guest);
+        $this->actingAs($membership->user);
+
+        $cocktail = Cocktail::factory()->for($membership->bar)->create();
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+        $this->postJson('/api/cocktails/' . $cocktail->id . '/copy')->assertForbidden();
+
+        $this->assertDatabaseCount('cocktails', 1);
+    }
+
     public function test_cocktail_copy_creates_owned_image_from_catalog_media(): void
     {
         Storage::fake('catalog');
