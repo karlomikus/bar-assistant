@@ -7,6 +7,7 @@ namespace Tests\Feature\Http;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Kami\Cocktail\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
@@ -47,6 +48,7 @@ class GenerateShelfPhotoControllerTest extends TestCase
         $this->actingAs($membership->user);
 
         $cointreau = Ingredient::factory()->for($membership->bar)->create(['name' => 'Cointreau']);
+        $cointreauImage = Image::factory()->for($cointreau, 'imageable')->create();
         $gin = Ingredient::factory()->for($membership->bar)->create(['name' => 'Gin']);
         $scotch = Ingredient::factory()->for($membership->bar)->create(['name' => 'Scotch whisky']);
 
@@ -66,16 +68,22 @@ class GenerateShelfPhotoControllerTest extends TestCase
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json
-                ->has('data.stocked', 3, function (AssertableJson $jsonStocked) use ($cointreau, $gin) {
+                ->has('data.stocked', 3)
+                ->has('data.stocked.0', function (AssertableJson $jsonStocked) use ($cointreau, $cointreauImage) {
                     $jsonStocked
                         ->where('id', $cointreau->id)
+                        ->where('slug', $cointreau->slug)
                         ->where('name', 'Cointreau')
-                        ->etc()
-                        ->has('name')
+                        ->has('image', function (AssertableJson $jsonImage) use ($cointreauImage) {
+                            $jsonImage
+                                ->where('id', $cointreauImage->id)
+                                ->where('url', $cointreauImage->getImageUrl())
+                                ->etc();
+                        })
                         ->etc();
                 })
-                ->where('data.stocked.0.id', $cointreau->id)
                 ->where('data.stocked.1.id', $gin->id)
+                ->where('data.stocked.1.image', null)
                 ->where('data.stocked.2.id', $scotch->id)
                 ->has('data.unmatched', 1)
                 ->where('data.unmatched.0', 'Captin Morgon')

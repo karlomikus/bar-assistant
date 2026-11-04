@@ -11,10 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
     schema: 'ShelfPhotoResultResource',
     description: 'Result of identifying bottles on an uploaded shelf photo',
     properties: [
-        new OAT\Property(property: 'stocked', type: 'array', description: 'Bar ingredients marked as in stock', items: new OAT\Items(type: 'object', required: ['id', 'name'], properties: [
-            new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Ingredient id'),
-            new OAT\Property(property: 'name', type: 'string', example: 'Cointreau', description: 'Ingredient name'),
-        ])),
+        new OAT\Property(property: 'stocked', type: 'array', description: 'Bar ingredients marked as in stock', items: new OAT\Items(type: IngredientBasicResource::class)),
         new OAT\Property(property: 'unmatched', type: 'array', description: 'Bottle names read from the photo that match no bar ingredient and were not stocked', items: new OAT\Items(type: 'string', example: 'Captin Morgon')),
     ],
     required: ['stocked', 'unmatched'],

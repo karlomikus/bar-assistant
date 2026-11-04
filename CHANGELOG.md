@@ -10,6 +10,7 @@
 ## Fixes
 - Fixed duplicate errors when saving menu item categories
 - Fixed bar join allowing null invite code
+- Fixed possible cocktail copy across multiple bars
 
 # v6.10.1
 ## Fixes

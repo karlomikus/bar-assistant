@@ -23,6 +23,7 @@ use Kami\Cocktail\Http\Requests\ShelfPhotoRequest;
 use Kami\Cocktail\Services\Image\ImageResizeService;
 use Kami\Cocktail\GenAI\CocktailRecipeTextImportAgent;
 use BarAssistant\Application\Matcher\IngredientMatcher;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
 use Kami\Cocktail\Http\Resources\ShelfPhotoResultResource;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
@@ -373,19 +374,23 @@ class GenerateController extends Controller
             $inventoryService->putMultipleIngredientsInStock(new BarInventoryStockChangeRequest($bar->id, $stockedIngredientIds));
         }
 
+        /** @var array<int, Ingredient> $ingredientsById */
         $ingredientsById = Ingredient::query()
             ->where('bar_id', $bar->id)
             ->whereIn('id', $stockedIngredientIds)
+            ->with('images')
             ->get()
-            ->keyBy('id');
+            ->keyBy('id')
+            ->all();
 
-        $stocked = array_map(
-            fn (int $ingredientId): array => ['id' => $ingredientId, 'name' => $ingredientsById[$ingredientId]->name],
+        /** @var list<Ingredient> $ingredients */
+        $ingredients = array_map(
+            fn (int $ingredientId): Ingredient => $ingredientsById[$ingredientId],
             $stockedIngredientIds,
         );
 
         return new ShelfPhotoResultResource([
-            'stocked' => $stocked,
+            'stocked' => IngredientBasicResource::collection($ingredients),
             'unmatched' => $unmatchedNames,
         ]);
     }

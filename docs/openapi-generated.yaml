@@ -11785,19 +11785,7 @@ components:
           description: 'Bar ingredients marked as in stock'
           type: array
           items:
-            required:
-              - id
-              - name
-            properties:
-              id:
-                description: 'Ingredient id'
-                type: integer
-                example: 1
-              name:
-                description: 'Ingredient name'
-                type: string
-                example: Cointreau
-            type: object
+            $ref: '#/components/schemas/IngredientBasic'
         unmatched:
           description: 'Bottle names read from the photo that match no bar ingredient and were not stocked'
           type: array
