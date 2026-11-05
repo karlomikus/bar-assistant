@@ -281,4 +281,143 @@ class AuthControllerTest extends TestCase
         $response = $this->postJson('/api/auth/forgot-password', $payload);
         $response->assertTooManyRequests();
     }
+
+    public function test_login_token_expires_after_default_14_days(): void
+    {
+        $this->setAuthExpirationEnv(null);
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'my-test-password'
+        ]);
+
+        $response->assertOk();
+
+        /** @var \Laravel\Sanctum\PersonalAccessToken */
+        $token = $user->tokens()->latest('id')->first();
+
+        $this->assertNotNull($token->expires_at);
+        $this->assertTrue($token->expires_at->between(
+            now()->addDays(14)->subMinutes(2),
+            now()->addDays(14)->addMinutes(2)
+        ));
+    }
+
+    public function test_login_token_expires_after_configured_days(): void
+    {
+        Config::set('bar-assistant.auth.token_expiration_days', 90);
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'my-test-password'
+        ]);
+
+        $response->assertOk();
+
+        /** @var \Laravel\Sanctum\PersonalAccessToken */
+        $token = $user->tokens()->latest('id')->first();
+
+        $this->assertNotNull($token->expires_at);
+        $this->assertTrue($token->expires_at->between(
+            now()->addDays(90)->subMinutes(2),
+            now()->addDays(90)->addMinutes(2)
+        ));
+    }
+
+    public function test_login_token_expiration_falls_back_to_default_on_unparseable_value(): void
+    {
+        $this->setAuthExpirationEnv('abc');
+
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $response = $this->postJson('/api/auth/login', [
+            'email' => $user->email,
+            'password' => 'my-test-password'
+        ]);
+
+        $response->assertOk();
+
+        /** @var \Laravel\Sanctum\PersonalAccessToken */
+        $token = $user->tokens()->latest('id')->first();
+
+        $this->assertNotNull($token->expires_at);
+        $this->assertTrue($token->expires_at->between(
+            now()->addDays(14)->subMinutes(2),
+            now()->addDays(14)->addMinutes(2)
+        ));
+
+        $this->getJson('/api/profile', ['Authorization' => 'Bearer ' . $response['data']['token']])->assertOk();
+    }
+
+    public function test_login_token_never_expires_when_configured_zero_or_negative(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@test.com',
+            'password' => Hash::make('my-test-password'),
+        ]);
+
+        $tokens = [];
+        foreach ([0, -1] as $days) {
+            Config::set('bar-assistant.auth.token_expiration_days', $days);
+
+            $response = $this->postJson('/api/auth/login', [
+                'email' => $user->email,
+                'password' => 'my-test-password'
+            ]);
+
+            $response->assertOk();
+
+            /** @var \Laravel\Sanctum\PersonalAccessToken */
+            $token = $user->tokens()->latest('id')->first();
+            $this->assertNull($token->expires_at);
+
+            $tokens[] = $response['data']['token'];
+        }
+
+        // Non-expiring tokens remain usable well past the default 14 days
+        $this->travel(20)->days();
+
+        foreach ($tokens as $token) {
+            $this->getJson('/api/profile', ['Authorization' => 'Bearer ' . $token])->assertOk();
+        }
+    }
+
+    /**
+     * Set AUTH_TOKEN_EXPIRATION_DAYS in the environment (null unsets it) and
+     * re-evaluate the bar-assistant config file, mimicking an app boot.
+     */
+    private function setAuthExpirationEnv(?string $value): void
+    {
+        if ($value === null) {
+            putenv('AUTH_TOKEN_EXPIRATION_DAYS');
+            unset($_ENV['AUTH_TOKEN_EXPIRATION_DAYS'], $_SERVER['AUTH_TOKEN_EXPIRATION_DAYS']);
+        } else {
+            putenv('AUTH_TOKEN_EXPIRATION_DAYS=' . $value);
+            $_ENV['AUTH_TOKEN_EXPIRATION_DAYS'] = $value;
+            $_SERVER['AUTH_TOKEN_EXPIRATION_DAYS'] = $value;
+        }
+
+        config()->set('bar-assistant', require config_path('bar-assistant.php'));
+    }
+
+    protected function tearDown(): void
+    {
+        putenv('AUTH_TOKEN_EXPIRATION_DAYS');
+        unset($_ENV['AUTH_TOKEN_EXPIRATION_DAYS'], $_SERVER['AUTH_TOKEN_EXPIRATION_DAYS']);
+
+        parent::tearDown();
+    }
 }

@@ -7,6 +7,7 @@ namespace BarAssistant\Domain\Menu;
 use BarAssistant\Domain\Identity;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\RecordTimestamps;
+use BarAssistant\Domain\Exception\DomainException;
 
 final class Menu implements Identity
 {
@@ -76,6 +77,8 @@ final class Menu implements Identity
         BarId $barId,
         array $categories,
     ): self {
+        self::assertUniqueCategoryNames($categories);
+
         return new self(
             id: $id,
             barId: $barId,
@@ -99,6 +102,12 @@ final class Menu implements Identity
 
     public function addCategory(MenuCategory $category): self
     {
+        foreach ($this->categories as $existing) {
+            if ($existing->getName()->equals($category->getName())) {
+                throw new DomainException(sprintf('Menu category "%s" already exists', $category->getName()));
+            }
+        }
+
         $this->categories[] = $category;
         $this->categories = self::sortCategories($this->categories);
 
@@ -132,5 +141,22 @@ final class Menu implements Identity
         usort($categories, static fn (MenuCategory $a, MenuCategory $b) => $a->getSortIndex() <=> $b->getSortIndex());
 
         return $categories;
+    }
+
+    /**
+     * Mirrors the database unique constraint on (menu_id, name).
+     *
+     * @param MenuCategory[] $categories
+     */
+    private static function assertUniqueCategoryNames(array $categories): void
+    {
+        $seen = [];
+        foreach ($categories as $category) {
+            $name = $category->getName()->toString();
+            if (isset($seen[$name])) {
+                throw new DomainException(sprintf('Menu category "%s" already exists', $name));
+            }
+            $seen[$name] = true;
+        }
     }
 }

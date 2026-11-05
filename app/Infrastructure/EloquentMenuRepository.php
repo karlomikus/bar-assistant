@@ -7,6 +7,7 @@ namespace Kami\Cocktail\Infrastructure;
 use LogicException;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Menu\Menu;
+use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Menu\MenuId;
 use BarAssistant\Domain\Common\Price;
@@ -37,57 +38,63 @@ final class EloquentMenuRepository implements MenuRepository
 
     public function save(Menu $menu): Menu
     {
-        $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value]);
-        $model->is_enabled = $menu->isEnabled();
-        // Ensure updated_at advances on every save, even when only nested
-        // content (prices, availability, categories) changes and is_enabled
-        // stays the same, so the public menu freshness is accurate.
-        $model->touch();
+        // Categories are replaced by deleting and reinserting them, so the
+        // whole operation must be atomic. Otherwise a failure mid-save (for
+        // example a unique constraint violation) leaves the menu with
+        // partially deleted categories.
+        return DB::transaction(function () use ($menu): Menu {
+            $model = Model::firstOrNew(['bar_id' => $menu->getBarId()->value]);
+            $model->is_enabled = $menu->isEnabled();
+            // Ensure updated_at advances on every save, even when only nested
+            // content (prices, availability, categories) changes and is_enabled
+            // stays the same, so the public menu freshness is accurate.
+            $model->touch();
 
-        $bar = $model->bar;
-        if ($bar === null) {
-            throw new LogicException('Menu must belong to an existing bar');
-        }
+            $bar = $model->bar;
+            if ($bar === null) {
+                throw new LogicException('Menu must belong to an existing bar');
+            }
 
-        // Enabled menus require bars to have slugs
-        if (!isset($bar->slug) && $menu->isEnabled()) {
-            $bar->generateSlug();
-            $bar->save();
-        }
+            // Enabled menus require bars to have slugs
+            if (!isset($bar->slug) && $menu->isEnabled()) {
+                $bar->generateSlug();
+                $bar->save();
+            }
 
-        $model->categories()->delete();
-        foreach ($menu->getCategories() as $category) {
-            $modelCategory = ModelMenuCategory::create([
-                'name' => $category->getName(),
-                'menu_id' => $model->id,
-                'sort' => $category->getSortIndex(),
-                'is_enabled' => $category->isEnabled(),
-            ]);
+            $model->categories()->delete();
+            foreach ($menu->getCategories() as $category) {
+                $modelCategory = ModelMenuCategory::create([
+                    'name' => $category->getName(),
+                    'menu_id' => $model->id,
+                    'sort' => $category->getSortIndex(),
+                    'is_enabled' => $category->isEnabled(),
+                ]);
 
-            foreach ($category->getItems() as $menuItem) {
-                if ($menuItem->isIngredient()) {
-                    $modelCategory->menuIngredients()->create([
-                       'menu_id' => $model->id,
-                        'ingredient_id' => $menuItem->getIngredientId(),
-                        'sort' => $menuItem->getSortIndex(),
-                        'price' => $menuItem->getPrice()->getAsMinor(),
-                        'currency' => $menuItem->getPrice()->getCurrency(),
-                        'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
-                    ]);
-                } else {
-                    $modelCategory->menuCocktails()->create([
-                       'menu_id' => $model->id,
-                        'cocktail_id' => $menuItem->getCocktailId(),
-                        'sort' => $menuItem->getSortIndex(),
-                        'price' => $menuItem->getPrice()->getAsMinor(),
-                        'currency' => $menuItem->getPrice()->getCurrency(),
-                        'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
-                    ]);
+                foreach ($category->getItems() as $menuItem) {
+                    if ($menuItem->isIngredient()) {
+                        $modelCategory->menuIngredients()->create([
+                            'menu_id' => $model->id,
+                            'ingredient_id' => $menuItem->getIngredientId(),
+                            'sort' => $menuItem->getSortIndex(),
+                            'price' => $menuItem->getPrice()->getAsMinor(),
+                            'currency' => $menuItem->getPrice()->getCurrency(),
+                            'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
+                        ]);
+                    } else {
+                        $modelCategory->menuCocktails()->create([
+                            'menu_id' => $model->id,
+                            'cocktail_id' => $menuItem->getCocktailId(),
+                            'sort' => $menuItem->getSortIndex(),
+                            'price' => $menuItem->getPrice()->getAsMinor(),
+                            'currency' => $menuItem->getPrice()->getCurrency(),
+                            'is_bar_inventory_aware' => $menuItem->isBarInventoryAware(),
+                        ]);
+                    }
                 }
             }
-        }
 
-        return self::map($model);
+            return self::map($model);
+        });
     }
 
     public function findByBarId(BarId $barId): ?Menu

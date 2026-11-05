@@ -19,6 +19,7 @@ readonly class MenuItem
         public ?string $description = null,
         public ?string $publicId = null,
         public ?string $image = null,
+        public ?string $slug = null,
         public bool $inShelf = false,
         public bool $isBarInventoryAware = false,
     ) {
@@ -37,6 +38,7 @@ readonly class MenuItem
             description: $menuCocktail->cocktail->getIngredientNames()->implode(', '),
             publicId: $menuCocktail->cocktail->public_id,
             image: $thumbnail,
+            slug: $menuCocktail->cocktail->slug,
             inShelf: $menuCocktail->cocktail->inBarShelf(),
             isBarInventoryAware: $menuCocktail->is_bar_inventory_aware,
         );
@@ -55,6 +57,7 @@ readonly class MenuItem
             description: $menuIngredient->ingredient->getMaterializedPathAsString(),
             publicId: null,
             image: $thumbnail,
+            slug: null,
             inShelf: $menuIngredient->ingredient->barHasInShelf(),
             isBarInventoryAware: $menuIngredient->is_bar_inventory_aware,
         );

@@ -80,6 +80,16 @@ class CocktailRecipeTextImportAgent implements Agent, HasStructuredOutput
             9) origin_bar
             - If the source names the bar or venue where the cocktail was created, output it as "Bar Name, City" when the city is known (e.g. "American Bar, London")
             - Otherwise null. Never invent venues
+
+            10) tags (array of strings)
+            - Derive tags only from the recipe text itself; never invent characteristics the text does not support
+            - Use lowercase
+            - Keep each tag concise (1-2 words)
+            - Tags must be unique (no duplicates)
+            - Flavor/sensory tags first (e.g., citrusy, fruity, sweet, sour, bitter, herbal, floral, spicy, smoky, creamy), then 1-2 supporting style tags if useful (e.g., classic, spirit-forward, refreshing)
+            - Avoid generic low-signal tags (e.g., good, tasty, cocktail, alcoholic)
+            - Generate 3-7 tags
+            - When the recipe text yields no meaningful tags, return an empty array
         PROMPT;
     }
 
@@ -94,6 +104,9 @@ class CocktailRecipeTextImportAgent implements Agent, HasStructuredOutput
             'origin_bar' => $schema->string()->description('Bar or venue where the cocktail was created, e.g. "American Bar, London"; null if not stated')->nullable(),
             'method' => $schema->string()->description('Cocktail preparation method; must be one of the allowed methods or null')->nullable(),
             'description' => $schema->string()->description('Brief description of the cocktail history, flavor, or style')->required()->nullable(),
+            'tags' => $schema->array()->description('Suggested tags derived from the recipe text; lowercase, unique, 1-2 words, flavor-first; empty array when nothing meaningful applies')->items(
+                $schema->string()->description('Single tag in lowercase, 1-2 words; flavor-first vocabulary; avoid generic or redundant tags')
+            )->required(),
             'ingredients' => $schema->array()->description('List of ingredients in source order')->items(
                 $schema->object(fn ($schema) => [
                     'name' => $schema->string()->description('Name of the ingredient')->required(),

@@ -532,7 +532,7 @@ class CocktailController extends Controller
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $cocktail) && $request->user()->cannot('create', Cocktail::class)) {
+        if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
 

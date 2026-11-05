@@ -75,6 +75,25 @@ return [
 
     'enable_password_login' => (bool) env('ENABLE_PASSWORD_LOGIN', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Login token expiration
+    |--------------------------------------------------------------------------
+    |
+    | Number of days a login token remains valid. Set to 0 or a negative
+    | value to issue login tokens that never expire. Unparseable values
+    | fall back to the 14 day default.
+    |
+    */
+
+    'auth' => [
+        'token_expiration_days' => filter_var(
+            env('AUTH_TOKEN_EXPIRATION_DAYS', 14),
+            FILTER_VALIDATE_INT,
+            ['options' => ['default' => 14]]
+        ),
+    ],
+
     'scraping_client' => [
         'proxy' => env('SCRAPING_HTTP_PROXY', null),
         'cert' => env('SCRAPING_CLIENT_CERT', null),

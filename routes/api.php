@@ -256,7 +256,7 @@ Route::middleware($apiMiddleware)->group(function () {
     Route::prefix('bars')->group(function () {
         Route::get('/', [BarController::class, 'index'])->middleware(['ability:bars.read']);
         Route::post('/', [BarController::class, 'store'])->middleware(['ability:bars.write']);
-        Route::post('/join', [BarController::class, 'join'])->middleware(['ability:*']);
+        Route::post('/join', [BarController::class, 'join'])->middleware(['throttle:bar-join', 'ability:*']);
         Route::get('/{id}', [BarController::class, 'show'])->name('bars.show')->middleware(['ability:bars.read']);
         Route::put('/{id}', [BarController::class, 'update'])->middleware(['ability:bars.write']);
         Route::delete('/{id}', [BarController::class, 'delete'])->middleware(['ability:*']);
@@ -334,6 +334,7 @@ Route::middleware($apiMiddleware)->group(function () {
             Route::post('/ingredient', [GenerateController::class, 'completeIngredient']);
             Route::post('/cocktail-tags', [GenerateController::class, 'completeCocktailTags']);
             Route::post('/cocktail-recipe-from-text', [GenerateController::class, 'cocktailRecipeFromText']);
+            Route::post('/shelf-from-photo', [GenerateController::class, 'shelfFromPhoto']);
             Route::post('/cocktail-image', [GenerateController::class, 'generateCocktailImage'])
                 ->middleware(AiImageProviderIsConfigured::class);
             Route::post('/ingredient-image', [GenerateController::class, 'generateIngredientImage'])

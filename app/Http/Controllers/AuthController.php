@@ -68,7 +68,10 @@ class AuthController extends Controller
         }
 
         $tokenName = $request->input('token_name') ?? $request->userAgent() ?? 'Unknown device';
-        $token = $user->createToken($tokenName, expiresAt: now()->addDays(14));
+        /** @var int $days */
+        $days = config('bar-assistant.auth.token_expiration_days');
+        $expiresAt = $days > 0 ? now()->addDays($days) : null;
+        $token = $user->createToken($tokenName, expiresAt: $expiresAt);
 
         return new TokenResource($token);
     }

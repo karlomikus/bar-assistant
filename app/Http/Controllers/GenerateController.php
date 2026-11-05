@@ -7,23 +7,33 @@ namespace Kami\Cocktail\Http\Controllers;
 use Kami\Cocktail\Models\Tag;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
+use Laravel\Ai\Files\Base64Image;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\External\Model\Schema;
+use Kami\Cocktail\GenAI\ShelfPhotoAgent;
 use Kami\Cocktail\Models\CocktailMethod;
 use Kami\Cocktail\GenAI\CocktailTagsAgent;
 use Kami\Cocktail\Http\Resources\ImageResource;
 use Kami\Cocktail\GenAI\CompleteIngredientAgent;
 use Laravel\Ai\Responses\StructuredAgentResponse;
+use BarAssistant\Application\Bar\InventoryService;
+use Kami\Cocktail\Http\Requests\ShelfPhotoRequest;
+use Kami\Cocktail\Services\Image\ImageResizeService;
 use Kami\Cocktail\GenAI\CocktailRecipeTextImportAgent;
+use BarAssistant\Application\Matcher\IngredientMatcher;
+use Kami\Cocktail\Http\Resources\IngredientBasicResource;
 use Kami\Cocktail\Http\Requests\CompleteIngredientRequest;
+use Kami\Cocktail\Http\Resources\ShelfPhotoResultResource;
 use Kami\Cocktail\Http\Requests\CompleteCocktailTagsRequest;
 use Kami\Cocktail\Http\Requests\GenerateCocktailImageRequest;
 use Kami\Cocktail\Http\Requests\CocktailRecipeFromTextRequest;
 use Kami\Cocktail\Http\Requests\GenerateIngredientImageRequest;
+use BarAssistant\Application\Matcher\DTO\IngredientMatchRequest;
 use Kami\Cocktail\Services\Image\CocktailImageGenerationService;
 use Kami\Cocktail\Services\Image\IngredientImageGenerationService;
+use BarAssistant\Application\Bar\DTO\BarInventoryStockChangeRequest;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedIngredientResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailTagsResource;
 use Kami\Cocktail\Http\Resources\Generated\GeneratedCocktailFromTextResource;
@@ -180,7 +190,10 @@ class GenerateController extends Controller
             abort(400, 'Provider did not return a structured response.');
         }
 
-        return new GeneratedCocktailFromTextResource($response->toArray());
+        $recipe = $response->toArray();
+        $recipe['tags'] = $recipe['tags'] ?? [];
+
+        return new GeneratedCocktailFromTextResource($recipe);
     }
 
     #[OAT\Post(path: '/generate/cocktail-image', tags: ['Generation'], operationId: 'generateCocktailImage', description: 'Generate a cocktail image using an image model and return it as an unassigned image.', summary: 'Cocktail image', parameters: [
@@ -272,5 +285,113 @@ class GenerateController extends Controller
         $ingredient->attachImages(collect([$image]));
 
         return new ImageResource($image);
+    }
+
+    #[OAT\Post(path: '/generate/shelf-from-photo', tags: ['Generation'], operationId: 'identifyShelfFromPhoto', description: 'Identify bottles on an uploaded shelf photo using an AI vision model and mark the matching bar ingredients as in stock. Bottle names that match no bar ingredient are reported in the response and are not stocked. No ingredients are created by this endpoint.', summary: 'Identify shelf photo', parameters: [
+        new BAO\Parameters\BarIdHeaderParameter(),
+    ], requestBody: new OAT\RequestBody(
+        required: true,
+        content: [
+            new OAT\MediaType(mediaType: 'multipart/form-data', schema: new OAT\Schema(type: 'object', required: ['images'], properties: [
+                new OAT\Property(property: 'images', type: 'array', minItems: 1, maxItems: 10, description: 'One or more photos of the bar shelf', items: new OAT\Items(type: 'string', format: 'binary')),
+            ])),
+        ]
+    ))]
+    #[BAO\SuccessfulResponse(content: [
+        new BAO\WrapObjectWithData(ShelfPhotoResultResource::class),
+    ])]
+    #[BAO\NotAuthorizedResponse]
+    public function shelfFromPhoto(ShelfPhotoRequest $request, IngredientMatcher $ingredientMatcher, InventoryService $inventoryService): ShelfPhotoResultResource
+    {
+        $bar = bar();
+        if ($request->user()->cannot('manageShelf', $bar)) {
+            abort(403);
+        }
+
+        /** @var list<\Illuminate\Http\UploadedFile> $images */
+        $images = $request->file('images');
+
+        $attachments = [];
+        foreach ($images as $image) {
+            try {
+                $resizedImage = ImageResizeService::resizeImageTo($image->getContent(), 1024);
+                $attachments[] = new Base64Image(base64_encode($resizedImage->writeToBuffer('.webp', ['Q' => 85])), 'image/webp');
+            } catch (\Throwable $e) {
+                Log::error("[LLM] shelfFromPhoto: Image processing error", [$e->getMessage()]);
+
+                abort(400, 'Failed to process the uploaded image.');
+            }
+        }
+
+        Log::info("[LLM] shelfFromPhoto: Identifying bottles from shelf photo.", ['imageCount' => count($attachments)]);
+
+        try {
+            $response = new ShelfPhotoAgent()->prompt(
+                prompt: 'List the readable bottle names on these shelf photos. The photos may show overlapping parts of the same shelf; return each distinct bottle only once.',
+                attachments: $attachments,
+                timeout: 180,
+            );
+        } catch (\Throwable $e) {
+            Log::error("[LLM] shelfFromPhoto: Structured response error", [$e->getMessage()]);
+
+            abort(400, 'Failed to analyze the shelf photo.');
+        }
+
+        if (!$response instanceof StructuredAgentResponse) {
+            abort(400, 'Provider did not return a structured response.');
+        }
+
+        $identifiedNames = [];
+        /** @var array<string, mixed> $bottle */
+        foreach ($response['bottles'] ?? [] as $bottle) {
+            $name = trim((string) ($bottle['name'] ?? ''));
+            if ($name !== '') {
+                $identifiedNames[] = $name;
+            }
+        }
+
+        $stockedIngredientIds = [];
+        $unmatchedNames = [];
+        foreach ($identifiedNames as $identifiedName) {
+            $ingredientId = $ingredientMatcher->matchBySimilarName(new IngredientMatchRequest(
+                barId: $bar->id,
+                userId: (int) $request->user()->id,
+                ingredientName: $identifiedName,
+            ));
+
+            if ($ingredientId === null) {
+                $unmatchedNames[] = $identifiedName;
+
+                continue;
+            }
+
+            if (!in_array($ingredientId, $stockedIngredientIds, true)) {
+                $stockedIngredientIds[] = $ingredientId;
+            }
+        }
+
+        if ($stockedIngredientIds !== []) {
+            $inventoryService->putMultipleIngredientsInStock(new BarInventoryStockChangeRequest($bar->id, $stockedIngredientIds));
+        }
+
+        /** @var array<int, Ingredient> $ingredientsById */
+        $ingredientsById = Ingredient::query()
+            ->where('bar_id', $bar->id)
+            ->whereIn('id', $stockedIngredientIds)
+            ->with('images')
+            ->get()
+            ->keyBy('id')
+            ->all();
+
+        /** @var list<Ingredient> $ingredients */
+        $ingredients = array_map(
+            fn (int $ingredientId): Ingredient => $ingredientsById[$ingredientId],
+            $stockedIngredientIds,
+        );
+
+        return new ShelfPhotoResultResource([
+            'stocked' => IngredientBasicResource::collection($ingredients),
+            'unmatched' => $unmatchedNames,
+        ]);
     }
 }

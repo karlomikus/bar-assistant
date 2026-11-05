@@ -41,8 +41,10 @@ use BarAssistant\Domain\Ingredient\PriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentUtensilRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailRepository;
 use Kami\Cocktail\Infrastructure\EloquentTransactionManager;
+use BarAssistant\Domain\Ingredient\ComplexIngredientResolver;
 use BarAssistant\Domain\Ingredient\IngredientMatchRepository;
 use BarAssistant\Domain\Cocktail\CocktailCollectionRepository;
+use BarAssistant\Domain\Cocktail\ShelfCocktailQueryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCalculatorRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientRepository;
 use BarAssistant\Domain\Recommendation\RecommendationRepository;
@@ -51,10 +53,12 @@ use Kami\Cocktail\Infrastructure\EloquentCocktailMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentPriceCategoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailMethodRepository;
 use Kami\Cocktail\Infrastructure\EloquentRecommendationRepository;
+use Kami\Cocktail\Infrastructure\EloquentComplexIngredientResolver;
 use Kami\Cocktail\Infrastructure\EloquentIngredientMatchRepository;
 use Kami\Cocktail\Infrastructure\EloquentMemberInventoryRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientReviewRepository;
 use Kami\Cocktail\Infrastructure\EloquentCocktailCollectionRepository;
+use Kami\Cocktail\Infrastructure\EloquentShelfCocktailQueryRepository;
 use Kami\Cocktail\Infrastructure\EloquentIngredientHierarchyRepository;
 use BarAssistant\Domain\IngredientHierarchy\IngredientHierarchyRepository;
 
@@ -63,6 +67,8 @@ class InfrastructureServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(IngredientRepository::class, EloquentIngredientRepository::class);
+        $this->app->bind(ComplexIngredientResolver::class, EloquentComplexIngredientResolver::class);
+        $this->app->bind(ShelfCocktailQueryRepository::class, EloquentShelfCocktailQueryRepository::class);
         $this->app->bind(IngredientHierarchyRepository::class, EloquentIngredientHierarchyRepository::class);
         $this->app->bind(PriceCategoryRepository::class, EloquentPriceCategoryRepository::class);
         $this->app->bind(BarInventoryRepository::class, EloquentBarInventoryRepository::class);

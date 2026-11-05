@@ -14,6 +14,7 @@ use BarAssistant\Domain\Menu\MenuCategory;
 use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Menu\MenuRepository;
 use BarAssistant\Domain\Ingredient\IngredientId;
+use BarAssistant\Domain\Exception\DomainException;
 use BarAssistant\Application\Menu\DTO\CreateMenuRequest;
 use BarAssistant\Application\Exception\ValidationException;
 use BarAssistant\Application\Menu\DTO\CreateMenuItemRequest;
@@ -40,18 +41,23 @@ final readonly class MenuService
         }
 
         $menu->clearAllCategories();
-        foreach ($request->categories as $categoryRequest) {
-            $items = [];
-            foreach ($categoryRequest->items as $itemRequest) {
-                $items[] = $this->createMenuItem($itemRequest);
-            }
 
-            $menu->addCategory(MenuCategory::createWithItems(
-                name: Name::fromString($categoryRequest->name),
-                sortIndex: $categoryRequest->sortIndex,
-                items: $items,
-                isEnabled: $categoryRequest->isEnabled,
-            ));
+        try {
+            foreach ($request->categories as $categoryRequest) {
+                $items = [];
+                foreach ($categoryRequest->items as $itemRequest) {
+                    $items[] = $this->createMenuItem($itemRequest);
+                }
+
+                $menu->addCategory(MenuCategory::createWithItems(
+                    name: Name::fromString($categoryRequest->name),
+                    sortIndex: $categoryRequest->sortIndex,
+                    items: $items,
+                    isEnabled: $categoryRequest->isEnabled,
+                ));
+            }
+        } catch (DomainException $e) {
+            throw new ValidationException($e->getMessage());
         }
 
         $this->menuRepository->save($menu);

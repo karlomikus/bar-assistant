@@ -186,6 +186,28 @@ class BarControllerTest extends TestCase
         $this->assertSame(1, $bar->memberships()->count());
     }
 
+    public function test_cannot_join_bar_with_null_invite_code(): void
+    {
+        $bar = Bar::factory()->create(['invite_code' => null]);
+
+        $response = $this->postJson('/api/bars/join', [
+            'invite_code' => null
+        ]);
+
+        $response->assertJsonValidationErrors(['invite_code']);
+        $this->assertSame(0, $bar->memberships()->count());
+    }
+
+    public function test_cannot_join_bar_without_invite_code(): void
+    {
+        $bar = Bar::factory()->create(['invite_code' => null]);
+
+        $response = $this->postJson('/api/bars/join', []);
+
+        $response->assertJsonValidationErrors(['invite_code']);
+        $this->assertSame(0, $bar->memberships()->count());
+    }
+
     public function test_limits_bar_count_for_unsubscribed_users(): void
     {
         Config::set('bar-assistant.enable_billing', true);

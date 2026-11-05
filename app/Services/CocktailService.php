@@ -7,13 +7,28 @@ namespace Kami\Cocktail\Services;
 use Illuminate\Support\Collection;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Database\DatabaseManager;
+use BarAssistant\Application\Cocktail\ShelfCocktailService;
+use BarAssistant\Application\Cocktail\DTO\FindShelfCocktails;
+use BarAssistant\Application\Ingredient\IngredientService as IngredientApplicationService;
 
 final readonly class CocktailService
 {
     public function __construct(
         private DatabaseManager $db,
-        private IngredientService $ingredientService,
+        private ShelfCocktailService $shelfCocktailService,
+        private IngredientApplicationService $ingredientApplicationService,
     ) {
+    }
+
+    /**
+     * Expand a list of ingredient IDs with their bar-scoped descendants.
+     *
+     * @param array<int> $ingredientIds
+     * @return array<int>
+     */
+    public function expandWithDescendants(array $ingredientIds, int $barId): array
+    {
+        return $this->ingredientApplicationService->expandWithDescendants($ingredientIds, $barId);
     }
 
     /**
@@ -21,72 +36,18 @@ final readonly class CocktailService
      * ingredients in his shelf
      *
      * @param array<int> $ingredientIds
-     * @return \Illuminate\Support\Collection<string, mixed>
+     * @return \Illuminate\Support\Collection<int, int>
      */
     public function getCocktailsByIngredients(array $ingredientIds, int $barId, ?int $limit = null, bool $matchComplexIngredients = true): Collection
     {
-        if (count($ingredientIds) === 0) {
-            return collect();
-        }
+        $cocktailIds = $this->shelfCocktailService->findShelfCocktails(new FindShelfCocktails(
+            barId: $barId,
+            ingredientIds: $ingredientIds,
+            matchComplexIngredients: $matchComplexIngredients,
+            limit: $limit,
+        ));
 
-        // Resolve complex ingredients
-        // Basically, goes through all ingredients to match ($ingredientIds) and check if they can create complex ingredients
-        // If they can, that ingredient is added to the list of ingredients to match
-        if ($matchComplexIngredients) {
-            $additionalIngredients = $this->ingredientService->resolveComplexIngredients($ingredientIds);
-
-            $ingredientIds = array_merge($ingredientIds, $additionalIngredients);
-            $ingredientIds = array_unique($ingredientIds);
-        }
-
-        // This query should handle the following cases:
-        // Correctly count one match when either the main ingredient OR any of its substitutes match
-        // If an ingredient can be matched either directly or through a substitute, it should only count once
-        // Match any of descendant ingredients as possible substitute
-        $query = $this->db->table('cocktails')
-            ->select('cocktails.id')
-            ->selectRaw(
-                'COUNT(DISTINCT CASE
-                    WHEN ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN cocktail_ingredient_substitutes.ingredient_id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?) THEN ingredients.id
-                    WHEN cocktail_ingredients.is_specified IS FALSE AND EXISTS (
-                        SELECT
-                            1
-                        FROM
-                            ingredients
-                        WHERE
-                            (
-                                ingredients.parent_ingredient_id = cocktail_ingredients.ingredient_id
-                                OR ingredients.materialized_path LIKE (
-                                    SELECT COALESCE(ancestor.materialized_path, \'\') || ancestor.id || \'/%\'
-                                    FROM ingredients AS ancestor
-                                    WHERE ancestor.id = cocktail_ingredients.ingredient_id
-                                )
-                            )
-                            AND ingredients.id IN (' . str_repeat('?,', count($ingredientIds) - 1) . '?)
-                    ) THEN ingredients.id
-                    ELSE NULL
-                END) as matching_ingredients',
-                [...$ingredientIds, ...$ingredientIds, ...$ingredientIds]
-            )
-            ->join('cocktail_ingredients', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
-            ->join('ingredients', 'ingredients.id', '=', 'cocktail_ingredients.ingredient_id')
-            ->leftJoin('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
-            ->where('cocktail_ingredients.optional', false)
-            ->where('cocktails.bar_id', $barId) // This uses index on table to skip SCAN on whole cocktails table
-            ->groupBy('cocktails.id')
-            ->havingRaw('matching_ingredients >= (
-                SELECT COUNT(*)
-                FROM cocktail_ingredients ci2
-                WHERE ci2.cocktail_id = cocktails.id
-                AND ci2.optional = false
-            )');
-
-        if ($limit) {
-            $query->limit($limit);
-        }
-
-        return $query->pluck('id');
+        return collect($cocktailIds);
     }
 
     /**

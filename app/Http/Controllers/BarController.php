@@ -226,7 +226,14 @@ class BarController extends Controller
     #[BAO\NotFoundResponse]
     public function join(MemberService $memberService, Request $request): Response
     {
-        $barToJoin = Bar::where('invite_code', $request->post('invite_code'))->firstOrFail();
+        $request->validate(['invite_code' => 'required|string']);
+
+        // Invite code enablement is represented by a non-null invite_code column,
+        // so exclude bars without one. Otherwise a null/missing input compiles to
+        // `WHERE invite_code IS NULL` and matches bars with invites disabled.
+        $barToJoin = Bar::whereNotNull('invite_code')
+            ->where('invite_code', $request->input('invite_code'))
+            ->firstOrFail();
 
         if ($barToJoin->getStatus() === BarStatusEnum::Deactivated) {
             abort(403);

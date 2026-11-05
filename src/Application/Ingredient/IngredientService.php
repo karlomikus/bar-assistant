@@ -171,6 +171,40 @@ final readonly class IngredientService
     }
 
     /**
+     * Expand a list of ingredient IDs with their bar-scoped descendants.
+     *
+     * Unknown IDs and IDs belonging to another bar are kept as-is without
+     * expansion so they keep matching literally.
+     *
+     * @param array<int> $ingredientIds
+     * @return array<int>
+     */
+    public function expandWithDescendants(array $ingredientIds, int $barId): array
+    {
+        $barIdVo = new BarId($barId);
+        $expanded = [];
+
+        foreach ($ingredientIds as $ingredientId) {
+            $ingredientIdVo = new IngredientId((int) $ingredientId);
+            $expanded[] = $ingredientIdVo->value;
+
+            $node = $this->ingredientHierarchyRepository->findById($ingredientIdVo);
+            if ($node === null || !$node->getBarId()->equals($barIdVo)) {
+                continue;
+            }
+
+            foreach ($this->ingredientHierarchyRepository->findDescendants($ingredientIdVo, $barIdVo) as $descendant) {
+                $descendantId = $descendant->getId();
+                if ($descendantId !== null) {
+                    $expanded[] = $descendantId->value;
+                }
+            }
+        }
+
+        return array_values(array_unique(array_map(intval(...), $expanded)));
+    }
+
+    /**
      * Find and assign ingredient parts to a complex ingredient.
      *
      * @param non-empty-array<DTO\ComplexIngredientPart> $ingredientPartRequests

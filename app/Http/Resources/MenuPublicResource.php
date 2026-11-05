@@ -19,13 +19,15 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
     properties: [
         new OAT\Property(property: 'bar', type: 'object', description: 'Bar information', properties: [
             new OAT\Property(property: 'name', type: 'string', example: 'Bar name'),
+            new OAT\Property(property: 'is_public', type: 'boolean', example: true, description: 'Whether the bar is publicly accessible'),
+            new OAT\Property(property: 'slug', type: 'string', example: 'bar-slug'),
             new OAT\Property(property: 'subtitle', type: 'string', example: 'Bar subtitle', nullable: true),
             new OAT\Property(property: 'description', type: 'string', example: 'Bar description', nullable: true),
             new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: 'string'), description: 'Bar images (like bar logo)', example: [
                 'https://example.com/image1.jpg',
                 'https://example.com/image2.jpg',
             ]),
-        ], required: ['name', 'subtitle', 'description']),
+        ], required: ['name', 'is_public', 'slug', 'subtitle', 'description']),
         new OAT\Property(property: 'updated_at', format: 'date-time', type: 'string', description: 'Last update date', nullable: true),
         new OAT\Property(
             property: 'categories',
@@ -42,6 +44,7 @@ use Kami\Cocktail\Models\Enums\MenuItemTypeEnum;
                         new OAT\Property(property: 'sort', type: 'integer', example: 1),
                         new OAT\Property(property: 'price', type: PriceResource::class),
                         new OAT\Property(property: 'public_id', type: 'string', example: '01ARZ3NDEKTSV4RRFFQ69G5FAV', nullable: true),
+                        new OAT\Property(property: 'slug', type: 'string', example: 'cocktail-slug', nullable: true),
                         new OAT\Property(property: 'name', type: 'string', example: 'Cocktail name'),
                         new OAT\Property(property: 'description', type: 'string', nullable: true),
                         new OAT\Property(property: 'image', type: 'string', nullable: true, description: 'Image URL'),
@@ -66,6 +69,8 @@ class MenuPublicResource extends JsonResource
         return [
             'bar' => [
                 'name' => $this->bar->name,
+                'is_public' => $this->bar->isPublic(),
+                'slug' => $this->bar->slug,
                 'subtitle' => $this->bar->subtitle,
                 'description' => $this->bar->description,
                 'images' => $this->when(
@@ -86,6 +91,7 @@ class MenuPublicResource extends JsonResource
                     'name' => $menuItem->name,
                     'description' => $menuItem->description,
                     'public_id' => $menuItem->publicId,
+                    'slug' => $menuItem->slug,
                     'image' => $menuItem->image,
                 ])->toArray(),
             ])->values()

@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: 'Bar Assistant API'
-  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Authentication\n\nTo use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Tokens generated via login endpoint expire after 14 days.\n\nTreat your token like a password and don't share it with anyone.\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nA `401 Unauthorized` status code will be returned if you attempt to access a resource without token.\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that requests include the `Accept: application/json` header.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, use `Bar-Assistant-Bar-Id` header with the value set to bar id in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
+  description: "**Bar Assistant** is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes. This means that there are a lot of cocktail-oriented features, like ingredient substitutes, first-class ingredients, ABV calculations, unit switching and more.\n\n[Homepage](https://barassistant.app/) &middot; [Official Documentation](https://bar-assistant.github.io/docs/) &middot; [GitHub Repository](https://github.com/karlomikus/bar-assistant)\n\n## Authentication\n\nTo use the API, you need to generate a token. If you have an account you can use the login endpoint to get a token, or if you have a personal access token you can use it directly. Keep in mind personal access tokens can be limited to certain scopes. Login tokens expire after a configurable duration, set by the instance operator via the `AUTH_TOKEN_EXPIRATION_DAYS` environment variable (it affects only newly issued tokens). Setting it to `0` or a negative value disables login token expiry entirely.\n\nTreat your token like a password and don't share it with anyone.\n\nInclude your login token in the header of every request, using the following format: `Authorization: Bearer 1|dvWHLWuZbmWWFbjaUDla393Q9jK5Ou9ujWYPcvII`.\n\nA `401 Unauthorized` status code will be returned if you attempt to access a resource without token.\n\n## Rate Limiting\n\nThe rate limit is set to 1,000 requests per minute per IP address, or per user ID if authenticated. Certain endpoints have specific rate limits, such as importing and exporting data. Exporting is limited to 1 request per minute, while importing is restricted to 2 requests per minute for users without a subscription (applicable to cloud-hosted instances).\n\n## Content-Type\n\nEnsure that requests include the `Accept: application/json` header.\n\n## Bar context\n\nFor requests that require a reference to a specific bar, use `Bar-Assistant-Bar-Id` header with the value set to bar id in your request.\n\n## Authorization\n\nA `403 Forbidden` status code will be returned if you attempt to access a resource without the necessary permissions.\n\n## Sorting\n\nCertain endpoints support sorting by specific attributes. Prepend `-` to an attribute for descending order, or omit it for ascending order. For example, `?sort=name` sorts by the `name` attribute in ascending order. Multiple sorts can be applied by separating attributes with a comma.\n\n## Includes\n\nSome endpoints support the inclusion of related data on demand. To include multiple relationships, separate them with a comma. For example, `?include=notes,user` will include additional data for both notes and the user.\n\n## Pagination\n\nTo paginate results, use the `?per_page=30` parameter to limit the number of results per request. To navigate to a specific page, use `?page=3`.\n\n## Filtering\n\nCertain endpoints allow filtering by specific attributes. For example, `?filter[attribute_name]=value` filters results based on the given attribute. Multiple filter values can be separated by commas, e.g., `?filter[attribute_name]=value1,value2`."
   contact:
     name: 'Bar Assistant'
     url: 'https://barassistant.app'
@@ -3661,6 +3661,73 @@ paths:
                   - data
                 properties:
                   data: { $ref: '#/components/schemas/Image' }
+                type: object
+  /generate/shelf-from-photo:
+    post:
+      tags:
+        - Generation
+      summary: 'Identify shelf photo'
+      description: 'Identify bottles on an uploaded shelf photo using an AI vision model and mark the matching bar ingredients as in stock. Bottle names that match no bar ingredient are reported in the response and are not stocked. No ingredients are created by this endpoint.'
+      operationId: identifyShelfFromPhoto
+      parameters:
+        -
+          name: Bar-Assistant-Bar-Id
+          in: header
+          description: 'Database id of a bar.'
+          required: false
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - images
+              properties:
+                images:
+                  description: 'One or more photos of the bar shelf'
+                  type: array
+                  items: { type: string, format: binary }
+                  maxItems: 10
+                  minItems: 1
+              type: object
+      responses:
+        '200':
+          description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                required:
+                  - data
+                properties:
+                  data: { $ref: '#/components/schemas/ShelfPhotoResultResource' }
+                type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
                 type: object
   /glasses:
     get:
@@ -7439,6 +7506,15 @@ paths:
               tag_id:
                 description: 'Filter by exact tag ID(s), comma-separated'
                 type: string
+              glass_id:
+                description: 'Filter by exact glass type ID(s), comma-separated'
+                type: string
+              cocktail_method_id:
+                description: 'Filter by exact cocktail method ID(s), comma-separated'
+                type: string
+              total_ingredients:
+                description: 'Filter by minimum total ingredient count, inclusive'
+                type: integer
             type: object
         -
           name: sort
@@ -7464,7 +7540,7 @@ paths:
                 properties:
                   data: { description: 'The data for the current page', type: array, items: { $ref: '#/components/schemas/PublicCocktailResource' } }
                   links: { description: 'Links for pagination', properties: { first: { description: 'Link to the first page', type: [string, 'null'] }, last: { description: 'Link to the last page', type: [string, 'null'] }, prev: { description: 'Link to the previous page', type: [string, 'null'] }, next: { description: 'Link to the next page', type: [string, 'null'] } }, type: object }
-                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer }, filters: { required: [collections, tags], properties: { collections: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } }, tags: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } } }, type: object } }, type: object }
+                  meta: { properties: { current_page: { description: 'The current page number', type: integer }, from: { description: 'The starting index of the current page', type: integer }, last_page: { description: 'The last page number', type: integer }, links: { type: array, items: { description: 'Links for pagination', properties: { url: { description: 'The URL of the link', type: [string, 'null'] }, label: { description: 'The label of the link', type: [string, 'null'] }, active: { description: 'Whether the link is active', type: [boolean, 'null'] } }, type: object } }, path: { description: 'The path of the current page', type: string }, per_page: { description: 'The number of items per page', type: integer }, to: { description: 'The ending index of the current page', type: integer }, total: { description: 'The total number of items', type: integer }, filters: { required: [collections, tags, glasses, methods], properties: { collections: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } }, tags: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } }, glasses: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } }, methods: { required: [id, name], type: array, items: { properties: { id: { type: integer }, name: { type: string } }, type: object } } }, type: object } }, type: object }
                 type: object
         '404':
           description: 'Resource record not found.'
@@ -10419,6 +10495,12 @@ components:
             - string
             - 'null'
           example: 'American Bar, London'
+        tags:
+          description: 'Suggested tags derived from the recipe text'
+          type: array
+          items:
+            type: string
+            example: citrusy
         ingredients:
           description: 'List of ingredients required for the cocktail'
           type: array
@@ -11104,12 +11186,21 @@ components:
           description: 'Bar information'
           required:
             - name
+            - is_public
+            - slug
             - subtitle
             - description
           properties:
             name:
               type: string
               example: 'Bar name'
+            is_public:
+              description: 'Whether the bar is publicly accessible'
+              type: boolean
+              example: true
+            slug:
+              type: string
+              example: bar-slug
             subtitle:
               type:
                 - string
@@ -11150,7 +11241,7 @@ components:
                 type: array
                 items:
                   required: [in_bar_shelf, type, sort, price, public_id, name, description]
-                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: [string, 'null'], example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, name: { type: string, example: 'Cocktail name' }, description: { type: [string, 'null'] }, image: { description: 'Image URL', type: [string, 'null'] } }
+                  properties: { in_bar_shelf: { type: boolean, example: false }, type: { $ref: '#/components/schemas/MenuItemTypeEnum' }, sort: { type: integer, example: 1 }, price: { $ref: '#/components/schemas/Price' }, public_id: { type: [string, 'null'], example: 01ARZ3NDEKTSV4RRFFQ69G5FAV }, slug: { type: [string, 'null'], example: cocktail-slug }, name: { type: string, example: 'Cocktail name' }, description: { type: [string, 'null'] }, image: { description: 'Image URL', type: [string, 'null'] } }
                   type: object
             type: object
       type: object
@@ -11683,6 +11774,24 @@ components:
           description: 'Whether the provider is configured and enabled by server'
           type: boolean
           example: true
+      type: object
+    ShelfPhotoResultResource:
+      description: 'Result of identifying bottles on an uploaded shelf photo'
+      required:
+        - stocked
+        - unmatched
+      properties:
+        stocked:
+          description: 'Bar ingredients marked as in stock'
+          type: array
+          items:
+            $ref: '#/components/schemas/IngredientBasic'
+        unmatched:
+          description: 'Bottle names read from the photo that match no bar ingredient and were not stocked'
+          type: array
+          items:
+            type: string
+            example: 'Captin Morgon'
       type: object
     Subscription:
       description: 'Subscription resource'
