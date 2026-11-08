@@ -22,8 +22,8 @@ class CocktailExplorer extends DefaultScraper
     public function ingredients(): array
     {
         $result = $this->crawler->filter('.video__recipe__ingredients li')->each(function (Crawler $node): RecipeIngredient {
-            $amount = $node->filter('.video__recipe__ingredient__quantity')->attr('data-ingredient-amount');
-            $unit = $node->filter('.video__recipe__ingredient__quantity')->attr('data-ingredient-unit');
+            $amount = $node->filter('.video__recipe__ingredient__quantity')->attr('data-ingredient-amount') ?? '';
+            $unit = $node->filter('.video__recipe__ingredient__quantity')->attr('data-ingredient-unit') ?? '';
             $ingredient = $node->filter('strong')->text();
 
             return new RecipeIngredient(
