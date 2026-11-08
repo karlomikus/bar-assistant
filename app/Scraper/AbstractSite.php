@@ -9,7 +9,6 @@ use Kami\RecipeUtils\Parser\Parser;
 use Kami\RecipeUtils\ParserFactory;
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\External\Model\Schema;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\DomCrawler\Crawler;
 use Kami\Cocktail\External\Model\Cocktail;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
@@ -263,17 +262,17 @@ abstract class AbstractSite implements Site
             ];
         }
 
-        $image = $this->image();
+        $image = $this->image() ?? ['uri' => null, 'copyright' => null];
         if ($image['uri'] && !blank($image['uri'])) {
-            $url = parse_url($image['uri']);
-            $cleanUrl = ($url['scheme'] ?? '') . '://' . ($url['host'] ?? '') . ($url['path'] ?? '');
-
-            Validator::make(['image_url' => $cleanUrl], ['image_url' => 'url:http,https'])->validate();
-
             $dataUri = null;
-            $type = pathinfo($cleanUrl, PATHINFO_EXTENSION);
-            if ($data = file_get_contents($cleanUrl)) {
-                $dataUri = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            $response = new ScraperHttpClient()->get($image['uri']);
+            $contentType = strtolower(trim(explode(';', $response->header('Content-Type'))[0]));
+            if ($response->successful() && in_array($contentType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'], true)) {
+                $data = $response->body();
+                $imageInfo = $data === '' ? false : @getimagesizefromstring($data);
+                if ($imageInfo !== false && $imageInfo['mime'] === $contentType) {
+                    $dataUri = 'data:' . $contentType . ';base64,' . base64_encode($data);
+                }
             }
 
             return [

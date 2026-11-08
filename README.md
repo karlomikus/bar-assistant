@@ -83,7 +83,7 @@ Here's a list of interesting environment variables you can set to configure Bar 
 |METRICS_ENABLED|false|Enable or disable Prometheus metrics endpoint.|
 |METRICS_ALLOWED_IPS||Comma-separated list of IPs allowed to access metrics endpoint.|
 |ENABLE_PASSWORD_LOGIN|true|Enable or disable password login.|
-|SCRAPING_HTTP_PROXY||HTTP proxy URL for web scraping.|
+|SCRAPING_HTTP_PROXY||HTTP proxy URL for web scraping. The proxy must block non-public destination addresses because it may resolve hostnames independently.|
 |SCRAPING_CLIENT_CERT||Path to client certificate for web scraping.|
 |MAIL_MAILER||The mailer to use.|
 |MAIL_HOST||The mail host.|

@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Scraper;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
-use Kevinrob\GuzzleCache\CacheMiddleware;
 use Illuminate\Http\Client\HttpClientException;
 use Kami\Cocktail\Scraper\Sites\DefaultScraper;
 use Kami\Cocktail\Exceptions\ScraperMissingException;
-use Kevinrob\GuzzleCache\Storage\LaravelCacheStorage;
-use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
 
 /**
  * TODO: Refactor this mess of a class:
@@ -95,23 +91,7 @@ final class Manager
 
     private function getSiteContent(): string
     {
-        $options = [];
-        if (config('bar-assistant.scraping_client.proxy') !== null) {
-            $options['proxy'] = config('bar-assistant.scraping_client.proxy');
-
-            if (config('bar-assistant.scraping_client.cert')) {
-                $options['verify'] = config('bar-assistant.scraping_client.cert');
-            }
-        }
-
-        $cachingMiddleware = new CacheMiddleware(new GreedyCacheStrategy(new LaravelCacheStorage(Cache::store()), 60 * 15));
-        $response = Http::withMiddleware($cachingMiddleware)
-            ->withUserAgent(self::USER_AGENT)
-            ->withOptions($options)
-            ->timeout(10)
-            ->get($this->url);
-
-        return $response->body();
+        return new ScraperHttpClient()->get($this->url, cache: true)->body();
     }
 
     private function scrapingAllowed(): bool
@@ -123,7 +103,7 @@ final class Manager
 
         $robotsTxt = Cache::remember('scraper_robots_txt_' . $robotsUrl, 60 * 60 * 24, function () use ($robotsUrl): string {
             try {
-                return Http::withUserAgent(self::USER_AGENT)->timeout(10)->throw()->get($robotsUrl)->body();
+                return new ScraperHttpClient()->get($robotsUrl)->throw()->body();
             } catch (HttpClientException) {
                 return '';
             }
@@ -145,6 +125,8 @@ final class Manager
             return null;
         }
 
-        return $scheme . '://' . $host . '/robots.txt';
+        $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+
+        return $scheme . '://' . $host . $port . '/robots.txt';
     }
 }
