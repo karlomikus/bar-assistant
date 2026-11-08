@@ -104,14 +104,14 @@ class CocktailParty extends AbstractSite
         return implode("\n\n", $paragraphs);
     }
 
-    private function findDescriptionContainer(): Crawler
+    private function findDescriptionContainer(): ?Crawler
     {
         return $this->crawler
             ->filter('.elementor-widget-heading h1')
             ->closest('.elementor-element[data-element_type="container"]');
     }
 
-    private function findRecipeContainer(): Crawler
+    private function findRecipeContainer(): ?Crawler
     {
         return $this->crawler
             ->filter('.elementor-widget-shortcode li .ingredient')

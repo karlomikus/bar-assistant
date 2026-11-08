@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Scraper\Sites;
 
 use Kami\RecipeUtils\RecipeIngredient;
 use Kami\Cocktail\Scraper\AbstractSite;
+use Kami\Cocktail\Scraper\ScraperHttpClient;
 
 class TheCocktailDB extends AbstractSite
 {
@@ -32,7 +33,7 @@ class TheCocktailDB extends AbstractSite
             $url = 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' . $drinkApiId;
         }
 
-        if ($contents = file_get_contents($url)) {
+        if ($contents = new ScraperHttpClient()->get($url)->body()) {
             $data = json_decode($contents, true);
         } else {
             $data = [];
