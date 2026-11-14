@@ -37,8 +37,28 @@ class UtilsTest extends TestCase
             new AmountValueObject(2, new UnitValueObject('barspoon')),
         ];
 
-        $this->assertSame(176.25, Utils::calculateVolume($ingredients));
-        $this->assertSame(17.63, Utils::calculateVolume($ingredients, Units::Cl));
-        $this->assertSame(5.88, Utils::calculateVolume($ingredients, Units::Oz));
+        $this->assertSame(146.25, Utils::calculateVolume($ingredients));
+        $this->assertSame(14.63, Utils::calculateVolume($ingredients, Units::Cl));
+        $this->assertSame(4.88, Utils::calculateVolume($ingredients, Units::Oz));
+    }
+
+    public function testGetVolumeInMlConvertsSupportedUnits(): void
+    {
+        $this->assertSame(30.0, Utils::getVolumeInMl(new AmountValueObject(30.0, new UnitValueObject('ml'))));
+        $this->assertSame(10.0, Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('cl'))));
+        $this->assertSame(30.0, Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('oz'))));
+        $this->assertSame(0.3125, Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('dash'))));
+        $this->assertSame(5.0, Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('barspoon'))));
+    }
+
+    public function testGetVolumeInMlUsesFixedVolumeForTopup(): void
+    {
+        $this->assertSame(60.0, Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('topup'))));
+        $this->assertSame(60.0, Utils::getVolumeInMl(new AmountValueObject(0.0, new UnitValueObject('to top'))));
+    }
+
+    public function testGetVolumeInMlReturnsNullForUnsupportedUnit(): void
+    {
+        $this->assertNull(Utils::getVolumeInMl(new AmountValueObject(1.0, new UnitValueObject('unknown'))));
     }
 }

@@ -184,4 +184,62 @@ final class CocktailTest extends TestCase
 
         $this->assertEquals(0.0, $abv->toFloat());
     }
+
+    public function test_getABV_counts_topup_as_fixed_volume(): void
+    {
+        $ingredient = CocktailIngredient::create(
+            ingredientId: new IngredientId(1),
+            amountWithUnits: AmountWithUnits::from(60.0, Unit::from('ml')),
+            abv: ABV::from(40.0),
+        );
+        $topup = CocktailIngredient::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(1.0, Unit::from('topup')),
+            abv: ABV::from(0.0),
+        );
+
+        $cocktail = Cocktail::create(
+            barId: new BarId(1),
+            name: Name::fromString('Test Cocktail'),
+            instructions: '',
+            authors: Authors::createdBy(new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
+            publicStatus: PublicStatus::createPrivate(),
+            dilution: Dilution::fromFloat(0.0),
+        );
+
+        $cocktail->addIngredient($ingredient);
+        $cocktail->addIngredient($topup);
+
+        $this->assertEquals(20.0, $cocktail->getABV()->toFloat());
+    }
+
+    public function test_getABV_includes_topup_alcohol_and_converts_mixed_units(): void
+    {
+        $ingredient = CocktailIngredient::create(
+            ingredientId: new IngredientId(1),
+            amountWithUnits: AmountWithUnits::from(2.0, Unit::from('oz')),
+            abv: ABV::from(40.0),
+        );
+        $topup = CocktailIngredient::create(
+            ingredientId: new IngredientId(2),
+            amountWithUnits: AmountWithUnits::from(1.0, Unit::from('topup')),
+            abv: ABV::from(11.0),
+        );
+
+        $cocktail = Cocktail::create(
+            barId: new BarId(1),
+            name: Name::fromString('Test Cocktail'),
+            instructions: '',
+            authors: Authors::createdBy(new UserId(1)),
+            recordTimestamps: RecordTimestamps::createdNow(),
+            publicStatus: PublicStatus::createPrivate(),
+            dilution: Dilution::fromFloat(0.0),
+        );
+
+        $cocktail->addIngredient($ingredient);
+        $cocktail->addIngredient($topup);
+
+        $this->assertEquals(25.5, $cocktail->getABV()->toFloat());
+    }
 }

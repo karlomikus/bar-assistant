@@ -18,6 +18,13 @@ final readonly class Unit implements Stringable, JsonSerializable
 
     public const array CONVERTABLE_UNITS = ['ml', 'oz', 'cl'];
 
+    /**
+     * Pour "to top", "top up" unit is hard to define
+     * and heavily depens on glassware used.
+     * We are defining it as 60ml for the purpose of calculating cocktail ABV and total volume.
+     */
+    public const float TOPUP_VOLUME_ML = 60.0;
+
     private function __construct(
         ?string $value,
     ) {
