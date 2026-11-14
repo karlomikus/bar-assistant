@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Console\Commands;
 
-use Throwable;
 use Illuminate\Console\Command;
-use Kami\Cocktail\Models\Image;
-use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Kami\Cocktail\Services\Image\ImageCleanupService;
 
 class BarMaintenance extends Command
 {
@@ -29,13 +25,9 @@ class BarMaintenance extends Command
      */
     protected $description = 'This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache';
 
-    private readonly Filesystem $disk;
-
-    public function __construct()
+    public function __construct(private readonly ImageCleanupService $imageCleanupService)
     {
         parent::__construct();
-
-        $this->disk = Storage::disk('uploads');
     }
 
     /**
@@ -62,7 +54,13 @@ class BarMaintenance extends Command
 
         // Clear unused images
         $this->info('Clearing unused images...');
-        $this->deleteUnusedImages();
+        $cleanupResult = $this->imageCleanupService->deleteUnusedImages();
+        if ($cleanupResult->deletedImages > 0) {
+            $this->info('Deleted ' . $cleanupResult->deletedImages . ' images.');
+        }
+        if ($cleanupResult->deletedTemporaryFiles > 0) {
+            $this->info('Deleted ' . $cleanupResult->deletedTemporaryFiles . ' temporary images.');
+        }
 
         // Update indexes
         $this->info('Updating search indexes...');
@@ -88,28 +86,4 @@ class BarMaintenance extends Command
     //         }
     //     });
     // }
-
-    private function deleteUnusedImages(): void
-    {
-        $images = Image::whereNull('imageable_id')->get();
-
-        if ($images->isNotEmpty()) {
-            $i = 0;
-            foreach ($images as $image) {
-                try {
-                    $i++;
-                    $image->delete();
-                } catch (Throwable) {
-                }
-            }
-            $this->info('Deleted ' . $i . ' images.');
-        }
-
-        $tempFiles = $this->disk->files('temp/');
-
-        if (count($tempFiles) > 0) {
-            $this->disk->delete($tempFiles);
-            $this->info('Deleted ' . count($tempFiles) . ' temporary images.');
-        }
-    }
 }
