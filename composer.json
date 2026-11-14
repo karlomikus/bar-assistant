@@ -11,7 +11,7 @@
         "kovah/laravel-socialite-oidc": "^0.8.0",
         "laravel/ai": "^1.2",
         "laravel/cashier-paddle": "^2.0",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^12.71",
         "laravel/horizon": "^5.21",
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0",
