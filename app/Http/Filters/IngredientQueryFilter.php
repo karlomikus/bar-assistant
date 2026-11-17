@@ -144,7 +144,7 @@ final class IngredientQueryFilter extends QueryBuilder
             ->withCount('cocktails')
             ->filterByBar('ingredients')
             ->withInBarShelfColumn()
-            ->with('bar.shelfIngredients')
+            ->with('bar.shelfIngredients', 'ratings')
             ->withRatings($this->request->user()->id);
     }
 }

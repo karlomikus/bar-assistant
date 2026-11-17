@@ -82,7 +82,6 @@ class CocktailController extends Controller
             new OAT\Property(property: 'missing_bar_ingredients', type: 'number', description: 'Filter by total number of missing bar ingredients'),
             new OAT\Property(property: 'specific_ingredients', type: 'string', description: 'Show cocktails that contain given ingredient ID(s)'),
             new OAT\Property(property: 'ignore_ingredients', type: 'string', description: 'Show cocktails that do not contain given ingredient ID(s)'),
-            new OAT\Property(property: 'locked_user_cocktails', type: 'boolean', description: 'Show only cocktails that user can\'t make'),
             new OAT\Property(property: 'locked_bar_cocktails', type: 'boolean', description: 'Show only cocktails that bar can\'t make'),
         ])),
         new OAT\Parameter(name: 'sort', in: 'query', description: 'Sort by attributes. Available attributes: `name`, `created_at`, `average_rating`, `user_rating`, `abv`, `year`, `total_ingredients`, `reviews_count`, `missing_ingredients`, `missing_bar_ingredients`, `favorited_at`, `random`.', schema: new OAT\Schema(type: 'string')),

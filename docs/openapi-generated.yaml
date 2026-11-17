@@ -1716,9 +1716,6 @@ paths:
               ignore_ingredients:
                 description: 'Show cocktails that do not contain given ingredient ID(s)'
                 type: string
-              locked_user_cocktails:
-                description: "Show only cocktails that user can't make"
-                type: boolean
               locked_bar_cocktails:
                 description: "Show only cocktails that bar can't make"
                 type: boolean
