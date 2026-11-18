@@ -23,13 +23,15 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends libvips42
 
-    - uses: shivammathur/setup-php@v2
+    - uses: shivammathur/setup-php@2.40.0
       with:
         php-version: ${{ matrix.php-version }}
         extensions: bcmath, intl, ffi
         ini-values: ffi.enable=true, zend.max_allowed_stack_size=-1
 
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
 
     - name: Meilisearch (latest version) setup with Docker
       run: docker run -d -p 7700:7700 getmeili/meilisearch:latest meilisearch --master-key=masterKeyThatIsReallyReallyLong4Real --no-analytics

@@ -580,6 +580,41 @@ class CocktailControllerTest extends TestCase
         $this->assertEqualsWithDelta(1.75, $uk / $us, 0.01);
     }
 
+    public function test_cocktail_topup_abv_is_consistent_with_volume_and_calories(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $campari = Ingredient::factory()->recycle($membership->bar)->create(['name' => 'Campari', 'strength' => 25]);
+        $vermouth = Ingredient::factory()->recycle($membership->bar)->create(['name' => 'Sweet vermouth', 'strength' => 18]);
+        $soda = Ingredient::factory()->recycle($membership->bar)->create(['name' => 'Club soda', 'strength' => 0]);
+        $method = CocktailMethod::factory()->recycle($membership->bar)->create(['dilution_percentage' => 10]);
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        $response = $this->postJson('/api/cocktails', [
+            'name' => 'Americano test',
+            'instructions' => '1. Build in a glass',
+            'cocktail_method_id' => $method->id,
+            'ingredients' => [
+                ['ingredient_id' => $campari->id, 'amount' => 30, 'units' => 'ml', 'sort' => 1],
+                ['ingredient_id' => $vermouth->id, 'amount' => 30, 'units' => 'ml', 'sort' => 2],
+                ['ingredient_id' => $soda->id, 'amount' => 1, 'units' => 'topup', 'sort' => 3],
+            ],
+        ]);
+
+        $response->assertCreated();
+
+        $cocktail = Cocktail::where('name', 'Americano test')->firstOrFail();
+
+        $show = $this->getJson('/api/cocktails/' . $cocktail->id);
+        $show->assertOk();
+        $show->assertJsonPath('data.abv', 9.77);
+        $show->assertJsonPath('data.volume_ml', 132);
+        $show->assertJsonPath('data.alcohol_units', 1.27);
+        $show->assertJsonPath('data.calories', 90);
+    }
+
     public function test_cocktail_alcohol_units_are_zero_without_method(): void
     {
         $membership = $this->setupBarMembership();

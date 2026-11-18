@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail;
 
+use BarAssistant\Domain\Common\Unit;
 use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
@@ -35,30 +36,44 @@ final class Utils
     }
 
     /**
+     * Convert an ingredient amount to milliliters.
+     *
+     * Top-ups have no meaningful amount and use a fixed volume instead.
+     * Returns null when the unit cannot be converted to a volume.
+     */
+    public static function getVolumeInMl(AmountValueObject $ingredient): ?float
+    {
+        if ($ingredient->units->isTopup()) {
+            return Unit::TOPUP_VOLUME_ML;
+        }
+
+        if ($ingredient->units->getAsEnum() === null) {
+            return null;
+        }
+
+        return $ingredient->convertTo(new UnitValueObject('ml'))->amountMin;
+    }
+
+    /**
      * Calculate approximate cocktail volume
      *
-     * @param array<AmountValueObject|null> $ingredients
+     * @param array<AmountValueObject> $ingredients
      * @param float $dilutionPercentage Percentage of volume added through dilution
      * @return float
      */
     public static function calculateVolume(array $ingredients, Units $inUnits = Units::Ml, float $dilutionPercentage = 0.0): float
     {
-        // Convert all amounts to single unit
-        $ingredients = array_map(function ($ingredient) {
-            if ($ingredient->units->value === 'ml') {
-                return $ingredient;
+        $volume = 0.0;
+        foreach ($ingredients as $ingredient) {
+            $volumeInMl = self::getVolumeInMl($ingredient);
+
+            if ($volumeInMl === null) {
+                continue;
             }
 
-            if ($ingredient->units->value === 'cl' || $ingredient->units->value === 'oz' || $ingredient->units->isDash() || $ingredient->units->isBarspoon()) {
-                return $ingredient->convertTo(new UnitValueObject('ml'));
-            }
+            $volume += $volumeInMl;
+        }
 
-            if ($ingredient->units->isTopup()) {
-                return new AmountValueObject(90, new UnitValueObject('ml'));
-            }
-        }, $ingredients);
-
-        $volume = array_reduce(array_filter($ingredients), fn ($carry, $item) => $carry + $item->amountMin, 0.0);
         $volume = $volume * (1 + ($dilutionPercentage / 100));
         $volume = match ($inUnits) {
             Units::Ml => $volume,

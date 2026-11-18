@@ -36,7 +36,7 @@ class Bar extends BaseModel implements UploadableInterface
     protected static function booted(): void
     {
         static::retrieved(function (Bar $bar) {
-            if (!empty($bar->search_token) || empty(config('scout.driver'))) {
+            if (!empty($bar->search_token) || config('scout.driver') !== 'meilisearch') {
                 return;
             }
 

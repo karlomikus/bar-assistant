@@ -1,3 +1,16 @@
+# v6.12.0
+## New
+- New recipe catalog version
+
+## Fixes
+- ABV now correctly calculates when using "top up" unit in cocktail recipe
+- Fixed meilisearch checks when meilisearch is disabled
+
+# v6.11.1
+## Fixes
+- Scraper now allows only scraping public network addresses, private network addresses are blocked
+- Scraper response payload is now limited to 10MB, larger responses will be rejected
+
 # v6.11.0
 ## New
 - Filters `specific_ingredients` and `ignore_ingredients` now check for descendants of the specified ingredients as well

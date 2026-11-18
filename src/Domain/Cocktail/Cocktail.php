@@ -11,6 +11,7 @@ use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Slug;
+use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
@@ -153,14 +154,16 @@ final class Cocktail implements Identity
         }
 
         $amountUsed = 0.0;
+        $alcoholVolume = 0.0;
         foreach ($this->ingredients as $ingredient) {
-            $amountUsed += $ingredient->amountWithUnits->amountMin;
-        }
+            $volumeInMl = self::getIngredientVolumeInMl($ingredient);
+            if ($volumeInMl === null) {
+                continue;
+            }
 
-        $alcoholVolume = floatval(array_reduce(
-            $this->ingredients,
-            static fn ($carry, $item) => (($item->amountWithUnits->amountMin * $item->abv->toFloat()) / 100) + $carry,
-        ));
+            $amountUsed += $volumeInMl;
+            $alcoholVolume += ($volumeInMl * $ingredient->abv->toFloat()) / 100;
+        }
 
         $afterDilution = ($amountUsed * $this->dilution->toDecimal()) + $amountUsed;
 
@@ -169,6 +172,21 @@ final class Cocktail implements Identity
         }
 
         return ABV::from(round(($alcoholVolume / $afterDilution) * 100, 2));
+    }
+
+    private static function getIngredientVolumeInMl(CocktailIngredient $ingredient): ?float
+    {
+        $amountWithUnits = $ingredient->amountWithUnits;
+
+        if ($amountWithUnits->units->isTopup()) {
+            return Unit::TOPUP_VOLUME_ML;
+        }
+
+        if ($amountWithUnits->units->getAsEnum() === null) {
+            return null;
+        }
+
+        return $amountWithUnits->convertTo(Unit::from('ml'))->amountMin;
     }
 
     public function addIngredient(CocktailIngredient $ingredient): self

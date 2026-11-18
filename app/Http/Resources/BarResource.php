@@ -86,7 +86,7 @@ class BarResource extends JsonResource
             'invite_code' => $this->invite_code,
             'status' => $this->getStatus()->value,
             'settings' => $settings,
-            'search_host' => config('scout.meilisearch.host'),
+            'search_host' => config('scout.driver') === 'meilisearch' ? config('scout.meilisearch.host') : null,
             'search_token' => $this->search_token,
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString() ?? null,

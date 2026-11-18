@@ -11,14 +11,11 @@ use Illuminate\Support\Str;
 use Brick\Math\RoundingMode;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
-use Kami\RecipeUtils\Converter;
 use Symfony\Component\Uid\Ulid;
-use Kami\RecipeUtils\AmountValue;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Collection;
 use Brick\Money\Context\DefaultContext;
 use Illuminate\Database\Eloquent\Builder;
-use Kami\RecipeUtils\UnitConverter\Units;
 use Kami\Cocktail\Models\Concerns\HasNotes;
 use Kami\Cocktail\Models\Concerns\HasImages;
 use Kami\Cocktail\Models\Concerns\HasRating;
@@ -171,16 +168,13 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
 
         $ingredientsForABV = [];
         foreach ($this->ingredients as $cocktailIngredient) {
-            $unitFrom = Units::tryFrom($cocktailIngredient->units);
-            if (!$unitFrom) {
+            $volumeInMl = Utils::getVolumeInMl($cocktailIngredient->getAmount());
+            if ($volumeInMl === null) {
                 continue;
             }
 
-            $amount = Converter::convertAmount(new AmountValue($cocktailIngredient->amount), $unitFrom, Units::Oz);
-
             $ingredientsForABV[] = [
-                'amount' => $amount->getValue(),
-                'units' => $unitFrom->value,
+                'amount' => $volumeInMl,
                 'strength' => $cocktailIngredient->ingredient->strength ?? 0,
             ];
         }
