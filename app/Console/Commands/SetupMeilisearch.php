@@ -31,9 +31,9 @@ class SetupMeilisearch extends Command
     public function handle(): int
     {
         if (config('scout.driver') !== 'meilisearch') {
-            $this->error('Search driver is not set to "meilisearch". Skipping.');
+            $this->info('Search driver is not set to "meilisearch". Skipping.');
 
-            return Command::INVALID;
+            return Command::SUCCESS;
         }
 
         $forceTokenChange = (bool) $this->option('force');
