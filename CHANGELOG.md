@@ -1,6 +1,10 @@
-# Unreleased
+# v6.12.0
+## New
+- New recipe catalog version
+
 ## Fixes
 - ABV now correctly calculates when using "top up" unit in cocktail recipe
+- Fixed meilisearch checks when meilisearch is disabled
 
 # v6.11.1
 ## Fixes
