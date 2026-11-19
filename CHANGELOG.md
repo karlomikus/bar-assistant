@@ -1,3 +1,7 @@
+# v6.12.1
+## Fixes
+- PHP version security fixes
+
 # v6.12.0
 ## New
 - New recipe catalog version
