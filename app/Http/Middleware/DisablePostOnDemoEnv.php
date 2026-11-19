@@ -20,9 +20,6 @@ class DisablePostOnDemoEnv
         $allowedDemoPostRoutes = [
             'auth.login',
             'auth.logout',
-            'import.cocktail',
-            'ratings.rate-cocktail',
-            'ratings.unrate-cocktail',
         ];
 
         if (App::environment('demo') && !$request->isMethodSafe() && !$request->routeIs($allowedDemoPostRoutes)) {
