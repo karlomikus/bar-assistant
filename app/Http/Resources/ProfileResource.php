@@ -21,7 +21,7 @@ use Kami\Cocktail\OpenAPI\Schemas\ProfileSettings;
         new OAT\Property(property: 'is_subscribed', type: 'boolean', example: true, description: 'Is user subscribed'),
         new OAT\Property(property: 'memberships', type: 'array', items: new OAT\Items(type: BarMembershipResource::class), description: 'User memberships'),
         new OAT\Property(property: 'oauth_credentials', type: 'array', description: 'OAuth credentials', items: new OAT\Items(type: OauthCredentialResource::class)),
-        new OAT\Property(property: 'settings', type: ProfileSettings::class),
+        new OAT\Property(property: 'settings', type: ProfileSettings::class, nullable: true),
     ],
     required: ['id', 'name', 'email', 'is_subscribed', 'memberships', 'oauth_credentials', 'settings']
 )]
