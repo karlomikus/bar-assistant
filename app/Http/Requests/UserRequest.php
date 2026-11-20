@@ -15,7 +15,7 @@ class UserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -25,11 +25,11 @@ class UserRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'role_id' => ['required', new Enum(UserRoleEnum::class)],
-            'email' => ['email'],
+            'role_id' => ['required', 'integer', new Enum(UserRoleEnum::class)],
+            'email' => ['required', 'string', 'email', 'max:255'],
         ];
     }
 }

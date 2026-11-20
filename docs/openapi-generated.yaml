@@ -5670,6 +5670,23 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/User' } }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
     post:
       tags:
         - Members
@@ -5698,6 +5715,7 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
+                format: uri-reference
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -5715,6 +5733,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/members/{id}':
     get:
       tags:
@@ -5817,7 +5867,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRequest'
+              $ref: '#/components/schemas/UpdateMemberRequest'
       responses:
         '204':
           description: 'Successful response'
@@ -5855,6 +5905,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Members
@@ -13485,6 +13550,18 @@ components:
           maxLength: 255
           example: Floral
       type: object
+    UpdateMemberRequest:
+      required:
+        - role_id
+      properties:
+        role_id:
+          type: integer
+          enum:
+            - 1
+            - 3
+            - 4
+          example: 1
+      type: object
     UserRequest:
       required:
         - role_id
@@ -13492,9 +13569,15 @@ components:
       properties:
         role_id:
           type: integer
+          enum:
+            - 1
+            - 3
+            - 4
           example: 1
         email:
           type: string
+          format: email
+          maxLength: 255
           example: admin@example.com
       type: object
     UtensilRequest:
