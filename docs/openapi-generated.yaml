@@ -3852,6 +3852,23 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Glass' } }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
     post:
       tags:
         - Glasses
@@ -3876,10 +3893,19 @@ paths:
         '201':
           description: 'Successful response'
           headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
             Location:
               description: 'URL of the new resource'
               schema:
                 type: string
+                format: uri-reference
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -3897,6 +3923,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/glasses/{id}':
     get:
       tags:
@@ -3989,6 +4030,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -4023,6 +4073,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Glasses
@@ -4040,6 +4105,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -7276,8 +7350,8 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/Profile' }
                 type: object
-        '404':
-          description: 'Resource record not found.'
+        '403':
+          description: 'You are not authorized for this action.'
           headers:
             x-ratelimit-limit:
               description: 'Max number of attempts.'
@@ -7308,6 +7382,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -7325,6 +7408,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Profile
@@ -7334,6 +7449,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -7384,6 +7508,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -7401,6 +7534,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/profile/sso/{provider}':
     delete:
       tags:
@@ -7419,6 +7584,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -11529,7 +11703,11 @@ components:
           items:
             $ref: '#/components/schemas/OauthCredential'
         settings:
-          $ref: '#/components/schemas/ProfileSettings'
+          oneOf:
+            -
+              $ref: '#/components/schemas/ProfileSettings'
+            -
+              type: 'null'
       type: object
     PublicBarResource:
       description: 'Public details about a bar'
@@ -12367,19 +12545,24 @@ components:
       required:
         - current_password
         - new_password
+        - new_password_confirmation
       properties:
         new_password:
-          type:
-            - string
-            - 'null'
+          type: string
           format: password
+          maxLength: 255
+          minLength: 5
           example: newpassword
         current_password:
-          type:
-            - string
-            - 'null'
+          type: string
           format: password
+          maxLength: 255
           example: current
+        new_password_confirmation:
+          type: string
+          format: password
+          maxLength: 255
+          example: newpassword
       type: object
     CocktailIngredientRequest:
       required:
@@ -12625,6 +12808,7 @@ components:
       properties:
         name:
           type: string
+          maxLength: 255
           example: Lowball
         description:
           type:
@@ -12636,6 +12820,7 @@ components:
             - number
             - 'null'
           format: float
+          minimum: 0
           example: 120
         volume_units:
           type:
@@ -12647,6 +12832,7 @@ components:
           type: array
           items:
             type: integer
+          maxItems: 1
       type: object
     ImageRequest:
       required:
@@ -12969,9 +13155,12 @@ components:
       properties:
         name:
           type: string
+          maxLength: 255
           example: 'Bar Tender'
         email:
           type: string
+          format: email
+          maxLength: 255
           example: new@email.com
         settings:
           oneOf:
@@ -12979,10 +13168,6 @@ components:
               $ref: '#/components/schemas/ProfileSettings'
             -
               type: 'null'
-        bar_id:
-          type:
-            - integer
-            - 'null'
       type: object
     ProfileSettings:
       properties:
@@ -12990,10 +13175,12 @@ components:
           type:
             - string
             - 'null'
+          maxLength: 255
         theme:
           type:
             - string
             - 'null'
+          maxLength: 255
       type: object
     RegisterRequest:
       required:
