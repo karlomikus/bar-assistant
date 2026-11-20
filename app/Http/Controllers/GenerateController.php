@@ -205,7 +205,7 @@ class GenerateController extends Controller
                 type: 'object',
                 properties: [
                     new OAT\Property(property: 'cocktail_id', type: 'string', example: 'negroni', description: 'Id or slug of the cocktail to generate an image for'),
-                    new OAT\Property(property: 'style', type: 'string', nullable: true, example: 'editorial studio photo', description: 'Optional visual style hint for the generated image'),
+                    new OAT\Property(property: 'style', type: 'string', nullable: true, example: 'editorial', description: 'Optional predefined backend style identifier for the generated image'),
                 ],
                 required: ['cocktail_id'],
             ),

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Kami\Cocktail\GenAI\ImageStyleCatalog;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GenerateCocktailImageRequest extends FormRequest
@@ -27,7 +29,7 @@ class GenerateCocktailImageRequest extends FormRequest
     {
         return [
             'cocktail_id' => 'required|string',
-            'style' => 'nullable|string|max:255',
+            'style' => ['nullable', 'string', Rule::in(ImageStyleCatalog::identifiers())],
         ];
     }
 }

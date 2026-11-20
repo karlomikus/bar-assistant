@@ -3583,9 +3583,9 @@ paths:
                   type: string
                   example: negroni
                 style:
-                  description: 'Optional visual style hint for the generated image'
+                  description: 'Optional predefined backend style identifier for the generated image'
                   type: [string, 'null']
-                  example: 'editorial studio photo'
+                  example: editorial
               type: object
       responses:
         '200':
