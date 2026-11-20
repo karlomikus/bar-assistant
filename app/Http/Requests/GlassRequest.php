@@ -13,7 +13,7 @@ class GlassRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,12 +23,15 @@ class GlassRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => 'required',
-            'volume' => 'numeric|nullable',
-            'images' => 'array|max:1',
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'volume' => ['nullable', 'numeric', 'min:0'],
+            'volume_units' => ['nullable', 'string'],
+            'images' => ['array', 'max:1'],
+            'images.*' => ['integer'],
         ];
     }
 }
