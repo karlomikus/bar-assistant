@@ -53,6 +53,32 @@ paths:
                 type: object
         '400':
           description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login'
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
       security: []
   /auth/logout:
     post:
@@ -64,6 +90,8 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+        '401':
+          description: Unauthenticated
   /auth/register:
     post:
       tags:
@@ -110,6 +138,32 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
       security: []
   /auth/forgot-password:
     post:
@@ -123,14 +177,44 @@ paths:
         content:
           application/json:
             schema:
+              required:
+                - email
               properties:
                 email:
                   type: string
+                  format: email
+                  maxLength: 255
                   example: admin@example.com
               type: object
       responses:
         '204':
           description: 'Password reset link sent'
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: 'Reached rate limit.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
       security: []
   /auth/reset-password:
     post:
@@ -144,19 +228,31 @@ paths:
         content:
           application/json:
             schema:
+              required:
+                - token
+                - email
+                - password
+                - password_confirmation
               properties:
                 token:
                   type: string
+                  maxLength: 255
                   example: token-from-email
                 email:
                   type: string
+                  format: email
+                  maxLength: 255
                   example: admin@example.com
                 password:
                   type: string
+                  format: password
+                  maxLength: 255
                   minLength: 5
                   example: password
                 password_confirmation:
                   type: string
+                  format: password
+                  maxLength: 255
                   minLength: 5
                   example: password
               type: object
@@ -165,6 +261,21 @@ paths:
           description: 'Password succesfully reset'
         '400':
           description: 'Unable to reset password'
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
       security: []
   '/auth/verify/{id}/{hash}':
     get:
@@ -13026,15 +13137,19 @@ components:
       properties:
         email:
           type: string
+          format: email
+          maxLength: 255
           example: admin@example.com
         password:
           type: string
           format: password
+          maxLength: 255
           example: password
         token_name:
           type:
             - string
             - 'null'
+          maxLength: 255
           example: 'My device'
       type: object
     MenuCategoryRequest:
@@ -13190,13 +13305,17 @@ components:
       properties:
         email:
           type: string
+          format: email
+          maxLength: 255
           example: admin@example.com
         name:
           type: string
+          maxLength: 255
           example: 'Bar Tender'
         password:
           type: string
           format: password
+          maxLength: 255
           minLength: 5
           example: password
       type: object

@@ -16,10 +16,13 @@ use Illuminate\Support\Facades\Mail;
 use Kami\Cocktail\Mail\PasswordReset;
 use Kami\Cocktail\Mail\PasswordChanged;
 use Illuminate\Support\Facades\Password;
+use Kami\Cocktail\Http\Requests\LoginRequest;
 use Kami\Cocktail\Http\Resources\TokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\RegisterRequest;
 use Kami\Cocktail\Services\Auth\RegisterUserService;
+use Kami\Cocktail\Http\Requests\ResetPasswordRequest;
+use Kami\Cocktail\Http\Requests\ForgotPasswordRequest;
 use Kami\Cocktail\OpenAPI\Schemas\RegisterRequest as SchemaRegisterRequest;
 
 class AuthController extends Controller
@@ -34,29 +37,31 @@ class AuthController extends Controller
         new BAO\WrapObjectWithData(TokenResource::class),
     ])]
     #[OAT\Response(response: 400, description: 'Unable to authenticate. Possible reasons: invalid credentials, unconfirmed account or disabled password login')]
-    public function authenticate(Request $request): JsonResource
+    #[BAO\ValidationFailedResponse]
+    #[BAO\RateLimitResponse]
+    public function authenticate(LoginRequest $request): JsonResource
     {
+        /** @var array{email: string, password: string, token_name?: string|null} $validated */
+        $validated = $request->validated();
+        $email = $validated['email'];
+        $password = $validated['password'];
+
         if (!config('bar-assistant.enable_password_login')) {
             Log::warning('User tried to login with password, but password login is disabled', [
-                'email' => $request->email,
+                'email' => $email,
             ]);
             abort(400, 'Password login is disabled.');
         }
 
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
         if (config('bar-assistant.mail_require_confirmation') === true) {
-            $user = User::where('email', $request->email)->where('email_verified_at', '<>', null)->first();
+            $user = User::where('email', $email)->where('email_verified_at', '<>', null)->first();
         } else {
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $email)->first();
         }
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($password, $user->password)) {
             Log::warning('User tried to login with invalid credentials', [
-                'email' => $request->email,
+                'email' => $email,
                 'is_verified' => $user?->hasVerifiedEmail(),
             ]);
 
@@ -67,7 +72,7 @@ class AuthController extends Controller
             abort(400, 'Unable to authenticate. Check your login credentials and try again.');
         }
 
-        $tokenName = $request->input('token_name') ?? $request->userAgent() ?? 'Unknown device';
+        $tokenName = $validated['token_name'] ?? $request->userAgent() ?? 'Unknown device';
         /** @var int $days */
         $days = config('bar-assistant.auth.token_expiration_days');
         $expiresAt = $days > 0 ? now()->addDays($days) : null;
@@ -78,10 +83,16 @@ class AuthController extends Controller
 
     #[OAT\Post(path: '/auth/logout', tags: ['Authentication'], operationId: 'logout', description: 'Logout currently authenticated user. This will delete and disable bearer token.', summary: 'Logout')]
     #[OAT\Response(response: 204, description: 'Successful response')]
+    #[OAT\Response(response: 401, description: 'Unauthenticated')]
     public function logout(Request $request): Response
     {
-        /** @var \Laravel\Sanctum\PersonalAccessToken|null */
-        $currentAccessToken = $request->user()->currentAccessToken();
+        $user = $request->user();
+        if (!$user instanceof User) {
+            abort(401);
+        }
+
+        /** @var \Laravel\Sanctum\PersonalAccessToken|null $currentAccessToken */
+        $currentAccessToken = $user->currentAccessToken();
         if ($currentAccessToken) {
             $currentAccessToken->delete();
         }
@@ -99,33 +110,38 @@ class AuthController extends Controller
         new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
     ])]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
+    #[BAO\RateLimitResponse]
     public function register(RegisterUserService $registerService, RegisterRequest $req): Response
     {
         if (config('bar-assistant.allow_registration') === false) {
             abort(404, 'Registrations are disabled.');
         }
 
-        $user = $registerService->register(
+        $registerService->register(
             SchemaRegisterRequest::fromIlluminateRequest($req)
         );
 
-        return new Response(status: 201, headers: ['Location' => route('profile.show', $user->id, false)]);
+        return new Response(status: 201, headers: ['Location' => route('profile.show', [], false)]);
     }
 
     #[OAT\Post(path: '/auth/forgot-password', tags: ['Authentication'], operationId: 'passwordForgot', description: 'Send a new password reset link to users email address.', summary: 'Request password reset', requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(type: 'string', property: 'email', example: 'admin@example.com'),
+            new OAT\JsonContent(type: 'object', required: ['email'], properties: [
+                new OAT\Property(type: 'string', property: 'email', format: 'email', maxLength: 255, example: 'admin@example.com'),
             ]),
         ]
     ), security: [])]
     #[OAT\Response(response: 204, description: 'Password reset link sent')]
-    public function passwordForgot(Request $request): Response
+    #[BAO\ValidationFailedResponse]
+    #[BAO\RateLimitResponse]
+    public function passwordForgot(ForgotPasswordRequest $request): Response
     {
-        $request->validate(['email' => 'required|email']);
+        /** @var array{email: string} $validated */
+        $validated = $request->validated();
 
-        $status = Password::sendResetLink($request->only('email'), function (User $user, string $token) {
+        $status = Password::sendResetLink(['email' => $validated['email']], function (User $user, string $token) {
             Mail::to($user)->queue(new PasswordReset($token));
             Log::info('Password reset link sent', [
                 'email' => $user->email,
@@ -144,26 +160,29 @@ class AuthController extends Controller
     #[OAT\Post(path: '/auth/reset-password', tags: ['Authentication'], operationId: 'passwordReset', description: 'Reset user password with data from password reset request.', summary: 'Reset password', requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\JsonContent(type: 'object', properties: [
-                new OAT\Property(type: 'string', property: 'token', example: 'token-from-email'),
-                new OAT\Property(type: 'string', property: 'email', example: 'admin@example.com'),
-                new OAT\Property(type: 'string', property: 'password', example: 'password', minLength: 5),
-                new OAT\Property(type: 'string', property: 'password_confirmation', example: 'password', minLength: 5),
+            new OAT\JsonContent(type: 'object', required: ['token', 'email', 'password', 'password_confirmation'], properties: [
+                new OAT\Property(type: 'string', property: 'token', maxLength: 255, example: 'token-from-email'),
+                new OAT\Property(type: 'string', property: 'email', format: 'email', maxLength: 255, example: 'admin@example.com'),
+                new OAT\Property(type: 'string', property: 'password', format: 'password', example: 'password', minLength: 5, maxLength: 255),
+                new OAT\Property(type: 'string', property: 'password_confirmation', format: 'password', example: 'password', minLength: 5, maxLength: 255),
             ]),
         ]
     ), security: [])]
     #[OAT\Response(response: 204, description: 'Password succesfully reset')]
     #[OAT\Response(response: 400, description: 'Unable to reset password')]
-    public function passwordReset(Request $request): Response
+    #[BAO\ValidationFailedResponse]
+    public function passwordReset(ResetPasswordRequest $request): Response
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:5|confirmed',
-        ]);
+        /** @var array{token: string, email: string, password: string, password_confirmation: string} $validated */
+        $validated = $request->validated();
 
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            [
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'password_confirmation' => $validated['password_confirmation'],
+            'token' => $validated['token'],
+        ],
             function (User $user, string $password) {
                 $user->password = Hash::make($password);
                 $user->save();
@@ -171,16 +190,16 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            Mail::to($request->post('email'))->queue(new PasswordChanged());
+            Mail::to($validated['email'])->queue(new PasswordChanged());
 
             Log::info('Password reset successful', [
-                'email' => $request->post('email'),
+                'email' => $validated['email'],
             ]);
 
             return response()->noContent();
         }
 
-        abort(400, $status);
+        abort(400, is_string($status) ? $status : 'Unable to reset password');
     }
 
     #[OAT\Get(path: '/auth/verify/{id}/{hash}', tags: ['Authentication'], operationId: 'confirmAccount', description: 'Verify user email. This will return 404 if email verifications is disabled.', summary: 'Confirm account', parameters: [
