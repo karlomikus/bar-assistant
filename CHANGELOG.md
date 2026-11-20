@@ -1,3 +1,8 @@
+# v6.13.0
+## New
+- Sync dataset now fills missing data when applicable
+- Added multiple visual styles for cocktail image generation
+
 # v6.12.1
 ## Fixes
 - PHP version security fixes
