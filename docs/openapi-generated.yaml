@@ -9313,6 +9313,40 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Tag' } }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
     post:
       tags:
         - Tag
@@ -9341,6 +9375,7 @@ paths:
               description: 'URL of the new resource'
               schema:
                 type: string
+                format: uri-reference
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -9358,6 +9393,38 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '404':
+          description: 'Resource record not found.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/tags/{id}':
     get:
       tags:
@@ -9484,6 +9551,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - Tag
@@ -13400,6 +13482,7 @@ components:
       properties:
         name:
           type: string
+          maxLength: 255
           example: Floral
       type: object
     UserRequest:

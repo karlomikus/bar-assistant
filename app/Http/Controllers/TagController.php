@@ -11,6 +11,7 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
+use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Http\Requests\TagRequest;
 use Kami\Cocktail\Http\Resources\TagResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,6 +24,8 @@ class TagController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(TagResource::class),
     ])]
+    #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
     public function index(): JsonResource
     {
         $tags = Tag::orderBy('name')
@@ -49,9 +52,12 @@ class TagController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $tag = Tag::withCount('cocktails')->findOrFail($id);
+        $tag = Tag::withCount([
+            'cocktails' => static fn (Builder $query): Builder => $query->whereColumn('cocktails.bar_id', 'tags.bar_id'),
+        ])->findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('show', $tag)) {
+        if ($user === null || $user->cannot('show', $tag)) {
             abort(403);
         }
 
@@ -67,17 +73,22 @@ class TagController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', headers: [
-        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string', format: 'uri-reference')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(TagRequest $request): Response
     {
-        if ($request->user()->cannot('create', Tag::class)) {
+        $user = $request->user();
+        if ($user === null || $user->cannot('create', Tag::class)) {
             abort(403);
         }
 
+        $tagRequest = BAO\Schemas\TagRequest::fromLaravelRequest($request);
+
         $tag = new Tag();
-        $tag->name = $request->input('name');
+        $tag->name = $tagRequest->name;
         $tag->bar_id = bar()->id;
         $tag->save();
 
@@ -95,15 +106,18 @@ class TagController extends Controller
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(TagRequest $request, int $id): Response
     {
         $tag = Tag::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('edit', $tag)) {
+        if ($user === null || $user->cannot('edit', $tag)) {
             abort(403);
         }
 
-        $tag->name = $request->input('name');
+        $tagRequest = BAO\Schemas\TagRequest::fromLaravelRequest($request);
+        $tag->name = $tagRequest->name;
         $tag->save();
 
         $cocktailIds = DB::table('cocktail_tag')->select('cocktail_id')->where('tag_id', $tag->id)->pluck('cocktail_id');
@@ -123,8 +137,9 @@ class TagController extends Controller
     public function delete(Request $request, int $id): Response
     {
         $tag = Tag::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('delete', $tag)) {
+        if ($user === null || $user->cannot('delete', $tag)) {
             abort(403);
         }
 
