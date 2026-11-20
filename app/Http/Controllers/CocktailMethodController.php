@@ -28,6 +28,7 @@ class CocktailMethodController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(CocktailMethodResource::class),
     ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(): JsonResource
     {
         $methods = new CocktailMethodQueryFilter()->get();
@@ -46,8 +47,9 @@ class CocktailMethodController extends Controller
     public function show(Request $request, int $id): JsonResource
     {
         $method = CocktailMethod::withCount('cocktails')->findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('show', $method)) {
+        if ($user === null || $user->cannot('show', $method)) {
             abort(403);
         }
 
@@ -62,13 +64,15 @@ class CocktailMethodController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailMethodRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', headers: [
-        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    #[BAO\SuccessfulResponse(response: 201, headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string', format: 'uri-reference')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(CocktailMethodService $cocktailMethodService, CocktailMethodRequest $request): Response
     {
-        if ($request->user()->cannot('create', CocktailMethod::class)) {
+        $user = $request->user();
+        if ($user === null || $user->cannot('create', CocktailMethod::class)) {
             abort(403);
         }
 
@@ -92,14 +96,16 @@ class CocktailMethodController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\CocktailMethodRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(CocktailMethodService $cocktailMethodService, int $id, CocktailMethodRequest $request): Response
     {
         $method = CocktailMethod::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('edit', $method)) {
+        if ($user === null || $user->cannot('edit', $method)) {
             abort(403);
         }
 
@@ -118,19 +124,20 @@ class CocktailMethodController extends Controller
     #[OAT\Delete(path: '/cocktail-methods/{id}', tags: ['Cocktail method'], operationId: 'deleteCocktailMethod', description: 'Delete a specific cocktail method', summary: 'Delete method', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function delete(CocktailMethodService $cocktailMethodService, Request $request, int $id): Response
     {
         $method = CocktailMethod::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('delete', $method)) {
+        if ($user === null || $user->cannot('delete', $method)) {
             abort(403);
         }
 
         $cocktailMethodService->deleteCocktailMethod($id);
 
-        return new Response(null, 204);
+        return new Response(status: 204);
     }
 }

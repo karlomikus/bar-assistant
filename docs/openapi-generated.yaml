@@ -2539,6 +2539,23 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/CocktailMethod' } }
                 type: object
+        '403':
+          description: 'You are not authorized for this action.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { $ref: '#/components/schemas/APIError' }
+                type: object
     post:
       tags:
         - 'Cocktail method'
@@ -2563,10 +2580,19 @@ paths:
         '201':
           description: 'Successful response'
           headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
             Location:
               description: 'URL of the new resource'
               schema:
                 type: string
+                format: uri-reference
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2584,6 +2610,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   '/cocktail-methods/{id}':
     get:
       tags:
@@ -2676,6 +2717,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -2710,6 +2760,21 @@ paths:
                 properties:
                   data: { $ref: '#/components/schemas/APIError' }
                 type: object
+        '422':
+          description: 'Request validation failed.'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
     delete:
       tags:
         - 'Cocktail method'
@@ -2727,6 +2792,15 @@ paths:
       responses:
         '204':
           description: 'Successful response'
+          headers:
+            x-ratelimit-limit:
+              description: 'Max number of attempts.'
+              schema:
+                type: integer
+            x-ratelimit-remaining:
+              description: 'Remaining number of attempts.'
+              schema:
+                type: integer
         '403':
           description: 'You are not authorized for this action.'
           headers:
@@ -10092,6 +10166,7 @@ components:
       required:
         - id
         - name
+        - description
         - dilution_percentage
       properties:
         id:
@@ -10102,9 +10177,17 @@ components:
           description: 'Cocktail method name'
           type: string
           example: Shake
+        description:
+          description: 'Cocktail method description'
+          type:
+            - string
+            - 'null'
+          example: 'Shake with ice to chill and dilute'
         dilution_percentage:
           description: 'Dilution percentage'
           type: integer
+          maximum: 100
+          minimum: 0
           example: 20
         cocktails_count:
           description: 'Number of cocktails using this method'
@@ -12370,10 +12453,12 @@ components:
       properties:
         name:
           type: string
+          maxLength: 255
           example: Shake
         dilution_percentage:
-          type: number
-          format: float
+          type: integer
+          maximum: 100
+          minimum: 0
           example: 20
         description:
           type:
