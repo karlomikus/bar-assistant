@@ -8488,6 +8488,12 @@ paths:
       responses:
         '302':
           description: 'Redirect response'
+          headers:
+            Location:
+              description: 'SSO provider authorization URL'
+              schema:
+                type: string
+                format: uri
         '404':
           description: 'Resource record not found.'
           headers:
@@ -12134,8 +12140,7 @@ components:
         - enabled
       properties:
         name:
-          type: string
-          example: github
+          $ref: '#/components/schemas/OauthProvider'
         display_name:
           type: string
           example: GitHub

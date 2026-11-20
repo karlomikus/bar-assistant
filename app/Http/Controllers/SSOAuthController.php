@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Http\Controllers;
 
+use Throwable;
 use Illuminate\Support\Str;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Log;
@@ -22,16 +24,15 @@ class SSOAuthController extends Controller
     #[OAT\Get(path: '/auth/sso/{provider}/redirect', tags: ['Authentication'], operationId: 'ssoRedirect', description: 'Redirect to SSO authentication.', summary: 'SSO redirect', parameters: [
         new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
     ], security: [])]
-    #[OAT\Response(response: 302, description: 'Redirect response')]
+    #[OAT\Response(response: 302, description: 'Redirect response', headers: [
+        new OAT\Header(header: 'Location', description: 'SSO provider authorization URL', schema: new OAT\Schema(type: 'string', format: 'uri')),
+    ])]
     #[BAO\NotFoundResponse]
     public function redirect(string $provider): RedirectResponse
     {
-        $validProvider = OauthProvider::tryFrom($provider);
-        if ($validProvider === null || !OauthCredential::isProviderConfigured($validProvider)) {
-            abort(404, 'Unsupported provider');
-        }
+        $validProvider = $this->resolveConfiguredProvider($provider);
 
-        /** @var \Laravel\Socialite\Two\AbstractProvider */
+        /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
         $driver = Socialite::driver($validProvider->value);
 
         // Authelia and Pocket ID (>= 2.10) require a state parameter
@@ -53,33 +54,50 @@ class SSOAuthController extends Controller
     #[BAO\NotFoundResponse]
     public function callback(string $provider, SSOService $ssoService): TokenResource
     {
-        $validProvider = OauthProvider::tryFrom($provider);
-        if ($validProvider === null || !OauthCredential::isProviderConfigured($validProvider)) {
-            abort(400, 'Unsupported provider');
-        }
+        $validProvider = $this->resolveConfiguredProvider($provider);
 
         try {
-            /** @var \Laravel\Socialite\Two\AbstractProvider */
+            /** @var \Laravel\Socialite\Two\AbstractProvider $driver */
             $driver = Socialite::driver($validProvider->value);
             $driver->stateless();
             $socialiteUser = $driver->user();
-        } catch (\Exception $e) {
-            abort(403, $e->getMessage());
+        } catch (Throwable $e) {
+            Log::warning('SSO authentication failed', [
+                'provider' => $validProvider->value,
+                'error' => $e->getMessage(),
+            ]);
+            abort(403);
         }
 
         try {
             $credentials = $ssoService->findOrCreateCredential($socialiteUser, $validProvider);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             Log::error('Unable to create SSO credentials for user id: ' . $socialiteUser->getId() . ' provider: ' . $validProvider->value . ' error: ' . $e->getMessage());
             abort(500, 'Unable to create SSO credentials');
         }
 
-        Log::info('Created SSO credentials for user id: ' . $credentials->user->id);
+        $user = $credentials->user;
+        if (!$user instanceof User) {
+            Log::error('Unable to resolve user for SSO credentials', [
+                'credential_id' => $credentials->id,
+                'provider' => $validProvider->value,
+            ]);
+            abort(500, 'Unable to create SSO credentials');
+        }
+
+        if ($user->isAnonymized()) {
+            abort(403);
+        }
+
+        Log::info('Authenticated user via SSO', [
+            'user_id' => $user->id,
+            'provider' => $validProvider->value,
+        ]);
 
         /** @var int $days */
         $days = config('bar-assistant.auth.token_expiration_days');
         $expiresAt = $days > 0 ? now()->addDays($days) : null;
-        $token = $credentials->user->createToken('SSO Login via: ' . $validProvider->value, expiresAt: $expiresAt);
+        $token = $user->createToken('SSO Login via: ' . $validProvider->value, expiresAt: $expiresAt);
 
         return new TokenResource($token);
     }
@@ -93,5 +111,15 @@ class SSOAuthController extends Controller
         $enabledProviders = OauthCredential::getAvailableProviders();
 
         return SSOProviderResource::collection($enabledProviders);
+    }
+
+    private function resolveConfiguredProvider(string $provider): OauthProvider
+    {
+        $validProvider = OauthProvider::tryFrom($provider);
+        if ($validProvider === null || !OauthCredential::isProviderConfigured($validProvider)) {
+            abort(404, 'Unsupported provider');
+        }
+
+        return $validProvider;
     }
 }
