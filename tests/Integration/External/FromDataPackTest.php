@@ -14,6 +14,7 @@ use Kami\Cocktail\External\BarOptionsEnum;
 use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\External\Import\DataPackMediaMode;
+use Kami\Cocktail\External\Import\ExistingResourcePolicy;
 use Kami\Cocktail\Services\Image\StarterMediaCatalogService;
 
 class FromDataPackTest extends TestCase
@@ -130,6 +131,173 @@ class FromDataPackTest extends TestCase
         $this->assertDatabaseHas('glasses', ['name' => 'glass 1', 'description' => 'glass 1 description', 'bar_id' => $membership->bar->id]);
         $this->assertDatabaseHas('glasses', ['name' => 'glass 2', 'description' => null, 'bar_id' => $membership->bar->id]);
         $this->assertDatabaseMissing('images', ['imageable_type' => Glass::class]);
+    }
+
+    public function test_default_import_policy_keeps_existing_resources_skipped(): void
+    {
+        $membership = $this->setupBarMembership();
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $importer = resolve(FromDataPack::class);
+
+        $importer->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails);
+
+        DB::table('ingredients')->where('bar_id', $membership->bar_id)->update([
+            'description' => null,
+            'origin' => 'Locally edited origin',
+        ]);
+        DB::table('cocktails')->where('bar_id', $membership->bar_id)->update([
+            'description' => '',
+            'garnish' => null,
+        ]);
+
+        $importer->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails);
+
+        $ingredient = DB::table('ingredients')->where('bar_id', $membership->bar_id)->first();
+        $cocktail = DB::table('cocktails')->where('bar_id', $membership->bar_id)->first();
+
+        $this->assertNotNull($ingredient);
+        $this->assertNotNull($cocktail);
+        $this->assertNull($ingredient->description);
+        $this->assertSame('Locally edited origin', $ingredient->origin);
+        $this->assertSame('', $cocktail->description);
+        $this->assertNull($cocktail->garnish);
+        $this->assertSame(1, DB::table('ingredients')->where('bar_id', $membership->bar_id)->count());
+        $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
+    }
+
+    public function test_fill_missing_policy_only_updates_null_scalar_fields(): void
+    {
+        $membership = $this->setupBarMembership();
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $importer = resolve(FromDataPack::class);
+
+        $importer->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails);
+
+        DB::table('ingredients')->where('bar_id', $membership->bar_id)->update([
+            'description' => null,
+            'origin' => 'Locally edited origin',
+            'color' => null,
+        ]);
+        DB::table('cocktails')->where('bar_id', $membership->bar_id)->update([
+            'description' => '',
+            'source' => 'Locally edited source',
+            'garnish' => null,
+            'abv' => 0.0,
+        ]);
+
+        $importer->process(
+            dataDisk: $datapackFolder,
+            barId: $membership->bar_id,
+            userId: $membership->user_id,
+            flag: BarOptionsEnum::Cocktails,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
+
+        $ingredient = DB::table('ingredients')->where('bar_id', $membership->bar_id)->first();
+        $cocktail = DB::table('cocktails')->where('bar_id', $membership->bar_id)->first();
+
+        $this->assertNotNull($ingredient);
+        $this->assertNotNull($cocktail);
+        $this->assertSame('Description of ingredient', $ingredient->description);
+        $this->assertSame('Locally edited origin', $ingredient->origin);
+        $this->assertSame('#b474de', $ingredient->color);
+        $this->assertSame('', $cocktail->description);
+        $this->assertSame('Locally edited source', $cocktail->source);
+        $this->assertSame('Lemon wheel', $cocktail->garnish);
+        $this->assertSame(0.0, (float) $cocktail->abv);
+
+        $ingredientImageCount = DB::table('images')->join('ingredients', 'ingredients.id', '=', 'images.imageable_id')->where('images.imageable_type', Ingredient::class)->where('ingredients.bar_id', $membership->bar_id)->count();
+        $cocktailImageCount = DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $membership->bar_id)->count();
+
+        $importer->process(
+            dataDisk: $datapackFolder,
+            barId: $membership->bar_id,
+            userId: $membership->user_id,
+            flag: BarOptionsEnum::Cocktails,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
+
+        $this->assertSame(1, DB::table('ingredients')->where('bar_id', $membership->bar_id)->count());
+        $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
+        $this->assertSame($ingredientImageCount, DB::table('images')->join('ingredients', 'ingredients.id', '=', 'images.imageable_id')->where('images.imageable_type', Ingredient::class)->where('ingredients.bar_id', $membership->bar_id)->count());
+        $this->assertSame($cocktailImageCount, DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $membership->bar_id)->count());
+    }
+
+    public function test_repeated_sync_adds_missing_resource_without_changing_matched_relationship_data(): void
+    {
+        $membership = $this->setupBarMembership();
+        $datapackFolder = Storage::build([
+            'driver' => 'local',
+            'root' => base_path('tests/fixtures/datapack'),
+        ]);
+        $importer = resolve(FromDataPack::class);
+
+        $importer->process($datapackFolder, $membership->bar_id, $membership->user_id, BarOptionsEnum::Cocktails);
+
+        $ingredient = DB::table('ingredients')->where('bar_id', $membership->bar_id)->first();
+        $cocktail = DB::table('cocktails')->where('bar_id', $membership->bar_id)->first();
+        $this->assertNotNull($ingredient);
+        $this->assertNotNull($cocktail);
+
+        DB::table('images')->where('imageable_type', Ingredient::class)->where('imageable_id', $ingredient->id)->delete();
+        DB::table('ingredients')->where('id', $ingredient->id)->delete();
+
+        DB::table('cocktails')->where('id', $cocktail->id)->update([
+            'description' => '',
+            'source' => 'Locally edited source',
+            'garnish' => null,
+            'abv' => 0.0,
+        ]);
+
+        $tagId = DB::table('tags')->insertGetId([
+            'bar_id' => $membership->bar_id,
+            'name' => 'Local tag',
+        ]);
+        DB::table('cocktail_tag')->insert([
+            'cocktail_id' => $cocktail->id,
+            'tag_id' => $tagId,
+        ]);
+
+        $importer->process(
+            dataDisk: $datapackFolder,
+            barId: $membership->bar_id,
+            userId: $membership->user_id,
+            flag: BarOptionsEnum::Cocktails,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
+
+        $cocktail = DB::table('cocktails')->where('bar_id', $membership->bar_id)->first();
+        $ingredient = DB::table('ingredients')->where('bar_id', $membership->bar_id)->first();
+
+        $this->assertNotNull($cocktail);
+        $this->assertNotNull($ingredient);
+        $this->assertSame('Test ingredient', $ingredient->name);
+        $this->assertSame('Description of ingredient', $ingredient->description);
+        $this->assertSame('', $cocktail->description);
+        $this->assertSame('Locally edited source', $cocktail->source);
+        $this->assertSame('Lemon wheel', $cocktail->garnish);
+        $this->assertSame(0.0, (float) $cocktail->abv);
+        $this->assertSame(1, DB::table('cocktail_tag')->where('cocktail_id', $cocktail->id)->count());
+        $this->assertSame(1, DB::table('ingredients')->where('bar_id', $membership->bar_id)->count());
+        $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
+
+        $importer->process(
+            dataDisk: $datapackFolder,
+            barId: $membership->bar_id,
+            userId: $membership->user_id,
+            flag: BarOptionsEnum::Cocktails,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
+
+        $this->assertSame(1, DB::table('cocktail_tag')->where('cocktail_id', $cocktail->id)->count());
+        $this->assertSame(1, DB::table('ingredients')->where('bar_id', $membership->bar_id)->count());
+        $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
     }
 
     public function test_catalog_import_creates_independent_attachments_that_share_catalog_objects(): void

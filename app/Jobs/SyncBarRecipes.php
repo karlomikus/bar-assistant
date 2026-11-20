@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Kami\Cocktail\External\Import\FromDataPack;
 use Illuminate\Queue\Attributes\WithoutRelations;
 use Kami\Cocktail\External\Import\DataPackMediaMode;
+use Kami\Cocktail\External\Import\ExistingResourcePolicy;
 
 class SyncBarRecipes implements ShouldQueue
 {
@@ -32,6 +33,13 @@ class SyncBarRecipes implements ShouldQueue
     {
         $dataDisk = Storage::disk('data-files');
 
-        $import->process($dataDisk, $this->bar->id, $this->user->id, BarOptionsEnum::Cocktails, DataPackMediaMode::StarterCatalog);
+        $import->process(
+            dataDisk: $dataDisk,
+            barId: $this->bar->id,
+            userId: $this->user->id,
+            flag: BarOptionsEnum::Cocktails,
+            mediaMode: DataPackMediaMode::StarterCatalog,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
     }
 }

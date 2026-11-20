@@ -829,7 +829,7 @@ paths:
       tags:
         - Bars
       summary: 'Sync recipes'
-      description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.'
+      description: 'Triggers synchronization from the default datapack. Adds missing cocktails and ingredients, fills only catalog-provided null scalar fields on name-matched existing resources, and preserves existing values and relationships.'
       operationId: syncBarDatapack
       parameters:
         -

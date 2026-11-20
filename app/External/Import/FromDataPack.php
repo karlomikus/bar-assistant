@@ -49,7 +49,7 @@ class FromDataPack
         $this->uploadsDisk = Storage::disk('uploads');
     }
 
-    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null, DataPackMediaMode $mediaMode = DataPackMediaMode::OwnedUpload): bool
+    public function process(Filesystem $dataDisk, int $barId, int $userId, ?BarOptionsEnum $flag = null, DataPackMediaMode $mediaMode = DataPackMediaMode::OwnedUpload, ExistingResourcePolicy $existingResourcePolicy = ExistingResourcePolicy::SkipExisting): bool
     {
         $bar = Bar::findOrFail($barId);
         $user = User::findOrFail($userId);
@@ -97,11 +97,11 @@ class FromDataPack
         }
 
         if ($flag === BarOptionsEnum::Ingredients || $flag === BarOptionsEnum::Cocktails) {
-            $this->importIngredients($dataDisk, $bar, $user, $mediaMode, $catalogVersion);
+            $this->importIngredients($dataDisk, $bar, $user, $mediaMode, $catalogVersion, $existingResourcePolicy);
         }
 
         if ($flag === BarOptionsEnum::Cocktails) {
-            $this->importBaseCocktails($dataDisk, $bar, $user, $mediaMode, $catalogVersion);
+            $this->importBaseCocktails($dataDisk, $bar, $user, $mediaMode, $catalogVersion, $existingResourcePolicy);
         }
 
         $bar->setStatus(BarStatusEnum::Active)->save();
@@ -201,13 +201,15 @@ class FromDataPack
         DB::commit();
     }
 
-    private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void
+    private function importIngredients(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion, ExistingResourcePolicy $existingResourcePolicy): void
     {
         $timerStart = microtime(true);
 
         $existingIngredients = DB::table('ingredients')->select('id', 'name')->where('bar_id', $bar->id)->get()->keyBy(fn ($ingredient) => Str::slug($ingredient->name));
 
         $ingredientsToInsert = [];
+        /** @var array<int, array<string, mixed>> $ingredientScalarUpdates */
+        $ingredientScalarUpdates = [];
         $parentIngredientsToInsert = [];
         $ingredientPartsToInsert = [];
         $imagesToInsert = [];
@@ -218,7 +220,30 @@ class FromDataPack
         foreach ($this->getDataFromDir('ingredients', $dataDisk) as $fromYield) {
             [$externalIngredient, $filePath] = $fromYield;
             $externalIngredient = IngredientExternal::fromDataPackArray($externalIngredient);
-            if ($existingIngredients->has(Str::slug($externalIngredient->name))) {
+            $existingIngredient = $existingIngredients->get(Str::slug($externalIngredient->name));
+            if ($existingIngredient) {
+                if ($existingResourcePolicy === ExistingResourcePolicy::FillMissingScalars) {
+                    $ingredientUnit = $externalIngredient->units?->value;
+                    $barSettings = $bar->settings ?? [];
+                    if ($externalIngredient->units?->isConvertable() && array_key_exists('default_units', $barSettings)) {
+                        $ingredientUnit = $barSettings['default_units'];
+                    }
+
+                    $updates = array_filter([
+                        'description' => $externalIngredient->description,
+                        'origin' => $externalIngredient->origin,
+                        'color' => $externalIngredient->color,
+                        'sugar_g_per_ml' => $externalIngredient->sugarContent,
+                        'acidity' => $externalIngredient->acidity,
+                        'distillery' => $externalIngredient->distillery,
+                        'units' => $ingredientUnit,
+                    ], fn (mixed $value): bool => $value !== null);
+
+                    if (!empty($updates)) {
+                        $ingredientScalarUpdates[(int) $existingIngredient->id] = $updates;
+                    }
+                }
+
                 continue;
             }
 
@@ -284,61 +309,66 @@ class FromDataPack
 
         Log::debug(sprintf('Ingredient image copy completed in %d ms', $imagesTimer * 1000));
 
-        if (empty($ingredientsToInsert)) {
-            Log::debug('No ingredients to import');
+        if (empty($ingredientsToInsert) && empty($ingredientScalarUpdates)) {
+            Log::debug('No ingredients to import or enrich');
             return;
         }
 
-        // Start inserting
-        DB::beginTransaction();
-
-        DB::table('ingredients')->insert($ingredientsToInsert);
-
-        $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
-        $barShelfIngredientsToInsert = [];
-        $complexIngredientsToInsert = [];
-
-        foreach ($ingredients as $ingredient) {
-            if (array_key_exists($ingredient->slug, $imagesToInsert)) {
-                $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
-                $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
+        DB::transaction(function () use ($bar, $ingredientsToInsert, $ingredientScalarUpdates, $parentIngredientsToInsert, $ingredientPartsToInsert, $imagesToInsert): void {
+            foreach ($ingredientScalarUpdates as $ingredientId => $updates) {
+                $this->applyNullScalarUpdates('ingredients', $ingredientId, $bar->id, $updates);
             }
 
-            if (array_key_exists($ingredient->slug, $parentIngredientsToInsert)) {
-                $parentSlug = $parentIngredientsToInsert[$ingredient->slug];
-                $parentIngredientId = $ingredients->firstWhere('slug', $parentSlug);
-                if (isset($parentIngredientId->id)) {
-                    DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
+            if (empty($ingredientsToInsert)) {
+                return;
+            }
+
+            DB::table('ingredients')->insert($ingredientsToInsert);
+
+            $ingredients = DB::table('ingredients')->where('bar_id', $bar->id)->get();
+            $barShelfIngredientsToInsert = [];
+            $complexIngredientsToInsert = [];
+
+            foreach ($ingredients as $ingredient) {
+                if (array_key_exists($ingredient->slug, $imagesToInsert)) {
+                    $imagesToInsert[$ingredient->slug]['imageable_type'] = Ingredient::class;
+                    $imagesToInsert[$ingredient->slug]['imageable_id'] = $ingredient->id;
                 }
-            }
 
-            if (array_key_exists($ingredient->slug, $ingredientPartsToInsert)) {
-                foreach ($ingredientPartsToInsert[$ingredient->slug] as $partSlug) {
-                    $ingredientPartId = $ingredients->firstWhere('slug', $partSlug);
-                    if (isset($ingredientPartId->id)) {
-                        $complexIngredientsToInsert[] = ['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id];
+                if (array_key_exists($ingredient->slug, $parentIngredientsToInsert)) {
+                    $parentSlug = $parentIngredientsToInsert[$ingredient->slug];
+                    $parentIngredientId = $ingredients->firstWhere('slug', $parentSlug);
+                    if (isset($parentIngredientId->id)) {
+                        DB::table('ingredients')->where('slug', $ingredient->slug)->where('bar_id', $bar->id)->update(['parent_ingredient_id' => $parentIngredientId->id]);
                     }
                 }
+
+                if (array_key_exists($ingredient->slug, $ingredientPartsToInsert)) {
+                    foreach ($ingredientPartsToInsert[$ingredient->slug] as $partSlug) {
+                        $ingredientPartId = $ingredients->firstWhere('slug', $partSlug);
+                        if (isset($ingredientPartId->id)) {
+                            $complexIngredientsToInsert[] = ['main_ingredient_id' => $ingredient->id, 'ingredient_id' => $ingredientPartId->id];
+                        }
+                    }
+                }
+
+                if (in_array($ingredient->slug, $this->barShelf)) {
+                    $barShelfIngredientsToInsert[] = ['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id];
+                }
             }
 
-            if (in_array($ingredient->slug, $this->barShelf)) {
-                $barShelfIngredientsToInsert[] = ['ingredient_id' => $ingredient->id, 'bar_id' => $bar->id];
+            if (count($complexIngredientsToInsert) > 0) {
+                DB::table('complex_ingredients')->insert($complexIngredientsToInsert);
             }
-        }
 
-        if (count($complexIngredientsToInsert) > 0) {
-            DB::table('complex_ingredients')->insert($complexIngredientsToInsert);
-        }
+            if (count($barShelfIngredientsToInsert) > 0) {
+                DB::table('bar_ingredients')->insert($barShelfIngredientsToInsert);
+            }
 
-        if (count($barShelfIngredientsToInsert) > 0) {
-            DB::table('bar_ingredients')->insert($barShelfIngredientsToInsert);
-        }
-
-        if (count($imagesToInsert) > 0) {
-            DB::table('images')->insert(array_values($imagesToInsert));
-        }
-
-        DB::commit();
+            if (count($imagesToInsert) > 0) {
+                DB::table('images')->insert(array_values($imagesToInsert));
+            }
+        });
 
         $this->ingredientRepository->rebuildMaterializedPath($bar->id);
 
@@ -444,7 +474,7 @@ class FromDataPack
         Log::debug(sprintf('Glasses import completed in %d ms', ($timerEnd - $timerStart) * 1000));
     }
 
-    private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void
+    private function importBaseCocktails(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion, ExistingResourcePolicy $existingResourcePolicy): void
     {
         $timerStart = microtime(true);
 
@@ -457,6 +487,8 @@ class FromDataPack
         $uniqueTags = [];
         $cocktailTagsMap = [];
         $newCocktails = [];
+        /** @var array<int, array<string, mixed>> $cocktailScalarUpdates */
+        $cocktailScalarUpdates = [];
         $newCocktailIngredients = [];
         $newCocktailSubstituteIngredients = [];
         $cocktailUtensilsMap = [];
@@ -469,7 +501,24 @@ class FromDataPack
             [$cocktail, $filePath] = $fromYield;
 
             $externalCocktail = CocktailExternal::fromDataPackArray($cocktail);
-            if ($existingCocktails->has(Str::slug($externalCocktail->name))) {
+            $existingCocktail = $existingCocktails->get(Str::slug($externalCocktail->name));
+            if ($existingCocktail) {
+                if ($existingResourcePolicy === ExistingResourcePolicy::FillMissingScalars) {
+                    $updates = array_filter([
+                        'description' => $externalCocktail->description,
+                        'source' => $externalCocktail->source,
+                        'garnish' => $externalCocktail->garnish,
+                        'abv' => $externalCocktail->abv,
+                        'year' => $externalCocktail->year,
+                        'author' => $externalCocktail->author,
+                        'origin_bar' => $externalCocktail->originBar,
+                    ], fn (mixed $value): bool => $value !== null);
+
+                    if (!empty($updates)) {
+                        $cocktailScalarUpdates[(int) $existingCocktail->id] = $updates;
+                    }
+                }
+
                 continue;
             }
 
@@ -577,104 +626,122 @@ class FromDataPack
 
         Log::debug(sprintf('Cocktail image copy completed in %d ms', $imagesTimer * 1000));
 
-        if (empty($newCocktails)) {
-            Log::debug('No cocktails to import');
+        if (empty($newCocktails) && empty($cocktailScalarUpdates)) {
+            Log::debug('No cocktails to import or enrich');
             return;
         }
 
-        DB::beginTransaction();
-
-        $tagsToInsert = [];
-        foreach ($uniqueTags as $tag) {
-            $tagsToInsert[] = ['bar_id' => $bar->id, 'name' => $tag];
-        }
-        DB::table('tags')->insert($tagsToInsert);
-
-        DB::table('cocktails')->insert($newCocktails);
-        $tags = DB::table('tags')->where('bar_id', $bar->id)->get();
-        $cocktails = DB::table('cocktails')->select('slug', 'id')->where('bar_id', $bar->id)->get();
-        $existingsUtensils = DB::table('utensils')->select('name', 'id')->where('bar_id', $bar->id)->get();
-        $cocktailIngredientsToInsert = [];
-        $imagesToInsert = [];
-        $cocktailTagsToInsert = [];
-        $cocktailUtensilsToInsert = [];
-        foreach ($cocktails as $cocktail) {
-            // Add tags
-            if (isset($cocktailTagsMap[$cocktail->slug])) {
-                foreach ($cocktailTagsMap[$cocktail->slug] as $tag) {
-                    $cocktailTagsToInsert[] = ['cocktail_id' => $cocktail->id, 'tag_id' => $tags->where('name', $tag)->first()->id];
-                }
+        DB::transaction(function () use ($bar, $cocktailScalarUpdates, $uniqueTags, $cocktailTagsMap, $newCocktails, $newCocktailIngredients, $newCocktailSubstituteIngredients, $cocktailUtensilsMap, $cocktailParentMap, $cocktailImages): void {
+            foreach ($cocktailScalarUpdates as $cocktailId => $updates) {
+                $this->applyNullScalarUpdates('cocktails', $cocktailId, $bar->id, $updates);
             }
 
-            // Add utensils
-            if (isset($cocktailUtensilsMap[$cocktail->slug])) {
-                foreach ($cocktailUtensilsMap[$cocktail->slug] as $utensil) {
-                    $cocktailUtensilsToInsert[] = ['cocktail_id' => $cocktail->id, 'utensil_id' => $existingsUtensils->where('name', $utensil)->first()->id];
-                }
+            if (empty($newCocktails)) {
+                return;
             }
 
-            // Add cocktail id to images
-            if (isset($cocktailImages[$cocktail->slug])) {
-                $imagesWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
-                    $row['imageable_id'] = $cocktail->id;
+            $tagsToInsert = [];
+            foreach ($uniqueTags as $tag) {
+                $tagsToInsert[] = ['bar_id' => $bar->id, 'name' => $tag];
+            }
+            DB::table('tags')->insert($tagsToInsert);
+
+            DB::table('cocktails')->insert($newCocktails);
+            $tags = DB::table('tags')->where('bar_id', $bar->id)->get();
+            $cocktails = DB::table('cocktails')->select('slug', 'id')->where('bar_id', $bar->id)->get();
+            $existingsUtensils = DB::table('utensils')->select('name', 'id')->where('bar_id', $bar->id)->get();
+            $cocktailIngredientsToInsert = [];
+            $imagesToInsert = [];
+            $cocktailTagsToInsert = [];
+            $cocktailUtensilsToInsert = [];
+            foreach ($cocktails as $cocktail) {
+                // Add tags
+                if (isset($cocktailTagsMap[$cocktail->slug])) {
+                    foreach ($cocktailTagsMap[$cocktail->slug] as $tag) {
+                        $cocktailTagsToInsert[] = ['cocktail_id' => $cocktail->id, 'tag_id' => $tags->where('name', $tag)->first()->id];
+                    }
+                }
+
+                // Add utensils
+                if (isset($cocktailUtensilsMap[$cocktail->slug])) {
+                    foreach ($cocktailUtensilsMap[$cocktail->slug] as $utensil) {
+                        $cocktailUtensilsToInsert[] = ['cocktail_id' => $cocktail->id, 'utensil_id' => $existingsUtensils->where('name', $utensil)->first()->id];
+                    }
+                }
+
+                // Add cocktail id to images
+                if (isset($cocktailImages[$cocktail->slug])) {
+                    $imagesWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
+                        $row['imageable_id'] = $cocktail->id;
+
+                        return $row;
+                    }, $cocktailImages[$cocktail->slug]);
+
+                    $imagesToInsert = array_merge($imagesWithAssignedCocktail, $imagesToInsert);
+                }
+
+                // Add cocktail id to cocktail ingredients
+                if (isset($newCocktailIngredients[$cocktail->slug])) {
+                    $cocktailIngredientsWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
+                        $row['cocktail_id'] = $cocktail->id;
+
+                        return $row;
+                    }, $newCocktailIngredients[$cocktail->slug]);
+
+                    $cocktailIngredientsToInsert = array_merge($cocktailIngredientsWithAssignedCocktail, $cocktailIngredientsToInsert);
+                }
+
+                // Add parent cocktail id
+                if (isset($cocktailParentMap[$cocktail->slug])) {
+                    $parentSlug = $cocktailParentMap[$cocktail->slug];
+                    $parentCocktailId = $cocktails->firstWhere('slug', $parentSlug);
+                    if (isset($parentCocktailId->id)) {
+                        DB::table('cocktails')->where('slug', $cocktail->slug)->where('bar_id', $bar->id)->update(['parent_cocktail_id' => $parentCocktailId->id]);
+                    }
+                }
+            }
+            DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
+            DB::table('cocktail_tag')->insert($cocktailTagsToInsert);
+            DB::table('cocktail_utensil')->insert($cocktailUtensilsToInsert);
+
+            $cocktailIngredients = DB::table('cocktail_ingredients')
+                ->select('cocktail_ingredients.id AS cocktail_ingredient_id', 'cocktails.slug', 'cocktail_ingredients.ingredient_id')
+                ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
+                ->where('cocktails.bar_id', $bar->id)
+                ->get();
+            $cocktailSubIngredientsToInsert = [];
+            foreach ($cocktailIngredients as $cocktailIngredient) {
+                if (!isset($newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id])) {
+                    continue;
+                }
+
+                $cocktailIngredientSubstituteWithAssignedCocktailIngredient = array_map(function ($row) use ($cocktailIngredient) {
+                    $row['cocktail_ingredient_id'] = $cocktailIngredient->cocktail_ingredient_id;
 
                     return $row;
-                }, $cocktailImages[$cocktail->slug]);
+                }, $newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id]);
 
-                $imagesToInsert = array_merge($imagesWithAssignedCocktail, $imagesToInsert);
+                $cocktailSubIngredientsToInsert = array_merge($cocktailIngredientSubstituteWithAssignedCocktailIngredient, $cocktailSubIngredientsToInsert);
             }
+            DB::table('cocktail_ingredient_substitutes')->insert($cocktailSubIngredientsToInsert);
 
-            // Add cocktail id to cocktail ingredients
-            if (isset($newCocktailIngredients[$cocktail->slug])) {
-                $cocktailIngredientsWithAssignedCocktail = array_map(function ($row) use ($cocktail) {
-                    $row['cocktail_id'] = $cocktail->id;
-
-                    return $row;
-                }, $newCocktailIngredients[$cocktail->slug]);
-
-                $cocktailIngredientsToInsert = array_merge($cocktailIngredientsWithAssignedCocktail, $cocktailIngredientsToInsert);
-            }
-
-            // Add parent cocktail id
-            if (isset($cocktailParentMap[$cocktail->slug])) {
-                $parentSlug = $cocktailParentMap[$cocktail->slug];
-                $parentCocktailId = $cocktails->firstWhere('slug', $parentSlug);
-                if (isset($parentCocktailId->id)) {
-                    DB::table('cocktails')->where('slug', $cocktail->slug)->where('bar_id', $bar->id)->update(['parent_cocktail_id' => $parentCocktailId->id]);
-                }
-            }
-        }
-        DB::table('cocktail_ingredients')->insert($cocktailIngredientsToInsert);
-        DB::table('cocktail_tag')->insert($cocktailTagsToInsert);
-        DB::table('cocktail_utensil')->insert($cocktailUtensilsToInsert);
-
-        $cocktailIngredients = DB::table('cocktail_ingredients')
-            ->select('cocktail_ingredients.id AS cocktail_ingredient_id', 'cocktails.slug', 'cocktail_ingredients.ingredient_id')
-            ->join('cocktails', 'cocktails.id', '=', 'cocktail_ingredients.cocktail_id')
-            ->where('cocktails.bar_id', $bar->id)
-            ->get();
-        $cocktailSubIngredientsToInsert = [];
-        foreach ($cocktailIngredients as $cocktailIngredient) {
-            if (!isset($newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id])) {
-                continue;
-            }
-
-            $cocktailIngredientSubstituteWithAssignedCocktailIngredient = array_map(function ($row) use ($cocktailIngredient) {
-                $row['cocktail_ingredient_id'] = $cocktailIngredient->cocktail_ingredient_id;
-
-                return $row;
-            }, $newCocktailSubstituteIngredients[$cocktailIngredient->slug][$cocktailIngredient->ingredient_id]);
-
-            $cocktailSubIngredientsToInsert = array_merge($cocktailIngredientSubstituteWithAssignedCocktailIngredient, $cocktailSubIngredientsToInsert);
-        }
-        DB::table('cocktail_ingredient_substitutes')->insert($cocktailSubIngredientsToInsert);
-
-        DB::table('images')->insert($imagesToInsert);
-
-        DB::commit();
+            DB::table('images')->insert($imagesToInsert);
+        });
 
         $timerEnd = microtime(true);
         Log::debug(sprintf('Cocktails import completed in %d ms', ($timerEnd - $timerStart) * 1000));
+    }
+
+    /** @param array<string, mixed> $updates */
+    private function applyNullScalarUpdates(string $table, int $resourceId, int $barId, array $updates): void
+    {
+        foreach ($updates as $field => $value) {
+            DB::table($table)
+                ->where('id', $resourceId)
+                ->where('bar_id', $barId)
+                ->whereNull($field)
+                ->update([$field => $value]);
+        }
     }
 
     private function copyResourceImage(Filesystem $dataDisk, string $baseSrcImagePath, string $targetImagePath): void
