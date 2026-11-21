@@ -405,7 +405,7 @@ class Cocktail extends BaseModel implements UploadableInterface, IsExternalized
             $totalPrice = $totalPrice->plus($pricePerPour);
         }
 
-        return $totalPrice->to(new DefaultContext(), RoundingMode::DOWN);
+        return $totalPrice->toContext(new DefaultContext(), RoundingMode::Down);
     }
 
     public function loadDefaultRelations(): self

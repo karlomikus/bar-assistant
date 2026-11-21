@@ -2,7 +2,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4.0",
-        "brick/money": "^0.11.0",
+        "brick/money": "^0.12.0",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "jcupitt/vips": "^2.4",
@@ -11,7 +11,7 @@
         "kovah/laravel-socialite-oidc": "^0.8.0",
         "laravel/ai": "^1.2",
         "laravel/cashier-paddle": "^2.0",
-        "laravel/framework": "^12.71",
+        "laravel/framework": "^13.0",
         "laravel/horizon": "^5.21",
         "laravel/prompts": "^0.3.4",
         "laravel/sanctum": "^4.0",
@@ -40,9 +40,9 @@
         "zircote/swagger-php": "^5.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.7",
         "driftingly/rector-laravel": "^2.1",
         "fakerphp/faker": "^1.9.1",
+        "fruitcake/laravel-debugbar": "^4.4",
         "larastan/larastan": "^3.9.6",
         "laravel/pint": "^1.0",
         "mockery/mockery": "^1.6",
