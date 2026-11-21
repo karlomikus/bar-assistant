@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7081c4607ebbf0dfe3f2708f2887b4b3",
+    "content-hash": "d0229e21981993b7271901fd38c14eae",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -221,21 +221,22 @@
         },
         {
             "name": "brick/money",
-            "version": "0.12.3",
+            "version": "0.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/money.git",
-                "reference": "8036a18bb0f66d062def8fa616cba781ab91bde8"
+                "reference": "5d657bae74a71f23d1c1889d999cf7a20b6b8ecb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/money/zipball/8036a18bb0f66d062def8fa616cba781ab91bde8",
-                "reference": "8036a18bb0f66d062def8fa616cba781ab91bde8",
+                "url": "https://api.github.com/repos/brick/money/zipball/5d657bae74a71f23d1c1889d999cf7a20b6b8ecb",
+                "reference": "5d657bae74a71f23d1c1889d999cf7a20b6b8ecb",
                 "shasum": ""
             },
             "require": {
                 "brick/math": "~0.15.0 || ~0.16.0 || ~0.17.0",
-                "php": "^8.2"
+                "php": "^8.2",
+                "psr/simple-cache": "^2.0 || ^3.0"
             },
             "require-dev": {
                 "brick/varexporter": "0.7.0",
@@ -265,7 +266,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/money/issues",
-                "source": "https://github.com/brick/money/tree/0.12.3"
+                "source": "https://github.com/brick/money/tree/0.13.0"
             },
             "funding": [
                 {
@@ -273,8 +274,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-23T15:38:54+00:00",
-            "published-time": "2026-03-23T15:54:15+00:00"
+            "time": "2026-03-28T22:33:40+00:00",
+            "published-time": "2026-03-28T22:56:59+00:00"
         },
         {
             "name": "carbonphp/carbon-doctrine-types",
