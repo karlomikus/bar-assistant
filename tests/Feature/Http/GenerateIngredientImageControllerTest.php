@@ -37,7 +37,7 @@ class GenerateIngredientImageControllerTest extends TestCase
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
         LaravelAiImage::fake([
-            base64_encode(file_get_contents(resource_path('ai/no-ingredient.png'))),
+            base64_encode(file_get_contents(base_path('tests/fixtures/datapack/ingredients/test-ingredient/i-1-img.png'))),
         ]);
 
         $response = $this->postJson('/api/generate/ingredient-image', [
@@ -61,7 +61,7 @@ class GenerateIngredientImageControllerTest extends TestCase
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
         LaravelAiImage::fake([
-            base64_encode(file_get_contents(resource_path('ai/no-ingredient.png'))),
+            base64_encode(file_get_contents(base_path('tests/fixtures/datapack/ingredients/test-ingredient/i-1-img.png'))),
         ]);
 
         $response = $this->postJson('/api/generate/ingredient-image', [

@@ -22,14 +22,14 @@ class IngredientImageGenerationTest extends TestCase
 
         $membership = $this->setupBarMembership();
         $ingredient = Ingredient::factory()->create(['bar_id' => $membership->bar_id]);
-        $referenceBytes = file_get_contents(resource_path('ai/no-ingredient.png'));
+        $outputBytes = file_get_contents(base_path('tests/fixtures/datapack/ingredients/test-ingredient/i-1-img.png'));
 
         $capturedPrompt = null;
         LaravelAiImage::fake([
-            function ($prompt) use (&$capturedPrompt, $referenceBytes) {
+            function ($prompt) use (&$capturedPrompt, $outputBytes) {
                 $capturedPrompt = $prompt;
 
-                return base64_encode($referenceBytes);
+                return base64_encode($outputBytes);
             },
         ]);
 
@@ -42,7 +42,7 @@ class IngredientImageGenerationTest extends TestCase
         $this->assertNotNull($capturedPrompt);
         $this->assertStringContainsString($ingredient->name, $capturedPrompt->prompt);
         $this->assertStringContainsString('transparent background', $capturedPrompt->prompt);
-        $this->assertCount(1, $capturedPrompt->attachments, 'Bottle reference image must be attached by default');
+        $this->assertCount(0, $capturedPrompt->attachments, 'Ingredient image generation must not attach reference images');
         $this->assertSame('transparent', $capturedPrompt->providerOptions['background'] ?? null);
         $this->assertSame('png', $capturedPrompt->providerOptions['output_format'] ?? null);
     }
@@ -59,7 +59,7 @@ class IngredientImageGenerationTest extends TestCase
             function ($prompt) use (&$capturedPrompt) {
                 $capturedPrompt = $prompt;
 
-                return base64_encode(file_get_contents(resource_path('ai/no-ingredient.png')));
+                return base64_encode(file_get_contents(base_path('tests/fixtures/datapack/ingredients/test-ingredient/i-1-img.png')));
             },
         ]);
 
@@ -68,28 +68,6 @@ class IngredientImageGenerationTest extends TestCase
         $this->assertNotNull($capturedPrompt);
         $this->assertArrayNotHasKey('background', $capturedPrompt->providerOptions);
         $this->assertArrayNotHasKey('output_format', $capturedPrompt->providerOptions);
-    }
-
-    public function test_skips_reference_attachment_when_disabled(): void
-    {
-        config(['bar-assistant.ai.image_supports_reference' => false]);
-        $membership = $this->setupBarMembership();
-        $ingredient = Ingredient::factory()->create(['bar_id' => $membership->bar_id]);
-
-        $capturedPrompt = null;
-        LaravelAiImage::fake([
-            function ($prompt) use (&$capturedPrompt) {
-                $capturedPrompt = $prompt;
-
-                return base64_encode(file_get_contents(resource_path('ai/no-ingredient.png')));
-            },
-        ]);
-
-        app(IngredientImageGenerationService::class)->generateImage($ingredient, $membership->user_id);
-
-        $this->assertNotNull($capturedPrompt);
-        $this->assertCount(0, $capturedPrompt->attachments);
-        $this->assertStringContainsString('reference bottle', $capturedPrompt->prompt, 'Bottle design must still be described in text');
     }
 
     public function test_provider_failure_throws_502_and_creates_no_image(): void

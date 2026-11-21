@@ -9,7 +9,6 @@ use Psr\Log\LoggerInterface;
 use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Ingredient;
 use Laravel\Ai\Image as LaravelAiImage;
-use Laravel\Ai\Files\Image as AiImageFile;
 use Kami\Cocktail\GenAI\IngredientImageHandler;
 use BarAssistant\Application\Image\ImageService;
 use BarAssistant\Application\Image\DTO\CreateImage;
@@ -42,12 +41,6 @@ final readonly class IngredientImageGenerationService
         $pendingImage = LaravelAiImage::of($promptConfiguration->prompt)
             ->portrait()
             ->timeout(180);
-
-        if (config('bar-assistant.ai.image_supports_reference')) {
-            $pendingImage->attachments([
-                AiImageFile::fromPath(resource_path('ai/no-ingredient.png')),
-            ]);
-        }
 
         // OpenAI-family image models reject unknown parameters, so only send
         // transparency options where they are supported

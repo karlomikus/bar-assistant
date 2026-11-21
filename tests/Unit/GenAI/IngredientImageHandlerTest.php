@@ -40,9 +40,10 @@ class IngredientImageHandlerTest extends TestCase
     {
         $prompt = (new IngredientImageHandler(new IngredientImageRequest(ingredientName: 'Vodka')))()->prompt;
 
-        $this->assertStringContainsString('reference bottle', $prompt);
-        $this->assertStringContainsString('cork stopper', $prompt);
+        $this->assertStringContainsString('cylindrical clear glass bottle', $prompt);
+        $this->assertStringContainsString('natural cork stopper', $prompt);
         $this->assertStringContainsString('Do not add a label', $prompt);
+        $this->assertStringNotContainsString('reference', $prompt);
     }
 
     public function testPromptContainsNonBottledBranchInstructions(): void
