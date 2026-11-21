@@ -9,17 +9,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'bar_id',
+    'name',
+    'normalized_name',
+])]
 class TasteDescriptor extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\TasteDescriptorFactory> */
     use HasFactory;
     use HasBarAwareScope;
-
-    protected $fillable = [
-        'bar_id',
-        'name',
-        'normalized_name',
-    ];
 
     /**
      * @return BelongsTo<Bar, $this>

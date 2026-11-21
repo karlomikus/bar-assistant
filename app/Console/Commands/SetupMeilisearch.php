@@ -9,22 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Services\MeilisearchService;
 
+#[\Illuminate\Console\Attributes\Description('Using master key is not recommended for API calls. This command will generate a new scoped API key and update the ENV file.')]
+#[\Illuminate\Console\Attributes\Signature('bar:setup-meilisearch {--f|force : Force search token update for all bars}')]
 class SetupMeilisearch extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:setup-meilisearch {--f|force : Force search token update for all bars}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Using master key is not recommended for API calls. This command will generate a new scoped API key and update the ENV file.';
-
     /**
      * Execute the console command.
      */

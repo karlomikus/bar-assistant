@@ -9,13 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class Tag extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\TagFactory> */
     use HasFactory;
     use HasBarAwareScope;
-
-    public $timestamps = false;
 
     public $fillable = ['name', 'bar_id'];
 

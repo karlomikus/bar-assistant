@@ -7,10 +7,9 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class MemberInventory extends BaseModel
 {
-    public $timestamps = false;
-
     /**
      * @return BelongsTo<BarMembership, $this>
      */

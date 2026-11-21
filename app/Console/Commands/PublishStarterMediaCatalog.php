@@ -9,12 +9,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Services\Image\StarterMediaCatalogService;
 
+#[\Illuminate\Console\Attributes\Description('Publish the immutable starter media catalog release')]
+#[\Illuminate\Console\Attributes\Signature('starter-media:publish')]
 final class PublishStarterMediaCatalog extends Command
 {
-    protected $signature = 'starter-media:publish';
-
-    protected $description = 'Publish the immutable starter media catalog release';
-
     public function handle(StarterMediaCatalogService $catalogService): int
     {
         $source = Storage::disk('data-files');

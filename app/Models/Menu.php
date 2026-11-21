@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable(['bar_id'])]
 class Menu extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuFactory> */
     use HasFactory;
-
-    protected $fillable = ['bar_id'];
 
     protected $with = [
         'categories.menuCocktails.cocktail.ingredients.ingredient',

@@ -1,3 +1,7 @@
+# v6.14.0
+## New
+- Updated to Laravel 13
+
 # v6.13.0
 ## New
 - Sync dataset now fills missing data when applicable

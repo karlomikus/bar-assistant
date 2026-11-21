@@ -21,22 +21,10 @@ use Kami\Cocktail\External\Import\DataPackMediaMode;
 use BarAssistant\Application\Bar\DTO\CreateBarRequest;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 
+#[\Illuminate\Console\Attributes\Description('Import recipes exported as a Bar Assistant datapack')]
+#[\Illuminate\Console\Attributes\Signature('bar:import-recipes {filename? : Filename relative to the bar-assistant storage volume}')]
 class BarImportRecipes extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:import-recipes {filename? : Filename relative to the bar-assistant storage volume}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Import recipes exported as a Bar Assistant datapack';
-
     public function __construct(private readonly FromDataPack $importer, private readonly BarService $barService, private readonly MemberService $memberService)
     {
         parent::__construct();

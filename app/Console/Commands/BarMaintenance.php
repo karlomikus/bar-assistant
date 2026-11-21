@@ -9,22 +9,10 @@ use Kami\Cocktail\Models\Cocktail;
 use Illuminate\Support\Facades\Artisan;
 use Kami\Cocktail\Services\Image\ImageCleanupService;
 
+#[\Illuminate\Console\Attributes\Description('This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache')]
+#[\Illuminate\Console\Attributes\Signature('bar:maintenance {barId}')]
 class BarMaintenance extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:maintenance {barId}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'This will remove unused images, update missing ABVs, fix ingredient sort and refresh cache';
-
     public function __construct(private readonly ImageCleanupService $imageCleanupService)
     {
         parent::__construct();

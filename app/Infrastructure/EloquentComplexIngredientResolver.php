@@ -8,9 +8,9 @@ use Illuminate\Database\DatabaseManager;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Ingredient\ComplexIngredientResolver;
 
-final class EloquentComplexIngredientResolver implements ComplexIngredientResolver
+final readonly class EloquentComplexIngredientResolver implements ComplexIngredientResolver
 {
-    public function __construct(private readonly DatabaseManager $db)
+    public function __construct(private DatabaseManager $db)
     {
     }
 

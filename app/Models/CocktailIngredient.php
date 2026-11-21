@@ -11,12 +11,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class CocktailIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailIngredientFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     /**
      * @return BelongsTo<Ingredient, $this>

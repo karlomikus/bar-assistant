@@ -8,10 +8,9 @@ use Kami\Cocktail\Services\Auth\OauthProvider;
 use Kami\Cocktail\Models\ValueObjects\SSOProvider;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[\Illuminate\Database\Eloquent\Attributes\Hidden(['user_id', 'provider_id'])]
 class OauthCredential extends BaseModel
 {
-    protected $hidden = ['user_id', 'provider_id'];
-
     /**
      * @return BelongsTo<User, $this>
      */

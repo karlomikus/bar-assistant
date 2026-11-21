@@ -10,19 +10,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'menu_id',
+    'sort',
+    'name',
+    'is_enabled',
+])]
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class MenuCategory extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuCategoryFactory> */
     use HasFactory;
-
-    public $timestamps = false;
-
-    protected $fillable = [
-        'menu_id',
-        'sort',
-        'name',
-        'is_enabled',
-    ];
 
     /**
      * @return BelongsTo<Menu, $this>

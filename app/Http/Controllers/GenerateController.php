@@ -191,7 +191,7 @@ class GenerateController extends Controller
         }
 
         $recipe = $response->toArray();
-        $recipe['tags'] = $recipe['tags'] ?? [];
+        $recipe['tags'] ??= [];
 
         return new GeneratedCocktailFromTextResource($recipe);
     }

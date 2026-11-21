@@ -6,22 +6,10 @@ use Illuminate\Console\Command;
 use Kami\Cocktail\Mail\TestEmail;
 use Illuminate\Support\Facades\Mail;
 
+#[\Illuminate\Console\Attributes\Description('Send a test email to given email address')]
+#[\Illuminate\Console\Attributes\Signature('bar:test-email {email}')]
 class BarTestEmail extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:test-email {email}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send a test email to given email address';
-
     /**
      * Execute the console command.
      */

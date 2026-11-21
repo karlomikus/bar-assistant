@@ -15,22 +15,10 @@ use Kami\Cocktail\Models\Ingredient;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multisearch;
 
+#[\Illuminate\Console\Attributes\Description('Merge multiple ingredients into one')]
+#[\Illuminate\Console\Attributes\Signature('bar:merge-ingredients {barId : ID of bar to search ingredients in}')]
 class BarMergeIngredient extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:merge-ingredients {barId : ID of bar to search ingredients in}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Merge multiple ingredients into one';
-
     /**
      * Execute the console command.
      */

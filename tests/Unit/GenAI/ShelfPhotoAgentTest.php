@@ -45,9 +45,7 @@ class ShelfPhotoAgentTest extends TestCase
             [new Base64Image(base64_encode('fake-image-bytes'), 'image/webp')],
         );
 
-        ShelfPhotoAgent::assertPrompted(function ($prompt) {
-            return $prompt->attachments->count() === 1
-                && $prompt->attachments->first() instanceof Base64Image;
-        });
+        ShelfPhotoAgent::assertPrompted(fn ($prompt) => $prompt->attachments->count() === 1
+            && $prompt->attachments->first() instanceof Base64Image);
     }
 }
