@@ -9,13 +9,12 @@ use Kami\Cocktail\Models\Concerns\HasBarAwareScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class PriceCategory extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\PriceCategoryFactory> */
     use HasFactory;
     use HasBarAwareScope;
-
-    public $timestamps = false;
 
     public function getCurrency(): Currency
     {

@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\OpenAPI as BAO;
+use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class GlassController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(GlassResource::class),
     ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(): JsonResource
     {
         $glasses = new GlassQueryFilter()->get();
@@ -46,9 +48,12 @@ class GlassController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        $glass = Glass::withCount('cocktails')->with('images')->findOrFail($id);
+        $glass = Glass::withCount([
+            'cocktails' => static fn (Builder $query): Builder => $query->whereColumn('cocktails.bar_id', 'glasses.bar_id'),
+        ])->with('images')->findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('show', $glass)) {
+        if ($user === null || $user->cannot('show', $glass)) {
             abort(403);
         }
 
@@ -63,13 +68,15 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 201, description: 'Successful response', headers: [
-        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+    #[BAO\SuccessfulResponse(response: 201, headers: [
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string', format: 'uri-reference')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(GlassService $glassService, GlassRequest $request): Response
     {
-        if ($request->user()->cannot('create', Glass::class)) {
+        $user = $request->user();
+        if ($user === null || $user->cannot('create', Glass::class)) {
             abort(403);
         }
 
@@ -95,14 +102,16 @@ class GlassController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\GlassRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(GlassService $glassService, int $id, GlassRequest $request): Response
     {
         $glass = Glass::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('edit', $glass)) {
+        if ($user === null || $user->cannot('edit', $glass)) {
             abort(403);
         }
 
@@ -123,19 +132,20 @@ class GlassController extends Controller
     #[OAT\Delete(path: '/glasses/{id}', tags: ['Glasses'], operationId: 'deleteGlassware', description: 'Delete a specific glassware', summary: 'Delete glassware', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function delete(GlassService $glassService, Request $request, int $id): Response
     {
         $glass = Glass::findOrFail($id);
+        $user = $request->user();
 
-        if ($request->user()->cannot('delete', $glass)) {
+        if ($user === null || $user->cannot('delete', $glass)) {
             abort(403);
         }
 
         $glassService->deleteGlass($id);
 
-        return new Response(null, 204);
+        return new Response(status: 204);
     }
 }

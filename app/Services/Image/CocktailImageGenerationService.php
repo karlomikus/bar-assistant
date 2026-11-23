@@ -10,6 +10,7 @@ use Kami\Cocktail\Models\Image;
 use Kami\Cocktail\Models\Cocktail;
 use Laravel\Ai\Image as LaravelAiImage;
 use Kami\Cocktail\External\Model\Schema;
+use Kami\Cocktail\GenAI\ImageStyleCatalog;
 use Kami\Cocktail\GenAI\CocktailImageHandler;
 use BarAssistant\Application\Image\ImageService;
 use BarAssistant\Application\Image\DTO\CreateImage;
@@ -27,12 +28,16 @@ final readonly class CocktailImageGenerationService
 
     public function generateImage(Cocktail $cocktail, int $userId, ?string $style = null): Image
     {
+        $stylePrompt = $style !== null
+            ? ImageStyleCatalog::require($style)->prompt
+            : null;
+
         $promptConfiguration = new CocktailImageHandler(new CocktailImagePromptRequest(
             cocktailName: $cocktail->name,
             cocktailRecipe: Schema::fromCocktailModel($cocktail)->toMarkdown(),
             glassName: $cocktail->glass?->name,
             garnish: $cocktail->garnish,
-            style: $style,
+            style: $stylePrompt,
         ))();
 
         $this->log->info("[LLM] Generating cocktail image for cocktail ID: {$cocktail->id}");

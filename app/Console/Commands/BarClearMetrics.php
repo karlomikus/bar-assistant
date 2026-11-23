@@ -5,22 +5,10 @@ namespace Kami\Cocktail\Console\Commands;
 use Illuminate\Console\Command;
 use Prometheus\CollectorRegistry;
 
+#[\Illuminate\Console\Attributes\Description('Clears metrics redis storage')]
+#[\Illuminate\Console\Attributes\Signature('bar:clear-metrics')]
 class BarClearMetrics extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:clear-metrics';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Clears metrics redis storage';
-
     /**
      * Execute the console command.
      */

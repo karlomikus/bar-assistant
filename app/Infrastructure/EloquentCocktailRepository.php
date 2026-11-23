@@ -115,7 +115,8 @@ final class EloquentCocktailRepository implements CocktailRepository
         ));
 
         if (count($cocktail->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $cocktail->getImages()));
+            $imageIds = array_map(fn (ImageId $img): int => $img->value, $cocktail->getImages());
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 

@@ -13,7 +13,7 @@ class TagRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,10 +23,10 @@ class TagRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

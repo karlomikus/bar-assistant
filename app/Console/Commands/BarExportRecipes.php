@@ -20,24 +20,11 @@ use Kami\Cocktail\External\Export\ToDataPack;
 use Kami\Cocktail\External\Export\ToRecipeType;
 use Kami\Cocktail\External\ForceUnitConvertEnum;
 
+#[\Illuminate\Console\Attributes\Description('Export data from a single bar')]
+#[\Illuminate\Console\Attributes\Help('This command allows you to export data from a single bar in various formats. You can specify the bar ID as an argument, or search for it interactively if not provided.')]
+#[\Illuminate\Console\Attributes\Signature('bar:export-recipes {barId?} {--t|type=datapack : Export type (datapack, schema, md, json-ld, xml, yaml)} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}')]
 class BarExportRecipes extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:export-recipes {barId?} {--t|type=datapack : Export type (datapack, schema, md, json-ld, xml, yaml)} {--u|units= : Force unit conversion when possible (none, ml, oz, cl)}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Export data from a single bar';
-
-    protected $help = 'This command allows you to export data from a single bar in various formats. You can specify the bar ID as an argument, or search for it interactively if not provided.';
-
     public function __construct(private readonly ToDataPack $datapackExporter, private readonly ToRecipeType $recipeExporter)
     {
         parent::__construct();

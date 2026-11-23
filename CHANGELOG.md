@@ -1,3 +1,19 @@
+# v6.14.0
+## New
+- Updated to Laravel 13
+- Improved AI-generated ingredient images by using a generic bottle prompt instead of a reference image
+
+## Changes
+- Removed the `GEN_AI_IMAGE_SUPPORTS_REFERENCE` environment variable
+
+## Fixes
+- Strengthened request validation and authorization checks across authentication, profile, member, SSO, tag, glass, and cocktail method endpoints
+
+# v6.13.0
+## New
+- Sync dataset now fills missing data when applicable
+- Added multiple visual styles for cocktail image generation
+
 # v6.12.1
 ## Fixes
 - PHP version security fixes

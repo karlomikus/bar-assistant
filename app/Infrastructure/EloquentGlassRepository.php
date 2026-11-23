@@ -45,10 +45,11 @@ final class EloquentGlassRepository implements GlassRepository
         $model->save();
 
         if (count($glass->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(
+            $imageIds = array_map(
                 fn (ImageId $imageId): int => $imageId->value,
                 $glass->getImages()
-            ));
+            );
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 

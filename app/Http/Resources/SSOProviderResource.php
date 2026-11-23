@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Kami\Cocktail\Http\Resources;
 
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Services\Auth\OauthProvider;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -14,7 +15,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
     schema: 'SSOProvider',
     description: 'SSO Provider information',
     properties: [
-        new OAT\Property(property: 'name', type: 'string', example: 'github'),
+        new OAT\Property(property: 'name', ref: OauthProvider::class),
         new OAT\Property(property: 'display_name', type: 'string', example: 'GitHub'),
         new OAT\Property(property: 'enabled', description: 'Whether the provider is configured and enabled by server', type: 'boolean', example: true),
     ],

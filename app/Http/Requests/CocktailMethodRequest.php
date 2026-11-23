@@ -13,7 +13,7 @@ class CocktailMethodRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,11 +23,12 @@ class CocktailMethodRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'name' => 'required',
-            'dilution_percentage' => 'required|integer',
+            'name' => ['required', 'string', 'max:255'],
+            'dilution_percentage' => ['required', 'integer', 'between:0,100'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

@@ -9,12 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class CalculatorBlock extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CalculatorBlockFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     /**
      * @return array{type: 'Kami\Cocktail\Models\Enums\CalculatorBlockTypeEnum', settings: 'Illuminate\Database\Eloquent\Casts\AsArrayObject'}

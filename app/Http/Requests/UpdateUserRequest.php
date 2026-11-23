@@ -14,7 +14,7 @@ class UpdateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,11 +24,14 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => ['required', 'email', Rule::unique('users')->ignore($this->user()->id)],
-            'name' => 'required',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($this->user()?->getAuthIdentifier())],
+            'name' => ['required', 'string', 'max:255'],
+            'settings' => ['sometimes', 'nullable', 'array'],
+            'settings.language' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'settings.theme' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -39,7 +39,6 @@ final readonly class CocktailImageHandler
             - Show exactly one finished cocktail as the main subject
             - Match the drink's likely color, opacity, dilution, ice, garnish, and glassware
             - Keep composition clean and product-focused
-            - Use a realistic bar or studio setting that supports the drink without distracting from it
             - No people, hands, text overlays, labels, logos, menus, or watermarks
             - Avoid extra drinks, ingredient bottles, or clutter unless subtle and clearly background-only
 

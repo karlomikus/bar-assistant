@@ -67,7 +67,8 @@ final class EloquentBarRepository implements BarRepository
         $model->save();
 
         if (count($bar->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $bar->getImages()));
+            $imageIds = array_map(fn (ImageId $img): int => $img->value, $bar->getImages());
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 

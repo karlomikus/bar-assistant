@@ -7,22 +7,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Kami\Cocktail\External\Export\ToFullBackup;
 
+#[\Illuminate\Console\Attributes\Description('Create a .zip file with the full backup of your Bar Assistant instance data')]
+#[\Illuminate\Console\Attributes\Signature('bar:full-backup')]
 class BarFullBackup extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:full-backup';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create a .zip file with the full backup of your Bar Assistant instance data';
-
     public function __construct(private readonly ToFullBackup $exporter)
     {
         parent::__construct();

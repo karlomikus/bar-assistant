@@ -13,22 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 
+#[\Illuminate\Console\Attributes\Description('Delete user and all his data')]
+#[\Illuminate\Console\Attributes\Signature('bar:delete-user {email}')]
 class BarDeleteUser extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:delete-user {email}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Delete user and all his data';
-
     /**
      * Execute the console command.
      */

@@ -14,6 +14,7 @@ use Kami\Cocktail\Http\Requests\UserRequest;
 use BarAssistant\Application\Bar\MemberService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Resources\MemberResource;
+use Kami\Cocktail\Http\Requests\UpdateMemberRequest;
 use BarAssistant\Application\Bar\DTO\CreateMemberRequest;
 use BarAssistant\Application\Bar\DTO\RemoveMemberRequest;
 use BarAssistant\Application\Bar\DTO\ChangeMemberRoleRequest;
@@ -33,9 +34,11 @@ class MemberController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapItemsWithData(MemberResource::class),
     ])]
+    #[BAO\NotAuthorizedResponse]
     public function index(Request $request): JsonResource
     {
-        if ($request->user()->cannot('list', BarMembership::class)) {
+        $user = $request->user();
+        if ($user === null || $user->cannot('list', BarMembership::class)) {
             abort(403);
         }
 
@@ -44,7 +47,7 @@ class MemberController extends Controller
             ->join('users', 'users.id', '=', 'bar_memberships.user_id')
             ->orderBy('users.name')
             ->get()
-            ->load('role');
+            ->load(['user', 'role']);
 
         return MemberResource::collection($members);
     }
@@ -60,14 +63,16 @@ class MemberController extends Controller
     #[BAO\NotFoundResponse]
     public function show(Request $request, int $id): JsonResource
     {
-        if ($request->user()->cannot('show', BarMembership::class)) {
-            abort(403);
-        }
-
         $membership = bar()
             ->memberships()
+            ->with(['user', 'role'])
             ->where('bar_memberships.user_id', $id)
             ->firstOrFail();
+
+        $user = $request->user();
+        if ($user === null || $user->cannot('show', $membership)) {
+            abort(403);
+        }
 
         return new MemberResource($membership);
     }
@@ -81,17 +86,20 @@ class MemberController extends Controller
         ]
     ))]
     #[OAT\Response(response: 201, description: 'Successful response', headers: [
-        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string')),
+        new OAT\Header(header: 'Location', description: 'URL of the new resource', schema: new OAT\Schema(type: 'string', format: 'uri-reference')),
     ])]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function store(MemberService $memberService, UserRequest $request): Response
     {
-        if ($request->user()->cannot('create', BarMembership::class)) {
+        $authenticatedUser = $request->user();
+        if ($authenticatedUser === null || $authenticatedUser->cannot('create', BarMembership::class)) {
             abort(403);
         }
 
-        $roleId = (int) $request->post('role_id');
-        $email = $request->post('email');
+        $roleId = $request->integer('role_id');
+        $email = $request->string('email')->toString();
 
         $user = User::where('email', $email)->first();
         if ($user === null) {
@@ -109,24 +117,28 @@ class MemberController extends Controller
     ], requestBody: new OAT\RequestBody(
         required: true,
         content: [
-            new OAT\JsonContent(ref: BAO\Schemas\UserRequest::class),
+            new OAT\JsonContent(ref: BAO\Schemas\UpdateMemberRequest::class),
         ]
     ))]
     #[OAT\Response(response: 204, description: 'Successful response')]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
-    public function update(int $id, MemberService $memberService, UserRequest $request): Response
+    #[BAO\ValidationFailedResponse]
+    public function update(int $id, MemberService $memberService, UpdateMemberRequest $request): Response
     {
-        $user = User::findOrFail($id);
-        $barMembership = $user->getBarMembership(bar()->id);
+        $barMembership = bar()
+            ->memberships()
+            ->where('bar_memberships.user_id', $id)
+            ->firstOrFail();
 
-        if ($request->user()->cannot('edit', $barMembership)) {
+        $authenticatedUser = $request->user();
+        if ($authenticatedUser === null || $authenticatedUser->cannot('edit', $barMembership)) {
             abort(403);
         }
 
         $memberService->changeMemberRole(new ChangeMemberRoleRequest(
             memberId: $barMembership->id,
-            roleId: (int) $request->input('role_id'),
+            roleId: $request->integer('role_id'),
         ));
 
         return new Response(status: 204);
@@ -141,15 +153,18 @@ class MemberController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function delete(MemberService $memberService, Request $request, int $id): Response
     {
-        $user = User::findOrFail($id);
-        $barMembership = $user->getBarMembership(bar()->id);
+        $barMembership = bar()
+            ->memberships()
+            ->where('bar_memberships.user_id', $id)
+            ->firstOrFail();
 
-        if ($request->user()->cannot('delete', $barMembership)) {
+        $authenticatedUser = $request->user();
+        if ($authenticatedUser === null || $authenticatedUser->cannot('delete', $barMembership)) {
             abort(403);
         }
 
         $memberService->removeUserMembershipFromBar(new RemoveMemberRequest(
-            $user->id,
+            $barMembership->user_id,
             bar()->id,
         ));
 

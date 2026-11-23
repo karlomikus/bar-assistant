@@ -42,7 +42,7 @@ final readonly class IngredientImageHandler
             - Only the ingredient subject itself should be visible
 
             Depiction rules:
-            - If this ingredient is typically sold in a bottle (spirits, liqueurs, bitters, syrups in bottles, wines, etc.), render it inside the attached reference bottle: a cylindrical clear glass bottle with a natural cork stopper, exactly as shown in the reference image. Fill or partially fill it with liquid whose color, opacity, and character suggest this specific ingredient. Do not add a label, text, branding, or change the bottle shape.
+            - If this ingredient is typically sold in a bottle (spirits, liqueurs, bitters, syrups in bottles, wines, etc.), render a plain cylindrical clear glass bottle with a natural cork stopper. Fill or partially fill it with liquid whose color, opacity, and character suggest this specific ingredient. Do not add a label, text, branding, or change the bottle shape.
             - If this ingredient is NOT typically sold in a bottle (fresh produce, herbs, garnishes, sugars, spices, etc.), depict the ingredient itself as accurately as possible: its real appearance, texture, and typical form. If it is commonly held in a container, use the most plausible one (small glass jar, bowl, pile, leaves) without any branding or text.
         PROMPT;
 

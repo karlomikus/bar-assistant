@@ -1,107 +1,85 @@
 # AGENTS.md
 
-## Project information
-Bar Assistant is all-in-one solution for managing your home bar. Compared to other recipe management software that usually tries to be more for general use, Bar Assistant is made specifically for managing cocktail recipes.
+## Project Overview
+Bar Assistant is a Laravel 12 API (PHP 8.4) for managing home bars and cocktail recipes.
 
-## Architecture
-- PHP 8.4, SQLite, Redis (cache), Optional queue via Laravel Horizon
-- Development environment is run via docker compose stack
-    - Service `app` runs the API
-    - This means you need to prefix php commands with `docker compose exec app`
-- OpenAPI is used to document the API endpoints
-- Database: SQLite located at `./storage/bar-assistant/database.ba3.sqlite`
+- **Stack**: PHP 8.4, Laravel 12, SQLite, Redis (cache/sessions), Meilisearch (Scout search — required by the test suite), optional Laravel Horizon queue, OpenAPI 3.1.
+- **Dev environment**: Docker Compose (`docker-compose.yml`). Prefix PHP/Composer commands with `docker compose exec app`.
+- **Databases**: Local dev SQLite is at `./storage/bar-assistant/database.ba3.sqlite`; tests use SQLite `:memory:` (`phpunit.xml`).
 
-## Folder structure
-- Folder `app` contains the complete Laravel application and is considered as a legacy infrastrucutre layer
-    - Code written there should follow standard Laravel best practices
-- Folder `src` is a new code that will follow Domain Driven Design and hexagonal architecture principles
-- Folder `tests` contains tests
-    - Unit tests are located in `tests/Unit`
-    - Feature tests (laravel HTTP testing) are located in `tests/Feature`
+## Working Rules
+- **Tests**: Write new tests **only when explicitly asked**. Run existing targeted tests to verify changes.
+- **Docs**: Do not create separate markdown documentation or reference guides unless asked.
+- **Formatting**: Always run Pint on modified PHP files (`pint.json` uses `psr12` with imports sorted by **line length**, not alphabetically).
 
-## System requirements (non-discoverable)
+## Folder Structure & Namespaces
+- `app/` (`Kami\Cocktail\`): Legacy Laravel application and infrastructure layer (controllers, FormRequests, Eloquent models, OpenAPI attributes, Eloquent adapters in `app/Infrastructure/`).
+- `src/` (`BarAssistant\`): DDD / Hexagonal Architecture layer (`src/Domain/` and `src/Application/`).
+- `tests/` (`Tests\`):
+  - `tests/Unit`: Pure unit tests (domain & application logic, using `InMemory*` doubles).
+  - `tests/Integration`: Repository (`Eloquent*`), domain event subscriber, and external import/export tests.
+  - `tests/Feature`: Laravel HTTP endpoint tests.
+  - `tests/Scrapers`: Recipe scraper tests.
+  - `tests/Infrastructure`: `InMemory*` repository implementations for unit tests.
 
-- The image processing library `jcupitt/vips` requires:
-  - System package `libvips42` (CI installs it via `apt-get install libvips42`)
-  - PHP FFI extension enabled (`ffi.enable=true`)
-  - Raised stack size: `zend.max_allowed_stack_size=-1` (prevents stack overflow in FFI calls)
-- Without these, image upload/processing tests and functionality will fail silently or crash.
-
-## OpenAPI caveat
-
-- `composer openapi` generates OpenAPI docs by scanning the `app/` directory **only**. New endpoints written in `src/` (DDD layer) will not appear in the generated spec unless you also register them in `app/`.
-- CI runs [Spectral](https://stoplight.io/open-source/spectral) to lint the generated OpenAPI YAML.
+## Key Architecture Wiring & Gotchas
+- **Repository bindings**: Domain ports live in `src/Domain/...`; Eloquent adapters live in `app/Infrastructure/Eloquent*Repository.php` and must be bound in `app/Providers/InfrastructureServiceProvider.php`.
+- **Domain events**: Dispatched via `BarAssistant\Domain\DomainEventDispatcher::instance()`. Every event class must have a `#[DomainEventName(...)]` attribute. Subscribers live in `app/Infrastructure/DomainEventSubscriber/` and are registered in `app/Providers/AppServiceProvider::boot()`. Call `DomainEventDispatcher::reset()` in unit tests that register/dispatch events.
+- **Bar tenant context**: Bar-scoped routes use `EnsureRequestHasBarQuery` middleware, which reads the **`Bar-Assistant-Bar-Id` HTTP header** (not a query param) and binds `BarContext` (accessible via the `bar()` helper in `app/helpers.php`).
+- **PHPStan scope**: `phpstan.neon.dist` runs at `level: max` on **`src/` only**. Pass explicit file paths to analyze changes in `app/`.
+- **OpenAPI**: `composer openapi` scans `app/` only and writes `docs/openapi-generated.yaml` (linted by Spectral in CI). When API contracts change, also sync frontend types via `../scripts/generate-api-client.sh`.
+- **Image processing (`jcupitt/vips`)**: Requires system package `libvips42`, PHP FFI (`ffi.enable=true`), and `zend.max_allowed_stack_size=-1` (already configured in Docker/CI; missing these causes silent failures or crashes in image tests).
 
 ## Commands
 
 ```bash
-# Run static analysis (level: max)
-docker compose exec app vendor/bin/phpstan analyse
-
-# Automatically fix code style issues
-docker compose exec app vendor/bin/pint
-
-# Run the full test suite
-docker compose exec app vendor/bin/phpunit
-
-# Run a single test class
-docker compose exec app vendor/bin/phpunit tests/Unit/UtilsTest.php
-
-# Run tests (Laravel wrapper — CI-preferred)
+# Tests (CI-preferred Laravel wrapper; requires meilisearch service)
 docker compose exec app composer test
 
-# Run a specific test method
+# Targeted PHPUnit runs
+docker compose exec app vendor/bin/phpunit tests/Unit/UtilsTest.php
 docker compose exec app vendor/bin/phpunit --filter=testCalculateAbv
+docker compose exec app vendor/bin/phpunit --testsuite=Unit
 
-# Run static analysis with specific path
+# Static analysis (PHPStan level: max — defaults to src/ only)
+docker compose exec app vendor/bin/phpstan analyse
 docker compose exec app vendor/bin/phpstan analyse src/Domain/Cocktail
 
-# View database schema
-docker compose exec app sqlite3 ./storage/bar-assistant/database.ba3.sqlite ".schema"
+# Code style (Pint — psr12, length-sorted imports)
+docker compose exec app vendor/bin/pint
+docker compose exec app vendor/bin/pint --test
 
-# Query database
+# Automated refactoring preview (Rector)
+docker compose exec app vendor/bin/rector process --dry-run
+
+# Regenerate OpenAPI spec (scans app/ -> docs/openapi-generated.yaml)
+docker compose exec app composer openapi
+
+# Inspect local dev SQLite DB
+docker compose exec app sqlite3 ./storage/bar-assistant/database.ba3.sqlite ".schema"
 docker compose exec app sqlite3 ./storage/bar-assistant/database.ba3.sqlite "SELECT * FROM table_name LIMIT 10;"
 ```
 
 ## Conventions
-- All files must use strict typing
-- Use named parameters in method calls for clarity: `createCocktail(barId: $id, name: $name)`
-- Always specify parameter and return types
-- Use generic type annotations in PHPDoc for arrays: `@param CocktailIngredient[] $ingredients`
-- Use `readonly` for immutable DTOs and value objects
-- Validate invariants in constructors and setter methods
-- Write comments only to explain complex business logic
-- New code should follow DDD and Hexagonal Architecture principles
-- Tests will use `Tests\Infrastructure\InMemory*` implementations instead of mocks/stubs where applicable
-- Changes in the `src` should only affect `Unit` testsuite
-- Prefer static factory methods on aggregate roots with private constructors
-- Do not write comprehensive documentation or reference guide in separate markdown files
-- Since this is legacy code with already in place database schema the model identities are auto incrementing integers generated by a database and usually filled in by `setId()` method call
 
-## Architecture patterns (src folder - DDD/Hexagonal)
-- Entities use private constructors with public static factory methods
-- Aggregate roots are final classes implementing `Identity` interface
-- Value objects are readonly with `equals()` method for comparison
-- Application services use readonly DTOs for input/output
-- Methods return `$this` for fluent chaining where appropriate
-- Use `InMemory*` implementations for unit tests instead of mocks
-- Use `UbiquitousLanguage.md` as a reference
+### General PHP
+- Use `declare(strict_types=1);` and explicit parameter/return types in all new and modified files.
+- Use named parameters in method calls for clarity: `createCocktail(barId: $id, name: $name)`.
+- Use PHPDoc generic annotations for arrays (e.g., `@param CocktailIngredient[] $ingredients` or `array<int, T>` as needed for PHPStan max).
+- Write comments only to explain non-obvious business logic.
 
-## Testing
-- Write tests only when explicitly asked
-- Unit tests for domain logic in `tests/Unit`
-- Feature tests for HTTP endpoints in `tests/Feature`
+### `src/` (DDD / Hexagonal)
+- Follow `UbiquitousLanguage.md` for domain terminology.
+- **Aggregate roots**: `final` classes implementing `Identity`, with private constructors, static factory methods, fluent setters (`return $this`) where appropriate, and invariants validated in constructors/setters.
+- **IDs**: Legacy auto-incrementing integer IDs are assigned post-persistence via `setId()` (checked via `isTransient()`).
+- **Value objects**: `final readonly` classes with an `equals()` method.
+- **Application services**: `final readonly` services accepting and returning `readonly` DTOs.
+- **Unit testing**: Prefer `Tests\Infrastructure\InMemory*` doubles over mocks/stubs so `tests/Unit` stays isolated from Eloquent/DB.
 
-## CI pipeline (what runs in GitHub Actions)
-
-1. `composer install`
-2. `./vendor/bin/pint --test` (code style check)
-3. `composer test` (runs `php artisan test` — the Laravel test wrapper, not raw phpunit)
-4. `vendor/bin/phpstan analyse`
-5. Spectral API spec linting (`docs/*.yaml`)
-
-## Tools at Your Disposal
-- `phpstan` - PHP Static Analysis Tool (level: max)
-- `pint` - Laravel code style formatter
-- `phpunit` - PHP test runner
-- `rector` - Automated refactoring tool
+## CI Pipeline (`.github/workflows/php.yml`)
+1. Install `libvips42`, PHP 8.4 (`bcmath`, `intl`, `ffi`), and start Meilisearch
+2. `composer install`
+3. `./vendor/bin/pint --test`
+4. `composer test`
+5. `vendor/bin/phpstan analyse`
+6. Spectral lint on `docs/*.yaml`

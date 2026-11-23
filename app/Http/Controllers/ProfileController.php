@@ -6,6 +6,7 @@ namespace Kami\Cocktail\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kami\Cocktail\Models\User;
 use OpenApi\Attributes as OAT;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,7 @@ use BarAssistant\Application\User\DTO\UpdateUserProfile;
 use BarAssistant\Application\User\DTO\ChangeEmailRequest;
 use BarAssistant\Application\User\DTO\AnonymizeUserRequest;
 use BarAssistant\Application\User\DTO\ChangePasswordRequest;
+use BarAssistant\Application\Exception\EntityNotFoundException;
 
 class ProfileController extends Controller
 {
@@ -27,16 +29,16 @@ class ProfileController extends Controller
     #[BAO\SuccessfulResponse(content: [
         new BAO\WrapObjectWithData(ProfileResource::class),
     ])]
-    #[BAO\NotFoundResponse]
+    #[BAO\NotAuthorizedResponse]
     public function show(Request $request): JsonResource
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $user->load([
             'memberships' => fn ($memberships) => $memberships->chaperone(),
             'oauthCredentials',
         ]);
 
-        return new ProfileResource($request->user());
+        return new ProfileResource($user);
     }
 
     #[OAT\Post(path: '/profile', tags: ['Profile'], operationId: 'updateProfile', description: 'Update user profile', summary: 'Update profile', requestBody: new OAT\RequestBody(
@@ -45,22 +47,27 @@ class ProfileController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\ProfileRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function update(UserService $userService, UpdateUserRequest $request): Response
     {
         $profileRequest = ProfileRequest::fromIlluminateRequest($request);
+        $currentUser = $this->authenticatedUser($request);
 
-        $currentUser = $request->user();
+        try {
+            $userService->updateUserProfile(new UpdateUserProfile(
+                userId: $currentUser->id,
+                name: $profileRequest->name,
+                language: $profileRequest->settings?->language,
+                theme: $profileRequest->settings?->theme,
+            ));
 
-        $userService->updateUserProfile(new UpdateUserProfile(
-            userId: $currentUser->id,
-            name: $profileRequest->name,
-            language: $profileRequest->settings?->language,
-            theme: $profileRequest->settings?->theme,
-        ));
-
-        $userService->changeEmail(new ChangeEmailRequest($currentUser->id, $profileRequest->email));
+            $userService->changeEmail(new ChangeEmailRequest($currentUser->id, $profileRequest->email));
+        } catch (EntityNotFoundException) {
+            abort(404);
+        }
 
         return new Response(status: 204);
     }
@@ -71,21 +78,27 @@ class ProfileController extends Controller
             new OAT\JsonContent(ref: BAO\Schemas\ChangePasswordRequest::class),
         ]
     ))]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
+    #[BAO\NotFoundResponse]
+    #[BAO\ValidationFailedResponse]
     public function changePassword(UserService $userService, UpdatePasswordRequest $request): Response
     {
         $changePasswordRequest = BAO\Schemas\ChangePasswordRequest::fromIlluminateRequest($request);
-        $currentUser = $request->user();
+        $currentUser = $this->authenticatedUser($request);
 
         if (!Hash::check($changePasswordRequest->currentPassword, $currentUser->password)) {
             abort(403);
         }
 
-        $userService->changePassword(new ChangePasswordRequest(
-            userId: $currentUser->id,
-            newPasswordHash: Hash::make($changePasswordRequest->password),
-        ));
+        try {
+            $userService->changePassword(new ChangePasswordRequest(
+                userId: $currentUser->id,
+                newPasswordHash: Hash::make($changePasswordRequest->password),
+            ));
+        } catch (EntityNotFoundException) {
+            abort(404);
+        }
 
         $currentUser->tokens()->delete();
 
@@ -95,7 +108,7 @@ class ProfileController extends Controller
     #[OAT\Delete(path: '/profile/sso/{provider}', tags: ['Profile'], operationId: 'deleteSSO', description: 'Delete user\'s SSO provider', summary: 'Delete SSO provider', parameters: [
         new OAT\Parameter(name: 'provider', in: 'path', required: true, description: 'Provider ID', schema: new OAT\Schema(ref: OauthProvider::class)),
     ])]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function deleteSSOProvider(Request $request, string $provider): Response
@@ -105,21 +118,35 @@ class ProfileController extends Controller
             abort(404, 'Unsupported provider');
         }
 
-        $request->user()->oauthCredentials()->where('provider', $validProvider->value)->delete();
+        $this->authenticatedUser($request)->oauthCredentials()->where('provider', $validProvider->value)->delete();
 
         return new Response(null, 204);
     }
 
     #[OAT\Delete(path: '/profile', tags: ['Profile'], operationId: 'deleteProfile', description: 'Delete your profile and account', summary: 'Delete profile')]
-    #[OAT\Response(response: 204, description: 'Successful response')]
+    #[BAO\SuccessfulResponse(response: 204)]
     #[BAO\NotAuthorizedResponse]
     #[BAO\NotFoundResponse]
     public function delete(UserService $userService, Request $request): Response
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
-        $userService->anonymizeUserAccount(new AnonymizeUserRequest($user->id));
+        try {
+            $userService->anonymizeUserAccount(new AnonymizeUserRequest($user->id));
+        } catch (EntityNotFoundException) {
+            abort(404);
+        }
 
         return new Response(null, 204);
+    }
+
+    private function authenticatedUser(Request $request): User
+    {
+        $user = $request->user();
+        if (! ($user instanceof User)) {
+            abort(401);
+        }
+
+        return $user;
     }
 }

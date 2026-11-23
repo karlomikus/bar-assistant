@@ -23,19 +23,21 @@ class BarMembershipPolicy
             && $user->isBarAdmin(bar()->id);
     }
 
-    public function show(User $user): bool
+    public function show(User $user, BarMembership $model): bool
     {
-        return $user->isBarAdmin(bar()->id);
+        return (int) $model->bar_id === bar()->id
+            && $user->isBarAdmin(bar()->id);
     }
 
-    public function edit(User $user): bool
+    public function edit(User $user, BarMembership $model): bool
     {
-        return $user->isBarAdmin(bar()->id);
+        return (int) $model->bar_id === bar()->id
+            && $user->isBarAdmin(bar()->id);
     }
 
     public function delete(User $user, BarMembership $model): bool
     {
-        return $user->id === $model->user_id
-            || $user->isBarAdmin(bar()->id);
+        return (int) $model->bar_id === bar()->id
+            && ((int) $user->id === (int) $model->user_id || $user->isBarAdmin(bar()->id));
     }
 }

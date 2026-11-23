@@ -49,6 +49,6 @@ class IngredientPrice extends BaseModel
             $amount = $this->getAmount()->convertTo(new UnitValueObject($units))->amountMin;
         }
 
-        return $this->getMoney()->toRational()->dividedBy($amount);
+        return $this->getMoney()->toRational()->dividedBy((string) $amount);
     }
 }

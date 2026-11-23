@@ -4,39 +4,53 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\OpenAPI\Schemas;
 
-use Illuminate\Http\Request;
+use UnexpectedValueException;
 use OpenApi\Attributes as OAT;
+use Kami\Cocktail\Http\Requests\UpdateUserRequest;
 
 #[OAT\Schema(required: ['name', 'email'])]
 class ProfileRequest
 {
     public function __construct(
-        #[OAT\Property(example: 'Bar Tender')]
+        #[OAT\Property(type: 'string', maxLength: 255, example: 'Bar Tender')]
         public string $name,
-        #[OAT\Property(example: 'new@email.com')]
+        #[OAT\Property(type: 'string', format: 'email', maxLength: 255, example: 'new@email.com')]
         public string $email,
         #[OAT\Property()]
         public ?ProfileSettings $settings = null,
-        #[OAT\Property(property: 'bar_id')]
-        public ?int $barId = null,
     ) {
     }
 
-    public static function fromIlluminateRequest(Request $request): self
+    public static function fromIlluminateRequest(UpdateUserRequest $request): self
     {
-        $inputSettings = $request->input('settings') ?? [];
-        $validSettings = ['language', 'theme'];
-        $settings = array_intersect_key($inputSettings, array_flip($validSettings));
+        $validated = $request->validated();
+        $inputSettings = $validated['settings'] ?? null;
+        $settings = null;
 
-        $settings = new ProfileSettings();
-        $settings->language = $inputSettings['language'] ?? null;
-        $settings->theme = $inputSettings['theme'] ?? null;
+        if (is_array($inputSettings)) {
+            $settings = new ProfileSettings();
+            $settings->language = self::nullableString($inputSettings['language'] ?? null);
+            $settings->theme = self::nullableString($inputSettings['theme'] ?? null);
+        }
 
         return new self(
-            name: $request->input('name'),
-            email: $request->input('email'),
+            name: self::requiredString($validated['name'] ?? null),
+            email: self::requiredString($validated['email'] ?? null),
             settings: $settings,
-            barId: $request->filled('bar_id') ? $request->integer('bar_id') : null,
         );
+    }
+
+    private static function requiredString(mixed $value): string
+    {
+        if (! is_string($value)) {
+            throw new UnexpectedValueException('Validated profile fields must be strings.');
+        }
+
+        return $value;
+    }
+
+    private static function nullableString(mixed $value): ?string
+    {
+        return is_string($value) ? $value : null;
     }
 }

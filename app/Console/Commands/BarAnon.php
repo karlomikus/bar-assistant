@@ -9,22 +9,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 
+#[\Illuminate\Console\Attributes\Description('[DEV] Anonymize data')]
+#[\Illuminate\Console\Attributes\Signature('bar:anon')]
 class BarAnon extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bar:anon';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = '[DEV] Anonymize data';
-
     /**
      * Execute the console command.
      *

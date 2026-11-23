@@ -18,6 +18,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use BarAssistant\Domain\User\UserEmail as DomainUserEmail;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'name',
+    'email',
+    'password',
+])]
+#[\Illuminate\Database\Eloquent\Attributes\Hidden([
+    'password',
+    'remember_token',
+])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UserFactory> */
@@ -25,17 +34,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens;
     use Notifiable;
     use Billable;
-
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
     /**
      * @return array{email_verified_at: 'datetime', settings: 'Illuminate\Database\Eloquent\Casts\AsArrayObject'}

@@ -10,21 +10,19 @@ use Brick\Money\Exception\UnknownCurrencyException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'ingredient_id',
+    'sort',
+    'price',
+    'currency',
+    'is_bar_inventory_aware',
+    'menu_category_id',
+])]
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class MenuIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\MenuIngredientFactory> */
     use HasFactory;
-
-    public $timestamps = false;
-
-    protected $fillable = [
-        'ingredient_id',
-        'sort',
-        'price',
-        'currency',
-        'is_bar_inventory_aware',
-        'menu_category_id',
-    ];
 
     protected function casts(): array
     {

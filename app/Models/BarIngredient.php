@@ -7,12 +7,11 @@ namespace Kami\Cocktail\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class BarIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\BarIngredientFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     /**
      * @return BelongsTo<Ingredient, $this>

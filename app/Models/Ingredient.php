@@ -28,6 +28,15 @@ use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\MaterializedPath;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[\Illuminate\Database\Eloquent\Attributes\Fillable([
+    'name',
+    'strength',
+    'description',
+    'history',
+    'origin',
+    'color',
+    'parent_ingredient_id',
+])]
 class Ingredient extends BaseModel implements UploadableInterface, IsExternalized
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\IngredientFactory> */
@@ -38,16 +47,6 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     use HasRating;
     use HasBarAwareScope;
     use HasAuthors;
-
-    protected $fillable = [
-        'name',
-        'strength',
-        'description',
-        'history',
-        'origin',
-        'color',
-        'parent_ingredient_id',
-    ];
 
     /**
      * @return array{strength: 'float', sugar_g_per_ml: 'float', acidity: 'float'}

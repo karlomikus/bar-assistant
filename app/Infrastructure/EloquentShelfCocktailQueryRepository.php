@@ -10,9 +10,9 @@ use BarAssistant\Domain\Cocktail\CocktailId;
 use BarAssistant\Domain\Ingredient\IngredientId;
 use BarAssistant\Domain\Cocktail\ShelfCocktailQueryRepository;
 
-final class EloquentShelfCocktailQueryRepository implements ShelfCocktailQueryRepository
+final readonly class EloquentShelfCocktailQueryRepository implements ShelfCocktailQueryRepository
 {
-    public function __construct(private readonly DatabaseManager $db)
+    public function __construct(private DatabaseManager $db)
     {
     }
 

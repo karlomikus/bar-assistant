@@ -11,12 +11,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Kami\Cocktail\Models\ValueObjects\UnitValueObject;
 use Kami\Cocktail\Models\ValueObjects\AmountValueObject;
 
+#[\Illuminate\Database\Eloquent\Attributes\WithoutTimestamps]
 class CocktailIngredient extends BaseModel
 {
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\CocktailIngredientFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     /**
      * @return BelongsTo<Ingredient, $this>
@@ -83,13 +82,13 @@ class CocktailIngredient extends BaseModel
         $convertedLocalAmount = $this->getAmount()->convertTo(new UnitValueObject($ingredientPrice->units));
 
         try {
-            $pricePerUse = $ingredientPrice->getPricePerUnit()->multipliedBy($convertedLocalAmount->amountMin);
+            $pricePerUse = $ingredientPrice->getPricePerUnit()->multipliedBy((string) $convertedLocalAmount->amountMin);
         } catch (\Throwable) {
             return null;
         }
 
         if ($pricePerUse->isLessThanOrEqualTo(0)) {
-            $pricePerUse = $pricePerUse->plus(0.01);
+            $pricePerUse = $pricePerUse->plus('0.01');
         }
 
         return $pricePerUse;

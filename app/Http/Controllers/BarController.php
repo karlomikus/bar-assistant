@@ -351,7 +351,7 @@ class BarController extends Controller
         return response()->noContent();
     }
 
-    #[OAT\Post(path: '/bars/{id}/sync-datapack', tags: ['Bars'], operationId: 'syncBarDatapack', description: 'Triggers synchronization of recipes from the default datapack. Matches data by name, does not overwrite your existing recipes or ingredients.', summary: 'Sync recipes', parameters: [
+    #[OAT\Post(path: '/bars/{id}/sync-datapack', tags: ['Bars'], operationId: 'syncBarDatapack', description: 'Triggers synchronization from the default datapack. Adds missing cocktails and ingredients, fills only catalog-provided null scalar fields on name-matched existing resources, and preserves existing values and relationships.', summary: 'Sync recipes', parameters: [
         new BAO\Parameters\DatabaseIdParameter(),
     ])]
     #[OAT\Response(response: 204, description: 'Successful response')]

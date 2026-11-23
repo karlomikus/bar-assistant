@@ -16,10 +16,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
     properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Cocktail method ID'),
         new OAT\Property(property: 'name', type: 'string', example: 'Shake', description: 'Cocktail method name'),
-        new OAT\Property(property: 'dilution_percentage', type: 'integer', example: 20, description: 'Dilution percentage'),
+        new OAT\Property(property: 'description', type: 'string', nullable: true, example: 'Shake with ice to chill and dilute', description: 'Cocktail method description'),
+        new OAT\Property(property: 'dilution_percentage', type: 'integer', minimum: 0, maximum: 100, example: 20, description: 'Dilution percentage'),
         new OAT\Property(property: 'cocktails_count', type: 'integer', example: 32, description: 'Number of cocktails using this method'),
     ],
-    required: ['id', 'name', 'dilution_percentage'],
+    required: ['id', 'name', 'description', 'dilution_percentage'],
 )]
 class CocktailMethodResource extends JsonResource
 {
@@ -35,6 +36,7 @@ class CocktailMethodResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description' => $this->description,
             'dilution_percentage' => $this->dilution_percentage,
             'cocktails_count' => $this->whenCounted('cocktails'),
         ];

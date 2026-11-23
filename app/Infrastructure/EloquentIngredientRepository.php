@@ -131,7 +131,8 @@ final class EloquentIngredientRepository implements IngredientRepository
         DB::commit();
 
         if (count($ingredient->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $ingredient->getImages()));
+            $imageIds = array_map(fn (ImageId $img): int => $img->value, $ingredient->getImages());
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $ingredientModel->attachImages($imageModels);
         }
 
