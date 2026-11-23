@@ -11,10 +11,12 @@ use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use Illuminate\Support\Facades\Auth;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Common\Dilution;
 use BarAssistant\Domain\Cocktail\GlassId;
+use Illuminate\Database\Eloquent\Builder;
 use BarAssistant\Domain\Cocktail\Cocktail;
 use BarAssistant\Domain\Cocktail\MethodId;
 use BarAssistant\Domain\Cocktail\PublicId;
@@ -115,7 +117,14 @@ final class EloquentCocktailRepository implements CocktailRepository
         ));
 
         if (count($cocktail->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $cocktail->getImages()));
+            $imageIds = array_map(fn (ImageId $img): int => $img->value, $cocktail->getImages());
+            $imageModels = ModelImage::query()
+                ->where(function (Builder $query) use ($model): void {
+                    $query->where(function (Builder $query): void {
+                        $query->where('created_user_id', Auth::id());
+                    });
+                })
+                ->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 

@@ -12,10 +12,12 @@ use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Slug;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
+use Illuminate\Support\Facades\Auth;
 use BarAssistant\Domain\Bar\BarStatus;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
 use BarAssistant\Domain\Bar\BarSettings;
+use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Bar as ModelBar;
 use BarAssistant\Domain\Bar\BarRepository;
 use Kami\Cocktail\Models\Enums\BarStatusEnum;
@@ -67,7 +69,14 @@ final class EloquentBarRepository implements BarRepository
         $model->save();
 
         if (count($bar->getImages()) > 0) {
-            $imageModels = ModelImage::findOrFail(array_map(fn (ImageId $img): int => $img->value, $bar->getImages()));
+            $imageIds = array_map(fn (ImageId $img): int => $img->value, $bar->getImages());
+            $imageModels = ModelImage::query()
+                ->where(function (Builder $query) use ($model): void {
+                    $query->where(function (Builder $query): void {
+                        $query->where('created_user_id', Auth::id());
+                    });
+                })
+                ->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 
