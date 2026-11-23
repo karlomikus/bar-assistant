@@ -7,12 +7,10 @@ namespace Kami\Cocktail\Infrastructure;
 use BarAssistant\Domain\Bar\BarId;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
-use Illuminate\Support\Facades\Auth;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Cocktail\Glass;
 use Kami\Cocktail\Models\Glass as Model;
 use BarAssistant\Domain\Cocktail\GlassId;
-use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Common\AmountWithUnits;
 use BarAssistant\Domain\Common\RecordTimestamps;
@@ -51,13 +49,7 @@ final class EloquentGlassRepository implements GlassRepository
                 fn (ImageId $imageId): int => $imageId->value,
                 $glass->getImages()
             );
-            $imageModels = ModelImage::query()
-                ->where(function (Builder $query) use ($model): void {
-                    $query->where(function (Builder $query): void {
-                        $query->where('created_user_id', Auth::id());
-                    });
-                })
-                ->findOrFail($imageIds);
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $model->attachImages($imageModels);
         }
 

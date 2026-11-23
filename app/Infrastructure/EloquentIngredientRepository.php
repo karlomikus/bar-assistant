@@ -11,11 +11,9 @@ use BarAssistant\Domain\Common\ABV;
 use BarAssistant\Domain\Common\Name;
 use BarAssistant\Domain\Common\Unit;
 use BarAssistant\Domain\User\UserId;
-use Illuminate\Support\Facades\Auth;
 use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
-use Illuminate\Database\Eloquent\Builder;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
@@ -134,13 +132,7 @@ final class EloquentIngredientRepository implements IngredientRepository
 
         if (count($ingredient->getImages()) > 0) {
             $imageIds = array_map(fn (ImageId $img): int => $img->value, $ingredient->getImages());
-            $imageModels = ModelImage::query()
-                ->where(function (Builder $query) use ($ingredientModel): void {
-                    $query->where(function (Builder $query): void {
-                        $query->where('created_user_id', Auth::id());
-                    });
-                })
-                ->findOrFail($imageIds);
+            $imageModels = ModelImage::query()->findOrFail($imageIds);
             $ingredientModel->attachImages($imageModels);
         }
 
