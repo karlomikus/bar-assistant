@@ -13,6 +13,8 @@ use Kami\Cocktail\Jobs\SetupBar;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Support\Facades\Cache;
 use Kami\Cocktail\Jobs\SyncBarRecipes;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ImageBelongsToBar;
 use Kami\Cocktail\Http\Requests\BarRequest;
 use BarAssistant\Application\Bar\BarService;
 use Kami\Cocktail\Jobs\StartBarOptimization;
@@ -114,9 +116,17 @@ class BarController extends Controller
 
         Cache::forget('metrics_bass_total_bars');
 
+        $user = $request->user();
+        if ($user === null) {
+            abort(403);
+        }
+
         $request->validate([
             'slug' => 'nullable|unique:bars,slug',
         ]);
+        Validator::make($request->all(), [
+            'images.*' => [new ImageBelongsToBar(null, (int) $user->id)],
+        ])->validate();
 
         $barRequest = SchemasBarRequest::fromLaravelRequest($request);
 
@@ -169,6 +179,9 @@ class BarController extends Controller
         $request->validate([
             'slug' => 'nullable|unique:bars,slug,' . $bar->id,
         ]);
+        Validator::make($request->all(), [
+            'images.*' => [new ImageBelongsToBar($bar->id, (int) $request->user()->id)],
+        ])->validate();
 
         Cache::forget('ba:bar:' . $bar->id);
 

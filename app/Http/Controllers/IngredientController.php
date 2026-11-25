@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ImageBelongsToBar;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Kami\Cocktail\Http\Requests\IngredientRequest;
@@ -155,14 +156,11 @@ class IngredientController extends Controller
     #[BAO\NotAuthorizedResponse]
     public function store(IngredientService $ingredientService, IngredientRequest $request): Response
     {
-        Validator::make($request->all(), [
-            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
-            'prices.*.price_category_id' => [new ResourceBelongsToBar(bar()->id, 'price_categories')],
-        ])->validate();
-
         if ($request->user()->cannot('create', Ingredient::class)) {
             abort(403);
         }
+
+        $this->validateBarScopedResources($request, bar()->id);
 
         $dto = IngredientDTO::fromIlluminateRequest($request, bar()->id);
 
@@ -229,14 +227,11 @@ class IngredientController extends Controller
     {
         $ingredient = Ingredient::findOrFail($id);
 
-        Validator::make($request->all(), [
-            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'ingredients')],
-            'prices.*.price_category_id' => [new ResourceBelongsToBar($ingredient->bar_id, 'price_categories')],
-        ])->validate();
-
         if ($request->user()->cannot('edit', $ingredient)) {
             abort(403);
         }
+
+        $this->validateBarScopedResources($request, $ingredient->bar_id);
 
         $dto = IngredientDTO::fromIlluminateRequest($request, $ingredient->bar_id);
 
@@ -284,6 +279,22 @@ class IngredientController extends Controller
         );
 
         return new Response(status: 204);
+    }
+
+    private function validateBarScopedResources(IngredientRequest $request, int $barId): void
+    {
+        $user = $request->user();
+        if ($user === null) {
+            abort(403);
+        }
+
+        Validator::make($request->all(), [
+            'calculator_id' => ['nullable', new ResourceBelongsToBar($barId, 'calculators')],
+            'parent_ingredient_id' => ['nullable', new ResourceBelongsToBar($barId, 'ingredients')],
+            'complex_ingredient_parts.*.ingredient_id' => [new ResourceBelongsToBar($barId, 'ingredients')],
+            'prices.*.price_category_id' => [new ResourceBelongsToBar($barId, 'price_categories')],
+            'images.*' => [new ImageBelongsToBar($barId, (int) $user->id)],
+        ])->validate();
     }
 
     #[OAT\Delete(path: '/ingredients/{id}', tags: ['Ingredients'], operationId: 'deleteIngredient', description: 'Delete a specific ingredient', summary: 'Delete ingredient', parameters: [
@@ -337,7 +348,11 @@ class IngredientController extends Controller
             )
             ->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->orderBy('name')->paginate($request->input('per_page', 100));
+        $cocktails = Cocktail::where('bar_id', $ingredient->bar_id)
+            ->whereIn('id', $cocktailIds)
+            ->with('ingredients.ingredient')
+            ->orderBy('name')
+            ->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails);
     }
@@ -369,7 +384,10 @@ class IngredientController extends Controller
             ->join('cocktail_ingredient_substitutes', 'cocktail_ingredient_substitutes.cocktail_ingredient_id', '=', 'cocktail_ingredients.id')
             ->pluck('cocktail_ingredient_substitutes.ingredient_id');
 
-        $cocktails = Ingredient::whereIn('id', $ids)->orderBy('name')->paginate($request->input('per_page', 100));
+        $cocktails = Ingredient::where('bar_id', $ingredient->bar_id)
+            ->whereIn('id', $ids)
+            ->orderBy('name')
+            ->paginate($request->input('per_page', 100));
 
         return IngredientBasicResource::collection($cocktails);
     }

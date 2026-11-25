@@ -643,7 +643,7 @@ class CocktailControllerTest extends TestCase
         $ing3 = Ingredient::factory()->for($membership->bar)->create();
         $method = CocktailMethod::factory()->for($membership->bar)->create();
         $glass = Glass::factory()->for($membership->bar)->create();
-        $image = Image::factory()->create();
+        $image = Image::factory()->create(['created_user_id' => $membership->user_id]);
         Utensil::factory()->for($membership->bar)->count(5)->create();
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
@@ -1347,7 +1347,7 @@ class CocktailControllerTest extends TestCase
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
-        $images = Image::factory()->count(11)->create();
+        $images = Image::factory()->count(11)->create(['created_user_id' => $membership->user_id]);
 
         $response = $this->postJson('/api/cocktails', [
             'name' => "Cocktail name",
@@ -1375,9 +1375,9 @@ class CocktailControllerTest extends TestCase
 
         $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
 
-        $image1 = Image::factory()->create();
-        $image2 = Image::factory()->create();
-        $image3 = Image::factory()->create();
+        $image1 = Image::factory()->create(['created_user_id' => $membership->user_id]);
+        $image2 = Image::factory()->create(['created_user_id' => $membership->user_id]);
+        $image3 = Image::factory()->create(['created_user_id' => $membership->user_id]);
 
         $response = $this->postJson('/api/cocktails', [
             'name' => "Cocktail name",

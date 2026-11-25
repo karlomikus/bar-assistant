@@ -1,3 +1,7 @@
+# v6.13.1
+## Fixes
+- Correctly check bar resources when editing an cocktail
+
 # v6.13.0
 ## New
 - Updated to Laravel 13

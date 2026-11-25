@@ -42,7 +42,10 @@ class BarInventoryController extends Controller
 
         $ingredientIds = $bar->shelfIngredients->pluck('ingredient_id');
 
-        $ingredients = Ingredient::whereIn('id', $ingredientIds)->orderBy('name')->paginate($request->input('per_page', 100));
+        $ingredients = Ingredient::where('bar_id', $bar->id)
+            ->whereIn('id', $ingredientIds)
+            ->orderBy('name')
+            ->paginate($request->input('per_page', 100));
 
         return IngredientBasicResource::collection($ingredients->withQueryString());
     }
@@ -127,7 +130,10 @@ class BarInventoryController extends Controller
             $bar->id,
         );
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->input('per_page', 100));
+        $cocktails = Cocktail::where('bar_id', $bar->id)
+            ->whereIn('id', $cocktailIds)
+            ->with('ingredients.ingredient')
+            ->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }
@@ -168,9 +174,11 @@ class BarInventoryController extends Controller
             abort(403);
         }
 
-        $ingredient = Ingredient::where('id', $idOrSlug)
-            ->orWhere('slug', $idOrSlug)
-            ->where('bar_id', $id)
+        $ingredient = Ingredient::where('bar_id', $id)
+            ->where(function ($query) use ($idOrSlug) {
+                $query->where('id', $idOrSlug)
+                    ->orWhere('slug', $idOrSlug);
+            })
             ->firstOrFail();
 
         $barShelfIngredients = $bar->shelfIngredients->pluck('ingredient_id');

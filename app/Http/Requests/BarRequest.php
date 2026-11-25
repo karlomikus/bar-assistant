@@ -49,6 +49,7 @@ class BarRequest extends FormRequest
                 'nullable',
             ],
             'images' => 'array|max:1',
+            'images.*' => 'integer',
         ];
     }
 }

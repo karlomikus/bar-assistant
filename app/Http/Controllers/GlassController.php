@@ -10,6 +10,8 @@ use OpenApi\Attributes as OAT;
 use Kami\Cocktail\Models\Glass;
 use Kami\Cocktail\OpenAPI as BAO;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Validator;
+use Kami\Cocktail\Rules\ImageBelongsToBar;
 use Kami\Cocktail\Http\Requests\GlassRequest;
 use Kami\Cocktail\Http\Resources\GlassResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -80,6 +82,10 @@ class GlassController extends Controller
             abort(403);
         }
 
+        Validator::make($request->all(), [
+            'images.*' => [new ImageBelongsToBar(bar()->id, (int) $user->id)],
+        ])->validate();
+
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
         $glassResult = $glassService->createGlass(new CreateGlass(
@@ -114,6 +120,10 @@ class GlassController extends Controller
         if ($user === null || $user->cannot('edit', $glass)) {
             abort(403);
         }
+
+        Validator::make($request->all(), [
+            'images.*' => [new ImageBelongsToBar($glass->bar_id, (int) $user->id)],
+        ])->validate();
 
         $glassRequest = BAO\Schemas\GlassRequest::fromLaravelRequest($request);
 
