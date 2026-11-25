@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Infrastructure;
 
-use Throwable;
 use Illuminate\Support\Facades\DB;
-use Kami\Cocktail\Models\Ingredient;
 use BarAssistant\Domain\Bar\MemberId;
 use Kami\Cocktail\Models\TasteDescriptor;
 use BarAssistant\Domain\Common\ReviewContent;
@@ -66,8 +64,7 @@ final class EloquentIngredientReviewRepository implements IngredientReviewReposi
 
             $model->save();
 
-            $barId = Ingredient::where('id', $review->getIngredientId())->value('bar_id');
-            $descriptorIds = $this->resolveTasteDescriptorIds((int) $barId, $tasteDescriptorNames);
+            $descriptorIds = $this->resolveTasteDescriptorIds($tasteDescriptorNames);
             $model->tasteDescriptors()->sync($descriptorIds);
 
             if ($review->isTransient()) {
@@ -87,41 +84,22 @@ final class EloquentIngredientReviewRepository implements IngredientReviewReposi
      * @param string[] $names
      * @return int[]
      */
-    private function resolveTasteDescriptorIds(int $barId, array $names): array
+    private function resolveTasteDescriptorIds(array $names): array
     {
-        $ids = [];
+        $normalizedNames = array_values(array_unique(array_filter(
+            array_map(static fn (string $name): string => mb_strtolower(trim($name)), $names),
+        )));
 
-        foreach ($names as $name) {
-            $trimmed = trim($name);
-            if ($trimmed === '') {
-                continue;
-            }
-
-            $normalized = mb_strtolower($trimmed);
-
-            $descriptor = TasteDescriptor::where('bar_id', $barId)
-                ->where('normalized_name', $normalized)
-                ->first();
-
-            if ($descriptor === null) {
-                try {
-                    $descriptor = TasteDescriptor::create([
-                        'bar_id' => $barId,
-                        'name' => $trimmed,
-                        'normalized_name' => $normalized,
-                    ]);
-                } catch (Throwable) {
-                    // A concurrent request created the same descriptor; reuse it.
-                    $descriptor = TasteDescriptor::where('bar_id', $barId)
-                        ->where('normalized_name', $normalized)
-                        ->firstOrFail();
-                }
-            }
-
-            $ids[] = $descriptor->id;
+        if ($normalizedNames === []) {
+            return [];
         }
 
-        return array_values(array_unique($ids));
+        /** @var int[] $descriptorIds */
+        $descriptorIds = TasteDescriptor::whereIn('normalized_name', $normalizedNames)
+            ->pluck('id')
+            ->all();
+
+        return $descriptorIds;
     }
 
     private static function mapEntity(Model $model): IngredientReview

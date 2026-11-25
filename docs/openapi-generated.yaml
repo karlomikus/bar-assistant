@@ -9687,7 +9687,7 @@ paths:
       tags:
         - 'Taste Descriptors'
       summary: 'List taste descriptors'
-      description: 'List taste descriptors for the current bar'
+      description: 'List application-managed taste descriptors'
       operationId: listTasteDescriptors
       parameters:
         -

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Http;
 
 use Tests\TestCase;
-use Kami\Cocktail\Models\Bar;
-use Kami\Cocktail\Models\TasteDescriptor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TasteDescriptorControllerTest extends TestCase
@@ -18,19 +16,20 @@ class TasteDescriptorControllerTest extends TestCase
         return ['Bar-Assistant-Bar-Id' => (string) $barId];
     }
 
-    public function test_list_returns_bar_descriptors_alphabetically(): void
+    public function test_list_returns_descriptors_alphabetically(): void
     {
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'banana', 'normalized_name' => 'banana']);
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'Apple', 'normalized_name' => 'apple']);
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'cherry', 'normalized_name' => 'cherry']);
-
         $response = $this->getJson('/api/taste-descriptors', $this->headers($membership->bar_id));
 
         $response->assertOk();
-        $this->assertSame(['Apple', 'banana', 'cherry'], array_column($response->json('data'), 'name'));
+        $names = array_column($response->json('data'), 'name');
+        $sortedNames = $names;
+        sort($sortedNames, SORT_NATURAL | SORT_FLAG_CASE);
+
+        $this->assertNotEmpty($names);
+        $this->assertSame($sortedNames, $names);
     }
 
     public function test_filter_by_partial_name_is_case_insensitive(): void
@@ -38,27 +37,26 @@ class TasteDescriptorControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
 
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'Smoky', 'normalized_name' => 'smoky']);
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'Sweet', 'normalized_name' => 'sweet']);
-
         $response = $this->getJson('/api/taste-descriptors?filter[name]=smok', $this->headers($membership->bar_id));
 
         $response->assertOk();
         $this->assertSame(['Smoky'], array_column($response->json('data'), 'name'));
     }
 
-    public function test_descriptors_from_other_bars_are_excluded(): void
+    public function test_static_descriptors_are_shared_between_bars(): void
     {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
+        $firstMembership = $this->setupBarMembership();
+        $secondMembership = $this->setupBarMembership();
+        $this->actingAs($firstMembership->user);
 
-        TasteDescriptor::factory()->for($membership->bar)->create(['name' => 'Smoky', 'normalized_name' => 'smoky']);
-        TasteDescriptor::factory()->for(Bar::factory()->create())->create(['name' => 'Sweet', 'normalized_name' => 'sweet']);
+        $firstResponse = $this->getJson('/api/taste-descriptors', $this->headers($firstMembership->bar_id));
+        $firstResponse->assertOk();
 
-        $response = $this->getJson('/api/taste-descriptors', $this->headers($membership->bar_id));
+        $this->actingAs($secondMembership->user);
+        $secondResponse = $this->getJson('/api/taste-descriptors', $this->headers($secondMembership->bar_id));
+        $secondResponse->assertOk();
 
-        $response->assertOk();
-        $this->assertSame(['Smoky'], array_column($response->json('data'), 'name'));
+        $this->assertSame($firstResponse->json('data'), $secondResponse->json('data'));
     }
 
     public function test_non_member_is_denied(): void

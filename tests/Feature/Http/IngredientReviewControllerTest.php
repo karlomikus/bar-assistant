@@ -159,6 +159,7 @@ class IngredientReviewControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
         $ingredient = Ingredient::factory()->for($membership->bar)->create();
+        $descriptorCount = TasteDescriptor::count();
 
         $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
             'content' => 'First',
@@ -176,8 +177,8 @@ class IngredientReviewControllerTest extends TestCase
             'taste_descriptors' => ['  smoky  '],
         ], $this->headers($membership->bar_id))->assertCreated();
 
-        $this->assertSame(2, TasteDescriptor::where('bar_id', $membership->bar_id)->count());
-        $smoky = TasteDescriptor::where('bar_id', $membership->bar_id)->where('normalized_name', 'smoky')->firstOrFail();
+        $this->assertSame($descriptorCount, TasteDescriptor::count());
+        $smoky = TasteDescriptor::where('normalized_name', 'smoky')->firstOrFail();
         $this->assertSame('Smoky', $smoky->name);
         $this->assertSame(2, $smoky->ingredientReviews()->count());
     }
@@ -215,6 +216,7 @@ class IngredientReviewControllerTest extends TestCase
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
         $ingredient = Ingredient::factory()->for($membership->bar)->create();
+        $descriptorCount = TasteDescriptor::count();
 
         $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
             'content' => 'Bad',
@@ -227,7 +229,7 @@ class IngredientReviewControllerTest extends TestCase
         ], $this->headers($membership->bar_id))->assertUnprocessable();
 
         $this->assertDatabaseMissing('ingredient_reviews', ['ingredient_id' => $ingredient->id]);
-        $this->assertSame(0, TasteDescriptor::where('bar_id', $membership->bar_id)->count());
+        $this->assertSame($descriptorCount, TasteDescriptor::count());
     }
 
     public function test_list_returns_reviews_newest_first_and_paginated(): void
@@ -451,10 +453,7 @@ class IngredientReviewControllerTest extends TestCase
         if ($descriptors !== []) {
             $ids = [];
             foreach ($descriptors as $name) {
-                $ids[] = TasteDescriptor::firstOrCreate(
-                    ['bar_id' => $membership->bar_id, 'normalized_name' => mb_strtolower($name)],
-                    ['name' => $name],
-                )->id;
+                $ids[] = TasteDescriptor::where('normalized_name', mb_strtolower($name))->value('id');
             }
             $review->tasteDescriptors()->sync($ids);
         }
