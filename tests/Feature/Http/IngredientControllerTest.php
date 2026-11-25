@@ -237,10 +237,14 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'parent_ingredient_id' => null
+            'parent_ingredient_id' => null,
+            'taste_descriptors' => ['Smoky', 'Sweet', 'Not a static descriptor'],
         ]);
 
         $response->assertStatus(201);
+
+        $ingredient = Ingredient::where('name', 'Ingredient name')->firstOrFail();
+        $this->assertSame(['Smoky', 'Sweet'], $ingredient->tasteDescriptors()->orderBy('name')->pluck('name')->all());
     }
 
     public function test_ingredient_store_fails_validation_response(): void
@@ -281,10 +285,25 @@ class IngredientControllerTest extends TestCase
             'description' => "Description text",
             'origin' => "Worldwide",
             'color' => "#000000",
-            'parent_ingredient_id' => null
+            'parent_ingredient_id' => null,
+            'taste_descriptors' => ['Smoky', 'Sweet'],
         ]);
 
         $response->assertNoContent();
+        $this->assertSame(['Smoky', 'Sweet'], $ing->fresh()->tasteDescriptors()->orderBy('name')->pluck('name')->all());
+
+        $response = $this->putJson('/api/ingredients/' . $ing->id, [
+            'name' => "Ingredient name",
+            'strength' => 12.2,
+            'description' => "Description text",
+            'origin' => "Worldwide",
+            'color' => "#000000",
+            'parent_ingredient_id' => null,
+            'taste_descriptors' => ['Crisp'],
+        ]);
+
+        $response->assertNoContent();
+        $this->assertSame(['Crisp'], $ing->fresh()->tasteDescriptors()->orderBy('name')->pluck('name')->all());
     }
 
     public function test_ingredient_update_fails_validation_response(): void

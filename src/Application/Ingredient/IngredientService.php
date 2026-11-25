@@ -90,6 +90,10 @@ final readonly class IngredientService
             $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
         }
 
+        foreach ($ingredientRequest->tasteDescriptors as $tasteDescriptor) {
+            $ingredient->addTasteDescriptor($tasteDescriptor);
+        }
+
         $ingredient = $this->ingredientRepository->save($ingredient);
 
         return IngredientResult::fromIngredient($ingredient);
@@ -129,6 +133,11 @@ final readonly class IngredientService
         $ingredient->removeAllImages();
         if (count($ingredientRequest->images) > 0) {
             $ingredient = $this->assignImages($ingredient, $ingredientRequest->images);
+        }
+
+        $ingredient->removeAllTasteDescriptors();
+        foreach ($ingredientRequest->tasteDescriptors as $tasteDescriptor) {
+            $ingredient->addTasteDescriptor($tasteDescriptor);
         }
 
         $ingredient = $this->ingredientRepository->save($ingredient);

@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Infrastructure;
 
 use Illuminate\Support\Facades\DB;
 use BarAssistant\Domain\Bar\MemberId;
-use Kami\Cocktail\Models\TasteDescriptor;
 use BarAssistant\Domain\Common\ReviewContent;
 use BarAssistant\Domain\Review\Recommendation;
 use BarAssistant\Domain\Common\RecordTimestamps;
@@ -48,9 +47,9 @@ final class EloquentIngredientReviewRepository implements IngredientReviewReposi
             ->exists();
     }
 
-    public function save(IngredientReview $review, array $tasteDescriptorNames = []): IngredientReview
+    public function save(IngredientReview $review): IngredientReview
     {
-        return DB::transaction(function () use ($review, $tasteDescriptorNames): IngredientReview {
+        return DB::transaction(function () use ($review): IngredientReview {
             $model = Model::findOrNew($review->getId()?->value);
             $model->ingredient_id = $review->getIngredientId();
             $model->bar_membership_id = $review->getMemberId()->value;
@@ -64,9 +63,6 @@ final class EloquentIngredientReviewRepository implements IngredientReviewReposi
 
             $model->save();
 
-            $descriptorIds = $this->resolveTasteDescriptorIds($tasteDescriptorNames);
-            $model->tasteDescriptors()->sync($descriptorIds);
-
             if ($review->isTransient()) {
                 $review->setId(new IngredientReviewId($model->id));
             }
@@ -78,28 +74,6 @@ final class EloquentIngredientReviewRepository implements IngredientReviewReposi
     public function delete(IngredientReviewId $id): void
     {
         Model::destroy($id->value);
-    }
-
-    /**
-     * @param string[] $names
-     * @return int[]
-     */
-    private function resolveTasteDescriptorIds(array $names): array
-    {
-        $normalizedNames = array_values(array_unique(array_filter(
-            array_map(static fn (string $name): string => mb_strtolower(trim($name)), $names),
-        )));
-
-        if ($normalizedNames === []) {
-            return [];
-        }
-
-        /** @var int[] $descriptorIds */
-        $descriptorIds = TasteDescriptor::whereIn('normalized_name', $normalizedNames)
-            ->pluck('id')
-            ->all();
-
-        return $descriptorIds;
     }
 
     private static function mapEntity(Model $model): IngredientReview

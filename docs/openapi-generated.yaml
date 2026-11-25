@@ -11494,7 +11494,7 @@ components:
               example: 3
           type: object
         taste_descriptors:
-          description: 'Distinct taste descriptors aggregated from the ingredient reviews'
+          description: 'Taste descriptors attached to the ingredient'
           type: array
           items:
             $ref: '#/components/schemas/TasteDescriptor'
@@ -11506,7 +11506,6 @@ components:
         - content
         - rating
         - recommendation
-        - taste_descriptors
         - author
         - created_at
         - updated_at
@@ -11535,11 +11534,6 @@ components:
             - decent
             - recommend
           example: recommend
-        taste_descriptors:
-          description: 'Taste descriptors attached to the review'
-          type: array
-          items:
-            $ref: '#/components/schemas/TasteDescriptor'
         author:
           properties:
             id:
@@ -13257,6 +13251,14 @@ components:
             - string
             - 'null'
           example: ml
+        taste_descriptors:
+          description: 'Taste descriptor names attached to the ingredient. Descriptors not in the static taste descriptor list are ignored.'
+          type: array
+          items:
+            type: string
+          example:
+            - Smoky
+            - Sweet
       type: object
     IngredientReviewRequest:
       required:
@@ -13274,13 +13276,6 @@ components:
             - decent
             - recommend
           example: recommend
-        taste_descriptors:
-          type: array
-          items:
-            type: string
-          example:
-            - Smoky
-            - Peaty
       type: object
     LoginRequest:
       required:

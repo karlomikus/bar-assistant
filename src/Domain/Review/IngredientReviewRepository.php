@@ -14,10 +14,7 @@ interface IngredientReviewRepository
 
     public function existsForMemberAndIngredient(MemberId $memberId, int $ingredientId): bool;
 
-    /**
-     * @param string[] $tasteDescriptorNames
-     */
-    public function save(IngredientReview $review, array $tasteDescriptorNames = []): IngredientReview;
+    public function save(IngredientReview $review): IngredientReview;
 
     public function delete(IngredientReviewId $id): void;
 }

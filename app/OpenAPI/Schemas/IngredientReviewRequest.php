@@ -14,10 +14,4 @@ class IngredientReviewRequest
 
     #[OAT\Property(type: 'string', nullable: true, enum: ['avoid', 'decent', 'recommend'], example: 'recommend')]
     public ?string $recommendation = null;
-
-    /**
-     * @var string[]
-     */
-    #[OAT\Property(type: 'array', items: new OAT\Items(type: 'string'), example: ['Smoky', 'Peaty'])]
-    public array $taste_descriptors = [];
 }

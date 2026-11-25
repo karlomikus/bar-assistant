@@ -38,7 +38,7 @@ final readonly class IngredientReviewService
             recordTimestamps: RecordTimestamps::createdNow(),
         );
 
-        $review = $this->ingredientReviewRepository->save($review, $request->tasteDescriptors);
+        $review = $this->ingredientReviewRepository->save($review);
 
         return new IngredientReviewResult(
             id: $review->getId()->value ?? 0,
@@ -56,7 +56,7 @@ final readonly class IngredientReviewService
             recommendation: $request->recommendation,
         );
 
-        $this->ingredientReviewRepository->save($review, $request->tasteDescriptors);
+        $this->ingredientReviewRepository->save($review);
     }
 
     public function deleteReview(IngredientReview $review): void

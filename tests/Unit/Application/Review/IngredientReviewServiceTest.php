@@ -24,18 +24,16 @@ final class IngredientReviewServiceTest extends TestCase
         $this->service = new IngredientReviewService($this->repository);
     }
 
-    public function test_create_review_returns_result_and_stores_descriptors(): void
+    public function test_create_review_returns_result(): void
     {
         $result = $this->service->createReview(new CreateIngredientReviewRequest(
             barMembershipId: 1,
             ingredientId: 100,
             content: 'Smoky',
             recommendation: Recommendation::Recommend,
-            tasteDescriptors: ['Smoky', 'Peaty'],
         ));
 
         $this->assertNotNull($result->id);
-        $this->assertSame(['Smoky', 'Peaty'], $this->repository->descriptorsFor(new IngredientReviewId($result->id)));
 
         $review = $this->repository->findById(new IngredientReviewId($result->id));
         $this->assertNotNull($review);
@@ -73,14 +71,13 @@ final class IngredientReviewServiceTest extends TestCase
         $this->assertCount(2, $this->repository->all());
     }
 
-    public function test_update_review_replaces_content_and_descriptors(): void
+    public function test_update_review_replaces_content(): void
     {
         $result = $this->service->createReview(new CreateIngredientReviewRequest(
             barMembershipId: 1,
             ingredientId: 100,
             content: 'Original',
             recommendation: Recommendation::Avoid,
-            tasteDescriptors: ['Smoky', 'Peaty'],
         ));
 
         $review = $this->repository->findById(new IngredientReviewId($result->id));
@@ -90,12 +87,10 @@ final class IngredientReviewServiceTest extends TestCase
             reviewId: $result->id,
             content: 'Revisited',
             recommendation: null,
-            tasteDescriptors: ['Sweet'],
         ));
 
         $this->assertSame('Revisited', $review->getContent()->value);
         $this->assertNull($review->getRecommendation());
-        $this->assertSame(['Sweet'], $this->repository->descriptorsFor(new IngredientReviewId($result->id)));
     }
 
     public function test_delete_review_removes_row(): void

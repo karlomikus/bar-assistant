@@ -176,6 +176,14 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
     }
 
     /**
+     * @return BelongsToMany<TasteDescriptor, $this>
+     */
+    public function tasteDescriptors(): BelongsToMany
+    {
+        return $this->belongsToMany(TasteDescriptor::class);
+    }
+
+    /**
      * @return array{user: float|null, average: float, total_votes: int}
      */
     public function getRatingSummary(?int $barMembershipId): array
@@ -193,24 +201,6 @@ class Ingredient extends BaseModel implements UploadableInterface, IsExternalize
             'average' => $count > 0 ? round(((float) $ratings->avg('rating')) * 2) / 2 : 0.0,
             'total_votes' => $count,
         ];
-    }
-
-    /**
-     * @return Collection<int, TasteDescriptor>
-     */
-    public function getAggregatedTasteDescriptors(): Collection
-    {
-        $descriptors = $this->ingredientReviews
-            ->flatMap(fn (IngredientReview $review) => $review->tasteDescriptors);
-
-        $usageCounts = $descriptors->countBy('id');
-
-        return $descriptors
-            ->unique('id')
-            ->sort(fn (TasteDescriptor $a, TasteDescriptor $b): int => ($usageCounts->get($b->id) <=> $usageCounts->get($a->id))
-                ?: (mb_strtolower($a->name) <=> mb_strtolower($b->name)))
-            ->take(7)
-            ->values();
     }
 
     /**

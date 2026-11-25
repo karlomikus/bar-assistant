@@ -84,7 +84,6 @@ class IngredientReviewController extends Controller
                 ingredientId: $ingredient->id,
                 content: (string) $request->input('content'),
                 recommendation: $request->filled('recommendation') ? Recommendation::from((string) $request->input('recommendation')) : null,
-                tasteDescriptors: $this->tasteDescriptors($request),
             ));
         } catch (IngredientReviewAlreadyExistsException) {
             abort(409, 'A review for this ingredient already exists.');
@@ -124,7 +123,6 @@ class IngredientReviewController extends Controller
             reviewId: $reviewId,
             content: (string) $request->input('content'),
             recommendation: $request->filled('recommendation') ? Recommendation::from((string) $request->input('recommendation')) : null,
-            tasteDescriptors: $this->tasteDescriptors($request),
         ));
 
         $updated = IngredientReview::queryReviewsForIngredient($id)->where('id', $reviewId)->firstOrFail();
@@ -155,15 +153,5 @@ class IngredientReviewController extends Controller
         $this->ingredientReviewService->deleteReview($review);
 
         return new Response(null, 204);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function tasteDescriptors(IngredientReviewRequest $request): array
-    {
-        $descriptors = $request->input('taste_descriptors', []);
-
-        return is_array($descriptors) ? array_values(array_map(strval(...), $descriptors)) : [];
     }
 }

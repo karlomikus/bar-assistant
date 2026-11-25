@@ -14,6 +14,7 @@ use BarAssistant\Domain\User\UserId;
 use BarAssistant\Domain\Common\Color;
 use BarAssistant\Domain\Image\ImageId;
 use BarAssistant\Domain\Common\Authors;
+use Kami\Cocktail\Models\TasteDescriptor;
 use Kami\Cocktail\Models\ComplexIngredient;
 use Kami\Cocktail\Models\Image as ModelImage;
 use BarAssistant\Domain\Ingredient\Ingredient;
@@ -124,6 +125,8 @@ final class EloquentIngredientRepository implements IngredientRepository
                 $ingredientPriceModel->description = $price->getDescription();
                 $ingredientPriceModel->save();
             }
+
+            $ingredientModel->tasteDescriptors()->sync($this->resolveTasteDescriptorIds($ingredient->getTasteDescriptors()));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
@@ -137,6 +140,30 @@ final class EloquentIngredientRepository implements IngredientRepository
         }
 
         return $ingredient;
+    }
+
+    /**
+     * Descriptors that don't exist in the static taste_descriptors table are removed
+     *
+     * @param string[] $names
+     * @return int[]
+     */
+    private function resolveTasteDescriptorIds(array $names): array
+    {
+        $normalizedNames = array_values(array_unique(array_filter(
+            array_map(static fn (string $name): string => mb_strtolower(trim($name)), $names),
+        )));
+
+        if ($normalizedNames === []) {
+            return [];
+        }
+
+        /** @var int[] $descriptorIds */
+        $descriptorIds = TasteDescriptor::whereIn('normalized_name', $normalizedNames)
+            ->pluck('id')
+            ->all();
+
+        return $descriptorIds;
     }
 
     public function delete(IngredientId $id): void

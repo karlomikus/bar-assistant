@@ -128,7 +128,8 @@ class IngredientController extends Controller
             'descendants',
             'ancestors',
             'ratings',
-            'ingredientReviews.tasteDescriptors'
+            'ingredientReviews',
+            'tasteDescriptors'
         )
             ->withCount('cocktails')
             ->where('id', $idOrSlug)
@@ -204,6 +205,7 @@ class IngredientController extends Controller
                 $dto->acidity,
                 $dto->distillery,
                 $dto->units,
+                $dto->tasteDescriptors,
             )
         );
 
@@ -275,6 +277,7 @@ class IngredientController extends Controller
                 $dto->acidity,
                 $dto->distillery,
                 $dto->units,
+                $dto->tasteDescriptors,
             )
         );
 

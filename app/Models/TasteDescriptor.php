@@ -17,10 +17,10 @@ class TasteDescriptor extends BaseModel
     use HasFactory;
 
     /**
-     * @return BelongsToMany<IngredientReview, $this>
+     * @return BelongsToMany<Ingredient, $this>
      */
-    public function ingredientReviews(): BelongsToMany
+    public function ingredients(): BelongsToMany
     {
-        return $this->belongsToMany(IngredientReview::class, 'ingredient_review_taste_descriptor');
+        return $this->belongsToMany(Ingredient::class);
     }
 }
