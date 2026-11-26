@@ -17,6 +17,7 @@ use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
 use Illuminate\Support\Facades\Validator;
 use Kami\RecipeUtils\UnitConverter\Units;
+use Kami\Cocktail\Rules\ImageBelongsToBar;
 use Kami\Cocktail\Rules\ResourceBelongsToBar;
 use BarAssistant\Application\Image\ImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -177,13 +178,11 @@ class CocktailController extends Controller
     #[BAO\ValidationFailedResponse]
     public function store(CocktailService $cocktailService, CocktailRequest $request): Response
     {
-        Validator::make($request->input('ingredients', []), [
-            '*.ingredient_id' => [new ResourceBelongsToBar(bar()->id, 'ingredients')],
-        ])->validate();
-
         if ($request->user()->cannot('create', Cocktail::class)) {
             abort(403);
         }
+
+        $this->validateBarScopedResources($request, bar()->id);
 
         $cocktailRequest = CocktailDTO::fromIlluminateRequest($request);
         $ingredientStrengths = Ingredient::whereIn('id', collect($cocktailRequest->ingredients)->pluck('id'))->pluck('strength', 'id');
@@ -265,11 +264,9 @@ class CocktailController extends Controller
             abort(403);
         }
 
-        Validator::make($request->input('ingredients', []), [
-            '*.ingredient_id' => [new ResourceBelongsToBar($cocktail->bar_id, 'ingredients')],
-        ])->validate();
+        $this->validateBarScopedResources($request, $cocktail->bar_id);
 
-        $cocktailRequest = CocktailDTO::fromIlluminateRequest($request);
+        $cocktailRequest = CocktailDTO::fromIlluminateRequest($request, $cocktail->bar_id);
         $ingredientStrengths = Ingredient::whereIn('id', collect($cocktailRequest->ingredients)->pluck('id'))->pluck('strength', 'id');
 
         $ingredients = [];
@@ -326,6 +323,24 @@ class CocktailController extends Controller
         ));
 
         return new Response(status: 204);
+    }
+
+    private function validateBarScopedResources(CocktailRequest $request, int $barId): void
+    {
+        $user = $request->user();
+        if ($user === null) {
+            abort(403);
+        }
+
+        Validator::make($request->all(), [
+            'glass_id' => ['nullable', new ResourceBelongsToBar($barId, 'glasses')],
+            'cocktail_method_id' => ['nullable', new ResourceBelongsToBar($barId, 'cocktail_methods')],
+            'parent_cocktail_id' => ['nullable', new ResourceBelongsToBar($barId, 'cocktails')],
+            'utensils.*' => [new ResourceBelongsToBar($barId, 'utensils')],
+            'ingredients.*.ingredient_id' => [new ResourceBelongsToBar($barId, 'ingredients')],
+            'ingredients.*.substitutes.*.ingredient_id' => [new ResourceBelongsToBar($barId, 'ingredients')],
+            'images.*' => [new ImageBelongsToBar($barId, (int) $user->id)],
+        ])->validate();
     }
 
     #[OAT\Delete(path: '/cocktails/{id}', tags: ['Cocktails'], operationId: 'deleteCocktail', description: 'Delete a specific cocktail', summary: 'Delete cocktail', parameters: [
@@ -531,7 +546,7 @@ class CocktailController extends Controller
             ->orWhere('id', $idOrSlug)
             ->firstOrFail();
 
-        if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class)) {
+        if ($request->user()->cannot('show', $cocktail) || $request->user()->cannot('create', Cocktail::class) || $cocktail->bar_id !== bar()->id) {
             abort(403);
         }
 

@@ -69,7 +69,7 @@ class Image extends BaseModel implements IsExternalized
     }
 
     /**
-     * @return MorphTo<Ingredient|Cocktail|Glass, $this>
+     * @return MorphTo<Bar|Ingredient|Cocktail|Glass, $this>
      */
     public function imageable(): MorphTo
     {

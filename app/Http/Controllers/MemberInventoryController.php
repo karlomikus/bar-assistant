@@ -150,7 +150,8 @@ class MemberInventoryController extends Controller
     {
         $memberInventory = $this->ownedMemberInventory($request, $id, $inventoryId);
 
-        $ingredients = Ingredient::whereIn('id', $this->memberInventoryIngredientIds($memberInventory))
+        $ingredients = Ingredient::where('bar_id', bar()->id)
+            ->whereIn('id', $this->memberInventoryIngredientIds($memberInventory))
             ->orderBy('name')
             ->paginate($request->input('per_page', 100));
 
@@ -243,7 +244,8 @@ class MemberInventoryController extends Controller
             null,
         );
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)
+        $cocktails = Cocktail::where('bar_id', bar()->id)
+            ->whereIn('id', $cocktailIds)
             ->with('ingredients.ingredient')
             ->paginate($request->input('per_page', 100));
 
@@ -292,7 +294,10 @@ class MemberInventoryController extends Controller
 
         $cocktailIds = CocktailFavorite::where('bar_membership_id', $barMembership->id)->pluck('cocktail_id');
 
-        $cocktails = Cocktail::whereIn('id', $cocktailIds)->with('ingredients.ingredient')->paginate($request->input('per_page', 100));
+        $cocktails = Cocktail::where('bar_id', bar()->id)
+            ->whereIn('id', $cocktailIds)
+            ->with('ingredients.ingredient')
+            ->paginate($request->input('per_page', 100));
 
         return CocktailBasicResource::collection($cocktails->withQueryString());
     }

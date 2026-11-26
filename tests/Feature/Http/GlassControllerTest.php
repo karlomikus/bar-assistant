@@ -82,7 +82,7 @@ class GlassControllerTest extends TestCase
 
     public function test_save_glass_response(): void
     {
-        $image = Image::factory()->create();
+        $image = Image::factory()->create(['created_user_id' => $this->barMembership->user_id]);
         $response = $this->postJson('/api/glasses', [
             'name' => 'Glass 1',
             'description' => 'Glass 1 Description',
@@ -123,7 +123,7 @@ class GlassControllerTest extends TestCase
 
     public function test_update_glass_response(): void
     {
-        $image = Image::factory()->create();
+        $image = Image::factory()->create(['created_user_id' => $this->barMembership->user_id]);
         $glass = Glass::factory()->recycle($this->barMembership->bar)->create([
             'name' => 'Glass 1',
             'description' => 'Glass 1 Description',
