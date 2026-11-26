@@ -15,6 +15,7 @@ use Kami\Cocktail\Models\Ingredient;
 use Illuminate\Support\Facades\Storage;
 use Kami\Cocktail\Models\PriceCategory;
 use Kami\Cocktail\Models\CocktailMethod;
+use Kami\Cocktail\Models\TasteDescriptor;
 use Kami\Cocktail\External\Export\ToDataPack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Kami\Cocktail\Services\Image\ImageStorageService;
@@ -45,6 +46,7 @@ class ToDataPackTest extends TestCase
         Utensil::factory()->for($membership->bar)->count(3)->create();
         $cocktail = Cocktail::factory()->for($membership->bar)->create(['name' => 'Gin and Tonic']);
         $ingredient = Ingredient::factory()->for($membership->bar)->create(['name' => 'Jack Daniels']);
+        $ingredient->tasteDescriptors()->sync(TasteDescriptor::whereIn('normalized_name', ['smoky', 'sweet'])->pluck('id'));
         $glassWithImage = Glass::factory()->for($membership->bar)->create(['name' => 'Highball']);
         $glassWithoutImage = Glass::factory()->for($membership->bar)->create(['name' => 'Coupe']);
 
@@ -139,6 +141,7 @@ class ToDataPackTest extends TestCase
 
         $this->assertSame('file:///c-1-img.jpg', $cocktailExport['images'][0]['uri']);
         $this->assertSame('file:///i-1-img.png', $ingredientExport['images'][0]['uri']);
+        $this->assertSame(['Smoky', 'Sweet'], $ingredientExport['taste_descriptors']);
     }
 
     /**

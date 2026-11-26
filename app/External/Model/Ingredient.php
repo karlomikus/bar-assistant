@@ -21,6 +21,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
      * @param array<Image> $images
      * @param array<Ingredient> $ingredientParts
      * @param array<IngredientPrice> $prices
+     * @param string[] $tasteDescriptors
      */
     private function __construct(
         public string $id,
@@ -41,6 +42,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
         public ?float $acidity = null,
         public ?string $distillery = null,
         public ?UnitValueObject $units = null,
+        public array $tasteDescriptors = [],
     ) {
     }
 
@@ -51,6 +53,12 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
         $ingredientParts = $model->ingredientParts->map(fn (ComplexIngredient $part) => Ingredient::fromModelBasic($part->ingredient))->toArray();
 
         $ingredientPrices = $model->prices->map(fn (IngredientPriceModel $price) => IngredientPrice::fromModel($price))->toArray();
+
+        $tasteDescriptors = $model->tasteDescriptors
+            ->pluck('name')
+            ->sort(fn (string $a, string $b): int => mb_strtolower($a) <=> mb_strtolower($b))
+            ->values()
+            ->all();
 
         $defaultIngredientUnits = $model->getDefaultUnits();
         if ($model->getDefaultUnits()?->isConvertable() && $toUnits) {
@@ -76,6 +84,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
             acidity: $model->acidity,
             distillery: $model->distillery,
             units: $defaultIngredientUnits,
+            tasteDescriptors: $tasteDescriptors,
         );
     }
 
@@ -108,6 +117,13 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
             $ingredientPrices[] = IngredientPrice::fromDataPackArray($price);
         }
 
+        $tasteDescriptors = [];
+        foreach ($sourceArray['taste_descriptors'] ?? [] as $descriptorName) {
+            if (is_string($descriptorName) && trim($descriptorName) !== '') {
+                $tasteDescriptors[] = $descriptorName;
+            }
+        }
+
         return new self(
             id: $sourceArray['_id'],
             name: $sourceArray['name'],
@@ -127,6 +143,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
             acidity: $sourceArray['acidity'] ?? null,
             distillery: $sourceArray['distillery'] ?? null,
             units: ($sourceArray['units'] ?? null) ? new UnitValueObject($sourceArray['units']) : null,
+            tasteDescriptors: $tasteDescriptors,
         );
     }
 
@@ -151,6 +168,7 @@ readonly class Ingredient implements SupportsDataPack, SupportsSchema4, Supports
             'acidity' => $this->acidity,
             'distillery' => $this->distillery,
             'units' => $this->units?->value,
+            'taste_descriptors' => $this->tasteDescriptors,
         ];
     }
 

@@ -78,6 +78,10 @@ class FromDataPackTest extends TestCase
             'sort' => 1,
             'placeholder_hash' => null,
         ]);
+        $tasteDescriptorIds = DB::table('ingredient_taste_descriptor')->where('ingredient_id', 1)->pluck('taste_descriptor_id');
+        $descriptorNames = DB::table('taste_descriptors')->whereIn('id', $tasteDescriptorIds)->orderBy('name')->pluck('name')->all();
+        // "sweet" matches the static descriptor case-insensitively, "Not a static descriptor" is removed
+        $this->assertSame(['Smoky', 'Sweet'], $descriptorNames);
         $this->assertDatabaseHas('ingredients', [
             'bar_id' => $membership->bar->id,
             'created_user_id' => $membership->user->id,
@@ -166,6 +170,8 @@ class FromDataPackTest extends TestCase
         $this->assertNull($cocktail->garnish);
         $this->assertSame(1, DB::table('ingredients')->where('bar_id', $membership->bar_id)->count());
         $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
+        // Descriptors attached by the first import are left untouched
+        $this->assertSame(2, DB::table('ingredient_taste_descriptor')->where('ingredient_id', $ingredient->id)->count());
     }
 
     public function test_fill_missing_policy_only_updates_null_scalar_fields(): void
@@ -207,7 +213,23 @@ class FromDataPackTest extends TestCase
         $this->assertSame('Description of ingredient', $ingredient->description);
         $this->assertSame('Locally edited origin', $ingredient->origin);
         $this->assertSame('#b474de', $ingredient->color);
-        $this->assertSame('', $cocktail->description);
+
+        // Simulate locally empty descriptors so the fill policy has something to fill
+        DB::table('ingredient_taste_descriptor')->where('ingredient_id', $ingredient->id)->delete();
+
+        $importer->process(
+            dataDisk: $datapackFolder,
+            barId: $membership->bar_id,
+            userId: $membership->user_id,
+            flag: BarOptionsEnum::Cocktails,
+            existingResourcePolicy: ExistingResourcePolicy::FillMissingScalars,
+        );
+
+        $tasteDescriptorIds = DB::table('ingredient_taste_descriptor')->where('ingredient_id', $ingredient->id)->pluck('taste_descriptor_id');
+        $descriptorNames = DB::table('taste_descriptors')->whereIn('id', $tasteDescriptorIds)->orderBy('name')->pluck('name')->all();
+        $this->assertSame(['Smoky', 'Sweet'], $descriptorNames);
+
+        $cocktail = DB::table('cocktails')->where('bar_id', $membership->bar_id)->first();
         $this->assertSame('Locally edited source', $cocktail->source);
         $this->assertSame('Lemon wheel', $cocktail->garnish);
         $this->assertSame(0.0, (float) $cocktail->abv);
@@ -227,6 +249,8 @@ class FromDataPackTest extends TestCase
         $this->assertSame(1, DB::table('cocktails')->where('bar_id', $membership->bar_id)->count());
         $this->assertSame($ingredientImageCount, DB::table('images')->join('ingredients', 'ingredients.id', '=', 'images.imageable_id')->where('images.imageable_type', Ingredient::class)->where('ingredients.bar_id', $membership->bar_id)->count());
         $this->assertSame($cocktailImageCount, DB::table('images')->join('cocktails', 'cocktails.id', '=', 'images.imageable_id')->where('images.imageable_type', Cocktail::class)->where('cocktails.bar_id', $membership->bar_id)->count());
+        // Matched ingredients that already have descriptors are not filled again
+        $this->assertSame(2, DB::table('ingredient_taste_descriptor')->where('ingredient_id', $ingredient->id)->count());
     }
 
     public function test_repeated_sync_adds_missing_resource_without_changing_matched_relationship_data(): void
