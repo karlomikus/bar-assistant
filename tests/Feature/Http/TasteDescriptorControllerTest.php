@@ -16,7 +16,7 @@ class TasteDescriptorControllerTest extends TestCase
         return ['Bar-Assistant-Bar-Id' => (string) $barId];
     }
 
-    public function test_list_returns_descriptors_alphabetically(): void
+    public function test_list_returns_descriptors_grouped_and_alphabetically(): void
     {
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
@@ -24,12 +24,33 @@ class TasteDescriptorControllerTest extends TestCase
         $response = $this->getJson('/api/taste-descriptors', $this->headers($membership->bar_id));
 
         $response->assertOk();
-        $names = array_column($response->json('data'), 'name');
-        $sortedNames = $names;
-        sort($sortedNames, SORT_NATURAL | SORT_FLAG_CASE);
+        $rows = $response->json('data');
+        $this->assertNotEmpty($rows);
 
-        $this->assertNotEmpty($names);
-        $this->assertSame($sortedNames, $names);
+        $groups = array_column($rows, 'group');
+        $uniqueGroups = array_values(array_unique($groups));
+        $sortedUniqueGroups = $uniqueGroups;
+        sort($sortedUniqueGroups);
+        $this->assertSame($sortedUniqueGroups, $uniqueGroups);
+
+        foreach ($uniqueGroups as $group) {
+            $namesInGroup = array_column(array_filter($rows, fn (array $row): bool => $row['group'] === $group), 'name');
+            $sortedNamesInGroup = $namesInGroup;
+            sort($sortedNamesInGroup, SORT_NATURAL | SORT_FLAG_CASE);
+            $this->assertSame($sortedNamesInGroup, $namesInGroup, sprintf('Descriptors in group "%s" are not alphabetically sorted.', $group));
+        }
+    }
+
+    public function test_filter_by_group(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $response = $this->getJson('/api/taste-descriptors?filter[group]=finish', $this->headers($membership->bar_id));
+
+        $response->assertOk();
+        $rows = $response->json('data');
+        $this->assertSame(['Clean finish', 'Lingering finish'], array_column($rows, 'name'));
     }
 
     public function test_filter_by_partial_name_is_case_insensitive(): void

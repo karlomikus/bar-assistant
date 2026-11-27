@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[\Illuminate\Database\Eloquent\Attributes\Fillable([
     'name',
     'normalized_name',
+    'group',
 ])]
 class TasteDescriptor extends BaseModel
 {

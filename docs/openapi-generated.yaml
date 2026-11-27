@@ -9756,6 +9756,17 @@ paths:
               name:
                 description: 'Filter by descriptor name (case-insensitive partial match)'
                 type: string
+              group:
+                description: 'Filter by taxonomy group'
+                type: string
+                enum:
+                  - taste
+                  - family
+                  - flavor
+                  - mouthfeel
+                  - body
+                  - finish
+                  - profile
             type: object
       responses:
         '200':
@@ -12496,6 +12507,7 @@ components:
       required:
         - id
         - name
+        - group
       properties:
         id:
           description: 'Taste descriptor ID'
@@ -12505,6 +12517,18 @@ components:
           description: 'Taste descriptor display name'
           type: string
           example: Smoky
+        group:
+          description: 'Taxonomy group the descriptor belongs to'
+          type: string
+          enum:
+            - taste
+            - family
+            - flavor
+            - mouthfeel
+            - body
+            - finish
+            - profile
+          example: family
       type: object
     Token:
       description: 'Auth token resource'

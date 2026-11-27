@@ -17,6 +17,7 @@ class TasteDescriptorController extends Controller
         new BAO\Parameters\BarIdHeaderParameter(),
         new OAT\Parameter(name: 'filter', in: 'query', description: 'Filter descriptors by attributes.', explode: true, style: 'deepObject', schema: new OAT\Schema(type: 'object', properties: [
             new OAT\Property(property: 'name', type: 'string', description: 'Filter by descriptor name (case-insensitive partial match)'),
+            new OAT\Property(property: 'group', type: 'string', enum: ['taste', 'family', 'flavor', 'mouthfeel', 'body', 'finish', 'profile'], description: 'Filter by taxonomy group'),
         ])),
     ])]
     #[BAO\SuccessfulResponse(content: [
@@ -34,7 +35,12 @@ class TasteDescriptorController extends Controller
             $query->whereRaw('LOWER(name) LIKE ?', ['%' . mb_strtolower($name) . '%']);
         }
 
-        $descriptors = $query->orderByRaw('LOWER(name) ASC')->get();
+        $group = $request->input('filter.group');
+        if (is_string($group) && $group !== '') {
+            $query->where('group', $group);
+        }
+
+        $descriptors = $query->orderBy('group')->orderByRaw('LOWER(name) ASC')->get();
 
         return TasteDescriptorResource::collection($descriptors);
     }
