@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -29,14 +30,22 @@ return new class () extends Migration {
         });
 
         $now = now();
+
+        /** @var array<int, array{name: string, normalized_name: string}> $descriptors */
+        $descriptors = json_decode(
+            File::get(resource_path('data/data/base_taste_descriptors.json')),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        );
+
         DB::table('taste_descriptors')->insert(array_map(
-            fn (string $name): array => [
-                'name' => $name,
-                'normalized_name' => mb_strtolower($name),
+            fn (array $descriptor): array => [
+                'name' => $descriptor['name'],
+                'normalized_name' => $descriptor['normalized_name'],
                 'created_at' => $now,
                 'updated_at' => null,
             ],
-            $this->descriptorNames(),
+            $descriptors,
         ));
 
         Schema::create('ingredient_review_taste_descriptor', function (Blueprint $table) {
@@ -79,65 +88,5 @@ return new class () extends Migration {
     {
         Schema::drop('ingredient_review_taste_descriptor');
         Schema::drop('taste_descriptors');
-    }
-
-    /**
-     * @return string[]
-     */
-    private function descriptorNames(): array
-    {
-        return [
-            'Astringent',
-            'Balanced',
-            'Bitter',
-            'Bubblegum',
-            'Buttery',
-            'Caramel',
-            'Cereal',
-            'Chewy',
-            'Chocolatey',
-            'Citrusy',
-            'Clean finish',
-            'Clove',
-            'Coffee',
-            'Complex',
-            'Creamy',
-            'Crisp',
-            'Dry',
-            'Earthy',
-            'Fizzy',
-            'Floral',
-            'Fruity',
-            'Full body',
-            'Funky',
-            'Grainy',
-            'Herbacious',
-            'Herbal',
-            'Hoppy',
-            'Light body',
-            'Lingering finish',
-            'Malty',
-            'Medicinal',
-            'Medium body',
-            'Metallic',
-            'Nutty',
-            'Peppery',
-            'Piney',
-            'Refreshing',
-            'Roasty',
-            'Simple',
-            'Smoky',
-            'Smooth',
-            'Sour',
-            'Spicy',
-            'Sweet',
-            'Toasty',
-            'Tropical',
-            'Vanilla',
-            'Vegetal',
-            'Warming',
-            'Woody',
-            'Yeasty',
-        ];
     }
 };

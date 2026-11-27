@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kami\Cocktail\Console\Commands;
 
-use Illuminate\Support\Facades\App;
 use Throwable;
 use Laravel\Ai\Classification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
-use Laravel\Ai\Classification\Boolean;
 use Laravel\Ai\Responses\Data\BooleanAnswer;
+use Kami\Cocktail\GenAI\IngredientTasteDescriptorsClassifier;
 
 #[\Illuminate\Console\Attributes\Description('[DEV] Classify taste descriptors for base ingredient seed data via AI and write them into the ingredient data.json files (one-time prototype)')]
 #[\Illuminate\Console\Attributes\Signature('bar:classify-ingredient-tastes
@@ -139,24 +139,13 @@ class ClassifyIngredientTastes extends Command
      */
     private function classify(array $ingredient, array $descriptors, float $threshold, int $max): array
     {
-        $questions = [];
-        foreach ($descriptors as $normalized => $name) {
-            $questions[$normalized] = new Boolean(
-                instructions: sprintf('The ingredient tastes %s.', strtolower($name)),
-                criteria: [
-                    'true' => 'The descriptor accurately describes a notable part of the ingredient\'s taste profile.',
-                    'false' => 'The descriptor does not fit the ingredient.',
-                ],
-            );
-        }
-
         $response = Classification::of([
             'name' => is_string($ingredient['name'] ?? null) ? $ingredient['name'] : '',
             'category' => $ingredient['category'] ?? null,
             'strength' => $ingredient['strength'] ?? null,
             'description' => str(is_string($ingredient['description'] ?? null) ? $ingredient['description'] : '')->limit(2000)->toString(),
         ])
-            ->questions($questions)
+            ->questions(app(IngredientTasteDescriptorsClassifier::class)->buildQuestions($descriptors))
             ->timeout(120)
             ->classify($this->option('provider'), $this->option('model'));
 
