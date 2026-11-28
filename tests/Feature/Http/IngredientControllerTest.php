@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Kami\Cocktail\Models\Bar;
 use Kami\Cocktail\Models\User;
+use Illuminate\Support\Facades\DB;
 use Kami\Cocktail\Models\Cocktail;
 use Kami\Cocktail\Models\Ingredient;
 use Kami\Cocktail\Models\BarIngredient;
@@ -544,6 +545,137 @@ class IngredientControllerTest extends TestCase
             ['name' => 'Buffalo Trace'],
             ['name' => 'Highland Park'],
         ]);
+    }
+
+    private function attachTasteDescriptor(Ingredient $ingredient, string $name): void
+    {
+        $descriptorId = DB::table('taste_descriptors')->where('normalized_name', mb_strtolower($name))->value('id');
+        if ($descriptorId === null) {
+            $descriptorId = DB::table('taste_descriptors')->insertGetId([
+                'name' => $name,
+                'normalized_name' => mb_strtolower($name),
+                'created_at' => now(),
+            ]);
+        }
+
+        $ingredient->tasteDescriptors()->attach($descriptorId);
+    }
+
+    public function test_list_ingredients_filter_by_taste_descriptor(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        $scotch = Ingredient::factory()->for($membership->bar)->create(['name' => 'Scotch', 'origin' => 'Scotland']);
+        $gin = Ingredient::factory()->for($membership->bar)->create(['name' => 'Gin', 'origin' => 'Japan']);
+        $rum = Ingredient::factory()->for($membership->bar)->create(['name' => 'Rum']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Vodka']);
+
+        $this->attachTasteDescriptor($scotch, 'Smoky');
+        $this->attachTasteDescriptor($gin, 'Floral');
+        $this->attachTasteDescriptor($rum, 'Sweet');
+
+        // Ingredient in another bar with a matching descriptor must not leak in
+        $otherBar = Bar::factory()->create();
+        $otherIngredient = Ingredient::factory()->for($otherBar)->create(['name' => 'Other Scotch']);
+        $this->attachTasteDescriptor($otherIngredient, 'Smoky');
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Single descriptor match
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Smoky');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Scotch');
+
+        // Multiple descriptors are unioned (OR)
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Smoky,Floral');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Descriptor names are matched case-insensitively
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=smoky');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Scotch');
+
+        // Surrounding whitespace is ignored when matching
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=' . urlencode(' Smoky '));
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Scotch');
+
+        // Unknown descriptor names match nothing
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Nonexistent');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        // Empty names in the comma-separated list are ignored
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Smoky,,Floral');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        // Omitted/empty value is a no-op (returns all 4 ingredients in this bar)
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=');
+        $response->assertOk();
+        $response->assertJsonCount(4, 'data');
+
+        // Combines with other filters using AND
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Floral&filter[origin]=Scotland');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Smoky&filter[origin]=Scotland');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.name', 'Scotch');
+    }
+
+    public function test_list_ingredients_meta_filters_taste_descriptors(): void
+    {
+        $membership = $this->setupBarMembership();
+        $this->actingAs($membership->user);
+
+        // Ingredients in the bar (with duplicate descriptors)
+        $drink1 = Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 1']);
+        $drink2 = Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 2']);
+        $drink3 = Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 3']);
+        Ingredient::factory()->for($membership->bar)->create(['name' => 'Drink 4']);
+
+        $this->attachTasteDescriptor($drink1, 'Smoky');
+        $this->attachTasteDescriptor($drink2, 'Sweet');
+        $this->attachTasteDescriptor($drink3, 'Smoky');
+
+        // Ingredient in another bar with a descriptor must not leak into the facet
+        $otherBar = Bar::factory()->create();
+        $otherIngredient = Ingredient::factory()->for($otherBar)->create(['name' => 'Other Drink']);
+        $this->attachTasteDescriptor($otherIngredient, 'Floral');
+
+        $this->withHeader('Bar-Assistant-Bar-Id', (string) $membership->bar_id);
+
+        // Unfiltered request lists distinct descriptors attached in this bar only, sorted alphabetically
+        $response = $this->getJson('/api/ingredients');
+        $response->assertOk();
+        $response->assertJsonPath('meta.filters.taste_descriptors', [
+            ['name' => 'Smoky', 'group' => 'family'],
+            ['name' => 'Sweet', 'group' => 'taste'],
+        ]);
+
+        // Filtered request still includes the bar's full descriptor set, not the filtered subset
+        $response = $this->getJson('/api/ingredients?filter[taste_descriptor]=Smoky');
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+        $response->assertJsonPath('meta.filters.taste_descriptors', [
+            ['name' => 'Smoky', 'group' => 'family'],
+            ['name' => 'Sweet', 'group' => 'taste'],
+        ]);
+
+        // Descriptors not attached to any ingredient in the bar are excluded
+        // (the static table contains many more descriptors than the two above)
+        $totalDescriptors = DB::table('taste_descriptors')->count();
+        $this->assertGreaterThan(2, $totalDescriptors);
+        $response = $this->getJson('/api/ingredients');
+        $response->assertOk();
+        $this->assertCount(2, $response->json('meta.filters.taste_descriptors'));
     }
 
     public function test_parent_ingredient_descendants_filtering(): void

@@ -92,6 +92,23 @@ final class IngredientQueryFilter extends QueryBuilder
 
                     $query->whereHas('ingredientReviews', fn ($q) => $q->whereIn('recommendation', $values));
                 }),
+                AllowedFilter::callback('taste_descriptor', function ($query, $value) {
+                    $rawValues = is_array($value) ? $value : explode(',', (string) $value);
+
+                    $names = [];
+                    foreach ($rawValues as $rawValue) {
+                        $name = mb_strtolower(trim((string) $rawValue));
+                        if ($name !== '') {
+                            $names[] = $name;
+                        }
+                    }
+
+                    if ($names === []) {
+                        return;
+                    }
+
+                    $query->whereHas('tasteDescriptors', fn ($q) => $q->whereIn(DB::raw('LOWER(TRIM(taste_descriptors.name))'), $names));
+                }),
                 AllowedFilter::callback('main_ingredients', function ($query, $value) use ($ingredientQuery, $barMembership) {
                     if ($value === true) {
                         $ingredients = $ingredientQuery->getMainIngredientsOfCocktails($barMembership->bar_id);
