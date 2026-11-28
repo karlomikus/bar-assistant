@@ -19,7 +19,7 @@ return [
     'default_for_transcription' => 'openai',
     'default_for_embeddings' => 'openai',
     'default_for_reranking' => 'cohere',
-    'default_for_classification' => 'typesafe',
+    'default_for_classification' => env('GEN_AI_CLASSIFICATION_PROVIDER', 'openai'),
 
     /*
     |--------------------------------------------------------------------------
