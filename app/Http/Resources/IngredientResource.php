@@ -53,7 +53,7 @@ use Kami\Cocktail\OpenAPI\Schemas\IngredientHierarchy;
             new OAT\Property(property: 'average', type: 'number', format: 'float', example: 4.5, description: 'The average rating rounded to the nearest 0.5'),
             new OAT\Property(property: 'total_votes', type: 'integer', example: 3, description: 'The number of ratings'),
         ], description: 'Rating summary for the ingredient'),
-        new OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(ref: TasteDescriptorResource::class), description: 'Distinct taste descriptors aggregated from the ingredient reviews'),
+        new OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(ref: TasteDescriptorResource::class), description: 'Taste descriptors attached to the ingredient'),
     ],
     required: ['id', 'slug', 'name', 'description', 'origin', 'color', 'created_at', 'updated_at', 'strength', 'hierarchy', 'materialized_path']
 )]
@@ -124,10 +124,7 @@ class IngredientResource extends JsonResource
             'distillery' => $this->distillery,
             'units' => $this->units,
             'rating' => $this->getRatingSummary($request->user()?->getBarMembership((int) $this->bar_id)?->id),
-            'taste_descriptors' => $this->when(
-                $this->relationLoaded('ingredientReviews'),
-                fn () => TasteDescriptorResource::collection($this->getAggregatedTasteDescriptors())
-            ),
+            'taste_descriptors' => TasteDescriptorResource::collection($this->whenLoaded('tasteDescriptors')),
         ];
     }
 }

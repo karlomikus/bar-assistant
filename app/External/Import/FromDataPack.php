@@ -73,7 +73,6 @@ class FromDataPack
             'cocktail_methods' => 'base_methods.json',
             'utensils' => 'base_utensils.json',
             'price_categories' => 'base_price_categories.json',
-            'taste_descriptors' => 'base_taste_descriptors.json',
         ];
 
         foreach ($baseDataFiles as $table => $file) {
@@ -212,6 +211,8 @@ class FromDataPack
         $ingredientScalarUpdates = [];
         $parentIngredientsToInsert = [];
         $ingredientPartsToInsert = [];
+        $tasteDescriptorsToInsert = [];
+        $matchedTasteDescriptorsToInsert = [];
         $imagesToInsert = [];
         $barImagesDir = $bar->getIngredientsDirectory();
         $this->uploadsDisk->makeDirectory($barImagesDir);
@@ -241,6 +242,10 @@ class FromDataPack
 
                     if (!empty($updates)) {
                         $ingredientScalarUpdates[(int) $existingIngredient->id] = $updates;
+                    }
+
+                    if ($externalIngredient->tasteDescriptors !== []) {
+                        $matchedTasteDescriptorsToInsert[(int) $existingIngredient->id] = $externalIngredient->tasteDescriptors;
                     }
                 }
 
@@ -303,6 +308,10 @@ class FromDataPack
                     'updated_at' => null,
                 ];
             }
+
+            if ($externalIngredient->tasteDescriptors !== []) {
+                $tasteDescriptorsToInsert[$slug] = $externalIngredient->tasteDescriptors;
+            }
             $imageTimerEnd = microtime(true);
             $imagesTimer += ($imageTimerEnd - $imagesTimerStart);
         }
@@ -314,12 +323,16 @@ class FromDataPack
             return;
         }
 
-        DB::transaction(function () use ($bar, $ingredientsToInsert, $ingredientScalarUpdates, $parentIngredientsToInsert, $ingredientPartsToInsert, $imagesToInsert): void {
+        DB::transaction(function () use ($bar, $ingredientsToInsert, $ingredientScalarUpdates, $parentIngredientsToInsert, $ingredientPartsToInsert, $imagesToInsert, $tasteDescriptorsToInsert, $matchedTasteDescriptorsToInsert): void {
             foreach ($ingredientScalarUpdates as $ingredientId => $updates) {
                 $this->applyNullScalarUpdates('ingredients', $ingredientId, $bar->id, $updates);
             }
 
+            $tasteDescriptorsByIngredientId = $matchedTasteDescriptorsToInsert;
+
             if (empty($ingredientsToInsert)) {
+                $this->insertIngredientTasteDescriptors($tasteDescriptorsByIngredientId);
+
                 return;
             }
 
@@ -357,6 +370,15 @@ class FromDataPack
                 }
             }
 
+            foreach ($tasteDescriptorsToInsert as $slug => $descriptorNames) {
+                $ingredient = $ingredients->firstWhere('slug', $slug);
+                if (isset($ingredient->id)) {
+                    $tasteDescriptorsByIngredientId[(int) $ingredient->id] = $descriptorNames;
+                }
+            }
+
+            $this->insertIngredientTasteDescriptors($tasteDescriptorsByIngredientId);
+
             if (count($complexIngredientsToInsert) > 0) {
                 DB::table('complex_ingredients')->insert($complexIngredientsToInsert);
             }
@@ -374,6 +396,51 @@ class FromDataPack
 
         $timerEnd = microtime(true);
         Log::debug(sprintf('Ingredients import completed in %d ms', ($timerEnd - $timerStart) * 1000));
+    }
+
+    /**
+     * @param array<int, string[]> $tasteDescriptorsByIngredientId
+     */
+    private function insertIngredientTasteDescriptors(array $tasteDescriptorsByIngredientId): void
+    {
+        if (count($tasteDescriptorsByIngredientId) === 0) {
+            return;
+        }
+
+        // Descriptors not found in the static taste_descriptors table are removed.
+        // Ingredients that already have descriptors attached are skipped.
+        $descriptorIds = DB::table('taste_descriptors')->pluck('id', 'normalized_name');
+        $ingredientIdsWithDescriptors = DB::table('ingredient_taste_descriptor')
+            ->whereIn('ingredient_id', array_keys($tasteDescriptorsByIngredientId))
+            ->pluck('ingredient_id')
+            ->all();
+
+        $ingredientTasteDescriptorsToInsert = [];
+        foreach ($tasteDescriptorsByIngredientId as $ingredientId => $descriptorNames) {
+            if (in_array($ingredientId, $ingredientIdsWithDescriptors, true)) {
+                continue;
+            }
+
+            $attached = [];
+            foreach ($descriptorNames as $descriptorName) {
+                $normalizedName = mb_strtolower(trim($descriptorName));
+                if ($normalizedName === '' || in_array($normalizedName, $attached, true)) {
+                    continue;
+                }
+
+                $descriptorId = $descriptorIds->get($normalizedName);
+                if ($descriptorId === null) {
+                    continue;
+                }
+
+                $attached[] = $normalizedName;
+                $ingredientTasteDescriptorsToInsert[] = ['ingredient_id' => $ingredientId, 'taste_descriptor_id' => (int) $descriptorId];
+            }
+        }
+
+        if (count($ingredientTasteDescriptorsToInsert) > 0) {
+            DB::table('ingredient_taste_descriptor')->insert($ingredientTasteDescriptorsToInsert);
+        }
     }
 
     private function importGlasses(Filesystem $dataDisk, Bar $bar, User $user, DataPackMediaMode $mediaMode, ?string $catalogVersion): void

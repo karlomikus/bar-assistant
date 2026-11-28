@@ -144,7 +144,7 @@ class ToDataPack
 
     private function dumpIngredients(int $barId, ZipArchive &$zip, ?Units $toUnits = null): void
     {
-        $ingredients = Ingredient::with('images.imageable', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient.parentIngredient', 'ancestors', 'parentIngredient')->where('bar_id', $barId)->get();
+        $ingredients = Ingredient::with('images.imageable', 'calculator', 'prices.priceCategory', 'ingredientParts.ingredient.parentIngredient', 'ancestors', 'parentIngredient', 'tasteDescriptors')->where('bar_id', $barId)->get();
 
         /** @var Ingredient $ingredient */
         foreach ($ingredients as $ingredient) {

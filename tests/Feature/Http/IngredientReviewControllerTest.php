@@ -154,82 +154,6 @@ class IngredientReviewControllerTest extends TestCase
         ]);
     }
 
-    public function test_descriptors_are_attached_and_reused_case_insensitively(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-        $ingredient = Ingredient::factory()->for($membership->bar)->create();
-
-        $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
-            'content' => 'First',
-            'taste_descriptors' => ['Smoky', 'Peaty'],
-        ], $this->headers($membership->bar_id))->assertCreated();
-
-        $secondMember = BarMembership::factory()
-            ->for(User::factory()->create(), 'user')
-            ->for($membership->bar)
-            ->create(['user_role_id' => UserRoleEnum::General->value]);
-
-        $this->actingAs($secondMember->user);
-        $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
-            'content' => 'Second',
-            'taste_descriptors' => ['  smoky  '],
-        ], $this->headers($membership->bar_id))->assertCreated();
-
-        $this->assertSame(2, TasteDescriptor::where('bar_id', $membership->bar_id)->count());
-        $smoky = TasteDescriptor::where('bar_id', $membership->bar_id)->where('normalized_name', 'smoky')->firstOrFail();
-        $this->assertSame('Smoky', $smoky->name);
-        $this->assertSame(2, $smoky->ingredientReviews()->count());
-    }
-
-    public function test_updating_replaces_and_clears_descriptors(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-        $ingredient = Ingredient::factory()->for($membership->bar)->create();
-
-        $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
-            'content' => 'First',
-            'taste_descriptors' => ['Smoky', 'Peaty'],
-        ], $this->headers($membership->bar_id))->assertCreated();
-
-        $reviewId = IngredientReview::where('ingredient_id', $ingredient->id)->firstOrFail()->id;
-
-        $this->putJson('/api/ingredients/' . $ingredient->id . '/reviews/' . $reviewId, [
-            'content' => 'Updated',
-            'taste_descriptors' => ['Sweet'],
-        ], $this->headers($membership->bar_id))->assertOk();
-
-        $review = IngredientReview::findOrFail($reviewId);
-        $this->assertSame(['Sweet'], $review->tasteDescriptors->pluck('name')->all());
-
-        $this->putJson('/api/ingredients/' . $ingredient->id . '/reviews/' . $reviewId, [
-            'content' => 'Cleared',
-        ], $this->headers($membership->bar_id))->assertOk();
-
-        $this->assertSame([], $review->fresh()->tasteDescriptors->pluck('name')->all());
-    }
-
-    public function test_descriptor_validation_rejects_empty_and_too_long_names(): void
-    {
-        $membership = $this->setupBarMembership();
-        $this->actingAs($membership->user);
-        $ingredient = Ingredient::factory()->for($membership->bar)->create();
-
-        $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
-            'content' => 'Bad',
-            'taste_descriptors' => ['   '],
-        ], $this->headers($membership->bar_id))->assertUnprocessable();
-
-        $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
-            'content' => 'Bad',
-            'taste_descriptors' => [str_repeat('a', 101)],
-        ], $this->headers($membership->bar_id))->assertUnprocessable();
-
-        $this->assertDatabaseMissing('ingredient_reviews', ['ingredient_id' => $ingredient->id]);
-        $this->assertSame(0, TasteDescriptor::where('bar_id', $membership->bar_id)->count());
-    }
-
     public function test_list_returns_reviews_newest_first_and_paginated(): void
     {
         $membership = $this->setupBarMembership();
@@ -264,7 +188,7 @@ class IngredientReviewControllerTest extends TestCase
         $this->assertSame(16, $response->json('meta.total'));
     }
 
-    public function test_review_resource_includes_author_and_descriptors(): void
+    public function test_review_resource_includes_author(): void
     {
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
@@ -272,7 +196,6 @@ class IngredientReviewControllerTest extends TestCase
 
         $this->postJson('/api/ingredients/' . $ingredient->id . '/reviews', [
             'content' => 'With author',
-            'taste_descriptors' => ['Smoky'],
         ], $this->headers($membership->bar_id))->assertCreated();
 
         $response = $this->getJson('/api/ingredients/' . $ingredient->id . '/reviews', $this->headers($membership->bar_id));
@@ -280,7 +203,6 @@ class IngredientReviewControllerTest extends TestCase
         $response->assertOk();
         $this->assertSame($membership->user->id, $response->json('data.0.author.id'));
         $this->assertSame($membership->user->name, $response->json('data.0.author.name'));
-        $this->assertSame('Smoky', $response->json('data.0.taste_descriptors.0.name'));
     }
 
     public function test_review_includes_live_author_rating(): void
@@ -418,27 +340,27 @@ class IngredientReviewControllerTest extends TestCase
         $this->getJson('/api/ingredients/' . $ingredient->id . '/reviews', $this->headers($membership->bar_id))->assertUnauthorized();
     }
 
-    public function test_ingredient_detail_aggregates_taste_descriptors(): void
+    public function test_ingredient_detail_returns_taste_descriptors(): void
     {
         $membership = $this->setupBarMembership();
         $this->actingAs($membership->user);
         $ingredient = Ingredient::factory()->for($membership->bar)->create();
 
-        $this->createReview($membership, $ingredient, 'One', null, ['Sweet']);
-        $secondMember = BarMembership::factory()
-            ->for(User::factory()->create(), 'user')
-            ->for($membership->bar)
-            ->create(['user_role_id' => UserRoleEnum::General->value]);
-        $this->createReview($secondMember, $ingredient, 'Two', null, ['Smoky', 'Sweet']);
+        $ids = [];
+        foreach (['Sweet', 'Smoky'] as $name) {
+            $ids[] = TasteDescriptor::where('normalized_name', mb_strtolower($name))->value('id');
+        }
+        $ingredient->tasteDescriptors()->sync($ids);
 
         $response = $this->getJson('/api/ingredients/' . $ingredient->id, $this->headers($membership->bar_id));
 
         $response->assertOk();
-        $names = $response->json('data.taste_descriptors');
-        $this->assertSame(['Sweet', 'Smoky'], array_column($names, 'name'));
+        $names = array_column($response->json('data.taste_descriptors'), 'name');
+        sort($names);
+        $this->assertSame(['Smoky', 'Sweet'], $names);
     }
 
-    private function createReview(BarMembership $membership, Ingredient $ingredient, string $content, $createdAt = null, array $descriptors = []): int
+    private function createReview(BarMembership $membership, Ingredient $ingredient, string $content, $createdAt = null): int
     {
         $review = IngredientReview::factory()->create([
             'ingredient_id' => $ingredient->id,
@@ -447,17 +369,6 @@ class IngredientReviewControllerTest extends TestCase
             'created_at' => $createdAt ?? now(),
             'updated_at' => $createdAt ?? now(),
         ]);
-
-        if ($descriptors !== []) {
-            $ids = [];
-            foreach ($descriptors as $name) {
-                $ids[] = TasteDescriptor::firstOrCreate(
-                    ['bar_id' => $membership->bar_id, 'normalized_name' => mb_strtolower($name)],
-                    ['name' => $name],
-                )->id;
-            }
-            $review->tasteDescriptors()->sync($ids);
-        }
 
         return $review->id;
     }

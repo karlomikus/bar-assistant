@@ -14,9 +14,6 @@ final class InMemoryIngredientReviewRepository implements IngredientReviewReposi
     /** @var array<int, IngredientReview> */
     private array $reviews = [];
 
-    /** @var array<int, string[]> */
-    private array $descriptors = [];
-
     private int $sequence = 0;
 
     public function findById(IngredientReviewId $id): ?IngredientReview
@@ -40,7 +37,7 @@ final class InMemoryIngredientReviewRepository implements IngredientReviewReposi
         return $this->findForMemberAndIngredient($memberId, $ingredientId) !== null;
     }
 
-    public function save(IngredientReview $review, array $tasteDescriptorNames = []): IngredientReview
+    public function save(IngredientReview $review): IngredientReview
     {
         if ($review->isTransient()) {
             $this->sequence++;
@@ -48,14 +45,13 @@ final class InMemoryIngredientReviewRepository implements IngredientReviewReposi
         }
 
         $this->reviews[$review->getId()->value] = $review;
-        $this->descriptors[$review->getId()->value] = $tasteDescriptorNames;
 
         return $review;
     }
 
     public function delete(IngredientReviewId $id): void
     {
-        unset($this->reviews[$id->value], $this->descriptors[$id->value]);
+        unset($this->reviews[$id->value]);
     }
 
     /**
@@ -64,13 +60,5 @@ final class InMemoryIngredientReviewRepository implements IngredientReviewReposi
     public function all(): array
     {
         return array_values($this->reviews);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function descriptorsFor(IngredientReviewId $id): array
-    {
-        return $this->descriptors[$id->value] ?? [];
     }
 }

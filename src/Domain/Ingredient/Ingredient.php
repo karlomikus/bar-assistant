@@ -36,6 +36,9 @@ final class Ingredient implements Identity
     /** @var IngredientPrice[] */
     private array $prices = [];
 
+    /** @var string[] */
+    private array $tasteDescriptors = [];
+
     private function __construct(
         private readonly BarId $barId,
         private Name $name,
@@ -265,6 +268,44 @@ final class Ingredient implements Identity
     public function removeAllPrices(): self
     {
         $this->prices = [];
+
+        return $this;
+    }
+
+    /**
+     * Taste descriptor names attached to the ingredient
+     *
+     * @return string[]
+     */
+    public function getTasteDescriptors(): array
+    {
+        return $this->tasteDescriptors;
+    }
+
+    /**
+     * Add a taste descriptor name to the ingredient
+     */
+    public function addTasteDescriptor(string $name): self
+    {
+        $normalized = mb_strtolower(trim($name));
+        if ($normalized === '') {
+            return $this;
+        }
+
+        foreach ($this->tasteDescriptors as $existing) {
+            if (mb_strtolower($existing) === $normalized) {
+                return $this;
+            }
+        }
+
+        $this->tasteDescriptors[] = $name;
+
+        return $this;
+    }
+
+    public function removeAllTasteDescriptors(): self
+    {
+        $this->tasteDescriptors = [];
 
         return $this;
     }

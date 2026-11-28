@@ -19,7 +19,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         new OAT\Property(property: 'content', type: 'string', example: 'Smoky and complex.', description: 'Review text content'),
         new OAT\Property(property: 'rating', type: 'number', nullable: true, example: 4.5, description: 'Author current rating for the ingredient, joined live from ratings'),
         new OAT\Property(property: 'recommendation', type: 'string', nullable: true, enum: ['avoid', 'decent', 'recommend'], example: 'recommend', description: 'Optional recommendation verdict'),
-        new OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(ref: TasteDescriptorResource::class), description: 'Taste descriptors attached to the review'),
         new OAT\Property(property: 'author', type: 'object', properties: [
             new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Author user ID'),
             new OAT\Property(property: 'name', type: 'string', example: 'John Doe', description: 'Author display name'),
@@ -32,7 +31,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
         'content',
         'rating',
         'recommendation',
-        'taste_descriptors',
         'author',
         'created_at',
         'updated_at',
@@ -54,7 +52,6 @@ class IngredientReviewResource extends JsonResource
             'content' => $this->content,
             'rating' => $this->rating !== null ? (float) $this->rating : null,
             'recommendation' => $this->recommendation,
-            'taste_descriptors' => TasteDescriptorResource::collection($this->whenLoaded('tasteDescriptors')),
             'author' => new UserBasicResource($this->barMembership->user),
             'created_at' => $this->created_at->toAtomString(),
             'updated_at' => $this->updated_at?->toAtomString(),

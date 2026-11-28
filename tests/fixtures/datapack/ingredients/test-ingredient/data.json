@@ -18,5 +18,6 @@
         }
     ],
     "ingredient_parts": [],
-    "prices": []
+    "prices": [],
+    "taste_descriptors": ["Smoky", "sweet", "Not a static descriptor"]
 }

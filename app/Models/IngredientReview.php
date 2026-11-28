@@ -6,7 +6,6 @@ namespace Kami\Cocktail\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property \Carbon\Carbon $created_at
@@ -34,20 +33,12 @@ class IngredientReview extends BaseModel
     }
 
     /**
-     * @return BelongsToMany<TasteDescriptor, $this>
-     */
-    public function tasteDescriptors(): BelongsToMany
-    {
-        return $this->belongsToMany(TasteDescriptor::class, 'ingredient_review_taste_descriptor');
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Builder<self>
      */
     public static function queryReviewsForIngredient(int $ingredientId): \Illuminate\Database\Eloquent\Builder
     {
         return self::query()
-            ->with('barMembership.user', 'tasteDescriptors')
+            ->with('barMembership.user')
             ->select('ingredient_reviews.*')
             ->addSelect([
                 'rating' => Rating::select('rating')

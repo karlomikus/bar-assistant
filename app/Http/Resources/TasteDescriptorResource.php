@@ -16,8 +16,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
     properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1, description: 'Taste descriptor ID'),
         new OAT\Property(property: 'name', type: 'string', example: 'Smoky', description: 'Taste descriptor display name'),
+        new OAT\Property(property: 'group', type: 'string', example: 'family', enum: ['taste', 'family', 'flavor', 'mouthfeel', 'body', 'finish', 'profile'], description: 'Taxonomy group the descriptor belongs to'),
     ],
-    required: ['id', 'name'],
+    required: ['id', 'name', 'group'],
 )]
 class TasteDescriptorResource extends JsonResource
 {
@@ -33,6 +34,7 @@ class TasteDescriptorResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'group' => $this->group,
         ];
     }
 }

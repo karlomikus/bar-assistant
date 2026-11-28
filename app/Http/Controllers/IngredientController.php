@@ -40,6 +40,7 @@ class IngredientController extends Controller
             new OAT\Property(property: 'name_exact', type: 'string', description: 'Filter by ingredient name(s) (exact match)'),
             new OAT\Property(property: 'origin', type: 'string', description: 'Filter by ingredient origin name(s). Comma separated list of origin names. Exact match.'),
             new OAT\Property(property: 'distillery', type: 'string', description: 'Filter by ingredient distillery name(s). Comma separated list of distillery names. Exact match.'),
+            new OAT\Property(property: 'taste_descriptor', type: 'string', description: 'Filter by attached taste descriptor name(s). Comma separated list of descriptor names. Case-insensitive match.'),
             new OAT\Property(property: 'created_user_id', type: 'string', description: 'Filter by user(s) who created the ingredient'),
             new OAT\Property(property: 'on_shopping_list', type: 'boolean', description: 'Show only ingredients that are on the shopping list'),
             new OAT\Property(property: 'on_shelf', type: 'boolean', description: 'Show only ingredients that are on the shelf'),
@@ -65,6 +66,10 @@ class IngredientController extends Controller
                 ])),
                 new OAT\Property(property: 'distilleries', type: 'array', items: new OAT\Items(type: 'object', required: ['name'], properties: [
                     new OAT\Property(property: 'name', type: 'string'),
+                ])),
+                new OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(type: 'object', required: ['name'], properties: [
+                    new OAT\Property(property: 'name', type: 'string'),
+                    new OAT\Property(property: 'group', type: 'string', enum: ['taste', 'family', 'flavor', 'mouthfeel', 'body', 'finish', 'profile']),
                 ])),
             ]),
         ]),
@@ -96,11 +101,21 @@ class IngredientController extends Controller
             ->pluck('distillery')
             ->map(fn ($name) => ['name' => $name]);
 
+        $tasteDescriptors = DB::table('ingredient_taste_descriptor')
+            ->join('ingredients', 'ingredients.id', '=', 'ingredient_taste_descriptor.ingredient_id')
+            ->join('taste_descriptors', 'taste_descriptors.id', '=', 'ingredient_taste_descriptor.taste_descriptor_id')
+            ->where('ingredients.bar_id', bar()->id)
+            ->groupBy('taste_descriptors.name', 'taste_descriptors.group')
+            ->orderByRaw('LOWER(taste_descriptors.name) ASC')
+            ->get(['taste_descriptors.name', 'taste_descriptors.group'])
+            ->map(fn (object $descriptor) => ['name' => $descriptor->name, 'group' => $descriptor->group]);
+
         return IngredientResource::collection($ingredients->withQueryString())->additional([
             'meta' => [
                 'filters' => [
                     'origins' => $origins,
                     'distilleries' => $distilleries,
+                    'taste_descriptors' => $tasteDescriptors,
                 ],
             ],
         ]);
@@ -128,7 +143,8 @@ class IngredientController extends Controller
             'descendants',
             'ancestors',
             'ratings',
-            'ingredientReviews.tasteDescriptors'
+            'ingredientReviews',
+            'tasteDescriptors'
         )
             ->withCount('cocktails')
             ->where('id', $idOrSlug)
@@ -204,6 +220,7 @@ class IngredientController extends Controller
                 $dto->acidity,
                 $dto->distillery,
                 $dto->units,
+                $dto->tasteDescriptors,
             )
         );
 
@@ -275,6 +292,7 @@ class IngredientController extends Controller
                 $dto->acidity,
                 $dto->distillery,
                 $dto->units,
+                $dto->tasteDescriptors,
             )
         );
 

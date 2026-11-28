@@ -50,6 +50,15 @@ class IngredientRequest extends FormRequest
                 'max:1',
             ],
             'images.*' => 'integer',
+            'taste_descriptors' => [
+                'sometimes',
+                'array',
+            ],
+            'taste_descriptors.*' => [
+                'string',
+                'filled',
+                'max:100',
+            ],
         ];
     }
 }

@@ -10,6 +10,7 @@ final readonly class UpdateIngredientRequest
      * @param int[] $images
      * @param ComplexIngredientPart[] $complexIngredientParts
      * @param CreateIngredientPrice[] $prices
+     * @param string[] $tasteDescriptors
      */
     public function __construct(
         public int $ingredientId,
@@ -28,6 +29,7 @@ final readonly class UpdateIngredientRequest
         public ?float $acidity = null,
         public ?string $distillery = null,
         public ?string $units = null,
+        public array $tasteDescriptors = [],
     ) {
     }
 }

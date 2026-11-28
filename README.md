@@ -100,6 +100,7 @@ Here's a list of interesting environment variables you can set to configure Bar 
 |GEN_AI_MODEL||Optional specific text model to use from the provider. Required for `openai-compatible` providers.|
 |GEN_AI_IMAGE_PROVIDER||Identifier of an image-capable provider (e.g. `openai`, `gemini`).|
 |GEN_AI_IMAGE_MODEL||Optional specific image generation model to use from the provider.|
+|GEN_AI_CLASSIFICATION_PROVIDER|`openai`|Identifier of a classification-capable provider (e.g. `openai`, `typesafe`).|
 
 ## Managed instance
 

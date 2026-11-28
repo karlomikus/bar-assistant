@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +23,6 @@ class TasteDescriptorFactory extends Factory
         return [
             'name' => $name,
             'normalized_name' => mb_strtolower($name),
-            'bar_id' => \Kami\Cocktail\Models\Bar::factory(),
         ];
     }
 }

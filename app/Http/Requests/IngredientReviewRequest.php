@@ -37,15 +37,6 @@ class IngredientReviewRequest extends FormRequest
                 'string',
                 'in:avoid,decent,recommend',
             ],
-            'taste_descriptors' => [
-                'sometimes',
-                'array',
-            ],
-            'taste_descriptors.*' => [
-                'string',
-                'filled',
-                'max:100',
-            ],
         ];
     }
 }

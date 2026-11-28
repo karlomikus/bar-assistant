@@ -46,6 +46,8 @@ class IngredientRequest
         public ?string $distillery = null,
         #[OAT\Property(property: 'units', example: 'ml', description: 'Default unit that would be used for this ingredient')]
         public ?string $units = null,
+        #[OAT\Property(property: 'taste_descriptors', type: 'array', items: new OAT\Items(type: 'string'), example: ['Smoky', 'Sweet'], description: 'Taste descriptor names attached to the ingredient. Descriptors not in the static taste descriptor list are ignored.')]
+        public array $tasteDescriptors = [],
     ) {
     }
 
@@ -67,6 +69,9 @@ class IngredientRequest
             $complexIngredientParts[] = ComplexIngredientPartRequest::fromArray($part);
         }
 
+        $formDescriptors = $request->input('taste_descriptors', []);
+        $tasteDescriptors = is_array($formDescriptors) ? array_values(array_map(strval(...), $formDescriptors)) : [];
+
         return new self(
             $barId,
             $request->input('name'),
@@ -84,6 +89,7 @@ class IngredientRequest
             $request->filled('acidity') ? $request->float('acidity') : null,
             $request->input('distillery'),
             $request->input('units'),
+            $tasteDescriptors,
         );
     }
 }
